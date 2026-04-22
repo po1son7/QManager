@@ -42,7 +42,7 @@ start() {
 
     # Idempotency check: skip if WoL is already disabled
     eth_output=$(ethtool "$ETH_INTERFACE" 2>/dev/null)
-    current_wol=$(printf '%s' "$eth_output" | grep "Wake-on:" | awk '{print $2}')
+    current_wol=$(printf '%s' "$eth_output" | grep "Wake-on:" | grep -v "Supports" | awk '{print $2}')
     if [ "$current_wol" = "d" ]; then
         logger -t qmanager_wol_fix "Wake-on already disabled — skip"
         return 0

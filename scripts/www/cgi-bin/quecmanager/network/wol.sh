@@ -83,7 +83,7 @@ probe_wol_support() {
 
     # Supported — read current Wake-on mode
     wol_supported="true"
-    wake_line=$(printf '%s' "$eth_output" | grep "Wake-on:")
+    wake_line=$(printf '%s' "$eth_output" | grep "Wake-on:" | grep -v "Supports")
     wol_current=$(printf '%s' "$wake_line" | awk '{print $2}')
     [ -z "$wol_current" ] && wol_current=""
 
