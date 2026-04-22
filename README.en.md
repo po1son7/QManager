@@ -1,7 +1,5 @@
 # QManager
 
-[English](./README.en.md) | [Italiano](./README.it.md)
-
 <div align="center">
   <img src="public/qmanager-logo.svg" alt="QManager Logo" width="120" />
   <h3>A modern, custom GUI for Quectel modem management</h3>

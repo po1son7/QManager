@@ -41,6 +41,13 @@ export const AVAILABLE_LANGUAGES: readonly LanguageMeta[] = [
     rtl: false,
     bundled: false,
   },
+  {
+    code: "it",
+    native_name: "Italiano",
+    english_name: "Italian",
+    rtl: false,
+    bundled: false,
+  },
 ];
 
 export const BUNDLED_CODES: readonly LanguageCode[] = AVAILABLE_LANGUAGES

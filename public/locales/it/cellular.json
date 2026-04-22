@@ -1,0 +1,1281 @@
+{
+  "custom_profiles": {
+    "page": {
+      "title": "Profilo SIM personalizzato",
+      "description": "Raggruppa le impostazioni APN, IMEI e TTL/HL in profili con un clic."
+    },
+    "view": {
+      "title": "Profili salvati",
+      "description": "Gestisci i tuoi profili SIM personalizzati.",
+      "count_one": "Profilo {{count}} salvato",
+      "count_other": "{{count}} profili salvati"
+    },
+    "table": {
+      "headers": {
+        "profile": "Profilo",
+        "status": "Stato",
+        "last_updated": "Ultimo aggiornamento",
+        "actions": ""
+      },
+      "status_badge": {
+        "active": "Attivo",
+        "inactive": "Inattivo",
+        "sim_mismatch": "SIM Mancata corrispondenza"
+      },
+      "pagination": {
+        "total_one": "{{count}} totale profilo",
+        "total_other": "{{count}} profili totali",
+        "page_info": "Pagina {{current}} di {{total}}",
+        "previous": "Precedente",
+        "next": "Avanti"
+      },
+      "empty_row": "Nessun profilo ancora. Creane uno per iniziare.",
+      "actions_menu": {
+        "open_menu": "Apri il menu",
+        "edit": "Modifica",
+        "activate": "Attiva",
+        "deactivate": "Disattiva",
+        "delete": "Elimina"
+      },
+      "delete_confirm": {
+        "title": "Elimina profilo",
+        "description": "Sei sicuro di voler eliminare \"{{name}}\"? Questa azione non può essere annullata. L'eliminazione di questo profilo non modificherà la configurazione attuale del modem.",
+        "confirm_button": "Elimina",
+        "deleting": "Eliminazione…"
+      }
+    },
+    "form": {
+      "create_title": "Crea profilo SIM personalizzato",
+      "create_description": "Crea un profilo SIM personalizzato con impostazioni APN, TTL e IMEI specifiche.",
+      "edit_title": "Modifica profilo",
+      "edit_description": "Modifica di \"{{name}}\". Aggiorna i campi sottostanti.",
+      "load_current_button": "Carica corrente SIM",
+      "fields": {
+        "profile_name_label": "Nome del profilo",
+        "profile_name_placeholder": "Il mio profilo LTE",
+        "profile_name_required": "Il nome del profilo è obbligatorio.",
+        "sim_iccid_label": "SIM ICCID",
+        "sim_iccid_placeholder": "Compilato automaticamente dall'attuale SIM",
+        "mno_label": "Operatore di rete mobile",
+        "mno_placeholder": "Seleziona operatore...",
+        "mno_custom": "Personalizzato",
+        "apn_name_label": "APN Nome",
+        "apn_name_placeholder": "Internet",
+        "ip_protocol_label": "IP Protocollo",
+        "ip_protocol_ipv4": "IPv4 Solo",
+        "ip_protocol_ipv6": "IPv6 Solo",
+        "ip_protocol_dual": "IPv4 + IPv6 (Doppio stack)",
+        "cid_label": "Slot del profilo (CID)",
+        "cid_error": "Il CID deve essere compreso tra 1 e 15.",
+        "imei_label": "Preferito IMEI",
+        "imei_placeholder": "Lascia vuoto per mantenere aggiornato IMEI",
+        "imei_error": "IMEI deve essere composto esattamente da 15 cifre.",
+        "ttl_label": "TTL Valore",
+        "ttl_error": "TTL deve essere compreso tra 0 e 255.",
+        "hl_label": "Limite del salto",
+        "hl_error": "HL deve essere compreso tra 0 e 255."
+      },
+      "buttons": {
+        "create_submit": "Crea profilo",
+        "update_submit": "Aggiorna profilo",
+        "reset": "Ripristina"
+      },
+      "toast": {
+        "create_success": "Profilo creato con successo.",
+        "create_error": "Impossibile creare il profilo.",
+        "update_success": "Profilo aggiornato con successo.",
+        "update_error": "Impossibile aggiornare il profilo."
+      }
+    },
+    "activate_dialog": {
+      "title": "Attiva profilo",
+      "description": "Applicare \"{{name}}\" al modem? Ciò aggiornerà le impostazioni APN, TTL/HL e IMEI come configurato nel profilo. Le impostazioni non modificate verranno ignorate.",
+      "confirm": "Attiva"
+    },
+    "deactivate_dialog": {
+      "title": "Disattiva profilo",
+      "description": "Cancellare l'indicatore del profilo attivo? Le impostazioni correnti del modem (APN, IMEI, TTL) non verranno ripristinate: verrà rimosso solo il badge \"Attivo\".",
+      "confirm": "Disattiva",
+      "deactivating": "Disattivazione…"
+    },
+    "apply_dialog": {
+      "title": "Applicazione del profilo",
+      "status_badge": {
+        "applying": "Applicazione…",
+        "complete": "Completo",
+        "partial": "Parziale",
+        "failed": "Fallito"
+      },
+      "step_labels": {
+        "apn": "APN Configurazione",
+        "ttl_hl": "TTL / Limite salto",
+        "imei": "IMEI"
+      },
+      "reboot_notice": "Il modem si sta riavviando per applicare la modifica IMEI. La dashboard si ricollegherà automaticamente."
+    },
+    "empty_state": {
+      "title": "Nessun profilo personalizzato",
+      "description": "Gestisci i tuoi profili SIM personalizzati qui.",
+      "description_full": "Non hai ancora creato alcun profilo SIM personalizzato. Utilizza il modulo per creare il tuo primo profilo.",
+      "refresh": "Aggiorna"
+    }
+  },
+  "scenarios": {
+    "page": {
+      "title": "Scenari di connessione",
+      "description": "Gestisci e personalizza gli scenari di connessione per i tuoi profili cellulari per ottimizzare le prestazioni e l'affidabilità della rete."
+    },
+    "default_balanced_name": "Equilibrato",
+    "default_balanced_description": "Selezione automatica della banda",
+    "default_gaming_name": "Gioco",
+    "default_gaming_description": "Bassa latenza, priorità SA",
+    "default_streaming_name": "Streaming",
+    "default_streaming_description": "Larghezza di banda elevata, connessione stabile",
+    "default_gaming_optimization": "Latenza",
+    "default_streaming_optimization": "Produttività",
+    "default_custom_optimization": "Personalizzato",
+    "mode_option_auto": "Automatico",
+    "mode_option_lte": "LTE Solo",
+    "mode_option_nrsa": "5G Solo SA",
+    "mode_option_nrsa_nsa": "5G SA/NSA",
+    "scenario_item": {
+      "active_badge": "Attivo",
+      "delete_confirm": {
+        "title": "Elimina scenario",
+        "description": "Sei sicuro di voler eliminare \"{{name}}\"? Questa azione non può essere annullata.",
+        "confirm": "Elimina",
+        "deleting": "Eliminazione…"
+      }
+    },
+    "add_button": {
+      "label": "Crea scenario",
+      "description": "Aggiungi configurazione personalizzata"
+    },
+    "active_config_card": {
+      "configuration": "{{name}} Configurazione",
+      "status": {
+        "applying": "Applicazione…",
+        "active": "Attivo",
+        "not_active": "Non attivo"
+      },
+      "config_labels": {
+        "network_mode": "Modalità di rete",
+        "optimization": "Ottimizzazione",
+        "lte_bands": "LTE Bande",
+        "nrsa_bands": "Bande NR5G-SA",
+        "nrsa_nsa_bands": "Bande NR5G-NSA"
+      },
+      "config_values": {
+        "auto": "Automatico",
+        "lte_only": "LTE Solo",
+        "nrsa_only": "5G Solo SA",
+        "nrsa_nsa": "5G SA/NSA",
+        "bands_auto": "Automatico"
+      },
+      "edit_aria": "Modifica le impostazioni dello scenario",
+      "activate": "Attiva"
+    },
+    "add_dialog": {
+      "title": "Nuovo scenario di connessione",
+      "fields": {
+        "name_label": "Nome dello scenario",
+        "name_placeholder": "ad esempio, Lavoro da casa",
+        "description_label": "Descrizione",
+        "description_placeholder": "ad esempio, ottimizzato per le videochiamate",
+        "network_mode_label": "Modalità di rete",
+        "network_mode_aria": "Modalità di rete",
+        "lte_bands_label": "LTE Blocco cinturino",
+        "lte_bands_placeholder": "ad esempio, 1, 3, 7, 28 (vuoto = Auto)",
+        "sa_bands_label": "Blocco cinturino NR5G-SA",
+        "sa_bands_placeholder": "ad esempio, 41, 78",
+        "nsa_bands_label": "Blocco cinturino NR5G-NSA",
+        "nsa_bands_placeholder": "ad esempio, 41, 78",
+        "theme_label": "Tema della carta",
+        "preview_label": "Anteprima",
+        "preview_placeholder": "Configurazione personalizzata"
+      },
+      "buttons": {
+        "create": "Crea scenario",
+        "creating": "Creazione…"
+      },
+      "toast": {
+        "success": "Scenario creato con successo.",
+        "error": "Impossibile creare lo scenario."
+      }
+    },
+    "edit_dialog": {
+      "title": "Modifica configurazione",
+      "fields": {
+        "name_label": "Nome dello scenario",
+        "name_placeholder": "Nome dello scenario",
+        "description_label": "Descrizione",
+        "description_placeholder": "Descrizione dello scenario",
+        "network_mode_label": "Modalità di rete",
+        "network_mode_aria": "Modalità di rete",
+        "optimization_label": "Etichetta di ottimizzazione",
+        "optimization_placeholder": "ad esempio, Latenza, Velocità effettiva, Personalizzata",
+        "lte_bands_label": "LTE Blocco cinturino",
+        "lte_bands_placeholder": "ad esempio, 1, 3, 7, 28 (vuoto = Auto)",
+        "sa_bands_label": "Blocco cinturino NR5G-SA",
+        "sa_bands_placeholder": "ad esempio, 41, 78",
+        "nsa_bands_label": "Blocco cinturino NR5G-NSA",
+        "nsa_bands_placeholder": "ad esempio, 41, 78",
+        "theme_label": "Tema della carta",
+        "preview_label": "Anteprima",
+        "preview_placeholder": "Configurazione personalizzata"
+      },
+      "buttons": {
+        "save": "Salva modifiche",
+        "saving": "Salvataggio…"
+      },
+      "toast": {
+        "success": "Scenario aggiornato.",
+        "error": "Impossibile aggiornare lo scenario."
+      }
+    },
+    "activation_toast": {
+      "success": "Passato allo scenario {{name}}.",
+      "error": "Impossibile attivare lo scenario {{name}}."
+    },
+    "deletion_toast": {
+      "success": "Scenario eliminato.",
+      "error": "Impossibile eliminare lo scenario."
+    }
+  },
+  "sms": {
+    "page": {
+      "title": "Centro SMS",
+      "description": "Visualizza, gestisci e invia messaggi SMS dal tuo modem."
+    },
+    "inbox": {
+      "title": "Posta in arrivo",
+      "description": "Visualizza e gestisci i tuoi messaggi SMS",
+      "storage_suffix": " — Messaggi {{used}}/{{total}} memorizzati",
+      "table": {
+        "headers": {
+          "from": "Da",
+          "message": "Messaggio",
+          "date": "Data"
+        },
+        "actions": {
+          "open_menu": "Apri il menu",
+          "view": "Visualizza",
+          "delete": "Elimina"
+        },
+        "empty_row": "Nessun messaggio trovato.",
+        "select_all_aria": "Seleziona tutto",
+        "select_row_aria": "Seleziona riga"
+      },
+      "buttons": {
+        "refresh_aria": "Aggiorna la posta in arrivo",
+        "delete_selected": "Elimina ({{count}})",
+        "delete_selected_aria": "Elimina {{count}} selezionato",
+        "delete_all": "Elimina tutto",
+        "delete_all_aria": "Elimina tutti i messaggi",
+        "new_message": "Nuovo messaggio",
+        "prev": "Prec",
+        "next": "Avanti"
+      },
+      "pagination": {
+        "total_one": "messaggio {{count}}",
+        "total_other": "{{count}} messaggi",
+        "page_info": "{{current}} / {{total}}"
+      },
+      "error": {
+        "title": "Impossibile caricare i messaggi",
+        "description_prefix": "Impossibile caricare i messaggi"
+      },
+      "view_dialog": {
+        "title": "Messaggio da {{sender}}",
+        "timestamp_aria": "{{timestamp}}"
+      },
+      "delete_single_confirm": {
+        "title": "Elimina messaggio",
+        "description": "Sei sicuro di voler eliminare questo messaggio da {{sender}}? Questa azione non può essere annullata.",
+        "confirm": "Elimina",
+        "deleting": "Eliminazione…"
+      },
+      "delete_all_confirm": {
+        "title": "Elimina tutti i messaggi",
+        "description": "Sei sicuro di voler eliminare tutti i messaggi {{count}}? Questa azione non può essere annullata.",
+        "confirm": "Elimina tutto"
+      },
+      "delete_selected_confirm": {
+        "title": "Elimina i messaggi selezionati",
+        "description_one": "Sei sicuro di voler eliminare il messaggio selezionato {{count}}? Questa azione non può essere annullata.",
+        "description_other": "Sei sicuro di voler eliminare i {{count}} messaggi selezionati? Questa azione non può essere annullata.",
+        "confirm": "Elimina ({{count}})",
+        "deleting": "Eliminazione…"
+      },
+      "toast": {
+        "delete_success": "Messaggio eliminato",
+        "delete_error": "Impossibile eliminare il messaggio",
+        "delete_all_success": "Tutti i messaggi cancellati",
+        "delete_all_error": "Impossibile eliminare i messaggi",
+        "delete_selected_success_one": "{{count}} messaggio eliminato",
+        "delete_selected_success_other": "{{count}} messaggi eliminati",
+        "delete_selected_error": "Impossibile eliminare i messaggi selezionati"
+      }
+    },
+    "compose": {
+      "title": "Nuovo messaggio",
+      "description": "Componi e invia un messaggio SMS.",
+      "fields": {
+        "phone_label": "Numero di telefono",
+        "phone_placeholder": "+1234567890",
+        "message_label": "Messaggio",
+        "message_placeholder": "Scrivi il tuo messaggio...",
+        "char_counter": "{{count}}/{{max}}"
+      },
+      "unicode_indicator": "(Unicode)",
+      "limit_warning": "Il messaggio supera il limite singolo SMS. Verrà inviato in più parti.",
+      "buttons": {
+        "send": "Invia",
+        "sending": "Invio…"
+      },
+      "toast": {
+        "success": "SMS inviato con successo",
+        "error": "Impossibile inviare SMS"
+      }
+    }
+  },
+  "cell_locking": {
+    "band_locking": {
+      "page": {
+        "title": "Blocco bande",
+        "description": "Limita le bande LTE e NR utilizzabili dal modem."
+      },
+      "scenario_override_banner": "La configurazione della banda è gestita dallo scenario <strong>{{scenario_name}}</strong>.",
+      "settings_card": {
+        "title": "Impostazioni di blocco della banda",
+        "description": "Limita il modem a bande specifiche LTE e 5G. Abilita il failover per tornare a tutte le bande se le bande bloccate perdono il segnale.",
+        "band_failover_label": "Failover della banda",
+        "band_failover_tooltip": "Quando abilitato, il dispositivo passerà automaticamente alle bande predefinite se le bande bloccate non sono disponibili dopo 15 secondi.",
+        "band_failover_info_aria": "Informazioni sul failover della banda",
+        "status_label": "Stato di failover della banda",
+        "status": {
+          "disabled": "Disabilitato",
+          "fallback_active": "Ripiego attivo",
+          "ready": "Pronto"
+        },
+        "active_lte_bands": "Bande LTE attive",
+        "active_lte_channels": "Canali LTE attivi",
+        "active_nr_bands": "Bande 5G attive",
+        "active_nr_channels": "Canali 5G attivi",
+        "toast": {
+          "failover_enabled": "Failover della banda abilitato",
+          "failover_disabled": "Failover della banda disabilitato",
+          "failover_error": "Impossibile aggiornare il failover della banda"
+        }
+      },
+      "cards": {
+        "lte": {
+          "title": "LTE Blocco del cinturino",
+          "description": "Seleziona i cinturini LTE da bloccare per il tuo dispositivo."
+        },
+        "nsa_nr5g": {
+          "title": "Blocco della banda NSA",
+          "description": "Seleziona le 5G bande NSA da bloccare (5G tramite LTE ancora)."
+        },
+        "sa_nr5g": {
+          "title": "Chiusura della banda SA",
+          "description": "Selezionare le bande SA 5G da bloccare (standalone 5G)."
+        }
+      },
+      "card_badges": {
+        "scenario_controlled": "Scenario controllato",
+        "all_unlocked": "Tutto sbloccato",
+        "bands_locked": "{{locked}} / {{total}} Bande"
+      },
+      "card_empty": "Nessuna banda supportata segnalata dal modem per questa categoria.",
+      "card_buttons": {
+        "lock_selected": "Blocca le bande selezionate",
+        "select_all": "Seleziona tutto",
+        "deselect_all": "Deseleziona tutto",
+        "unlock_all_aria": "Sblocca tutte le bande",
+        "unlock_all_title": "Sblocca tutte le bande (reimposta)"
+      },
+      "card_live_region": "Applicazione del blocco del cinturino {{category_label}}…",
+      "card_category_label": {
+        "lte": "LTE",
+        "nsa_nr5g": "NSA",
+        "sa_nr5g": "SA"
+      },
+      "toast": {
+        "select_one_band": "Seleziona almeno una banda da bloccare",
+        "locked_success": "{{category_label}} bande bloccate con successo",
+        "lock_error": "Impossibile applicare il blocco del cinturino",
+        "unlocked_success": "{{category_label}} bande sbloccate",
+        "unlock_error": "Impossibile sbloccare le bande"
+      }
+    },
+    "tower_locking": {
+      "page": {
+        "title": "Blocco BTS",
+        "description": "Blocca torri cellulari specifiche tramite PCI e EARFCN."
+      },
+      "settings": {
+        "title": "Impostazioni di blocco della torre",
+        "description_loading": "Blocca il modem su una torre cellulare specifica. Mantiene stabile la tua connessione invece di vagare tra le torri.",
+        "description": "Blocca il modem su una torre cellulare specifica. Mantiene stabile la tua connessione invece di vagare tra le torri. Non compatibile con 5G NSA.",
+        "persist_label": "Mantieni il blocco dopo il riavvio",
+        "persist_tooltip": "Se abilitato, il blocco della torre viene ripristinato automaticamente dopo il riavvio.",
+        "persist_info_aria": "Mantieni le informazioni sul blocco dopo il riavvio",
+        "failover_label": "Failover del segnale",
+        "failover_tooltip": "Quando abilitato, il dispositivo si sbloccherà dalla torre se la qualità del segnale scende al di sotto di una determinata soglia o diventa non disponibile.",
+        "failover_info_aria": "Informazioni sul failover del segnale",
+        "failover_no_lock": "Nessun blocco attivo",
+        "failover_hint": "Il failover è disattivato: abilitalo allo sblocco automatico in caso di segnale debole.",
+        "failover_toast_disabled": "Failover disabilitato",
+        "threshold_label": "Soglia di failover (%)",
+        "threshold_tooltip": "Ciò avrà effetto solo se il failover è abilitato. Imposta la soglia della qualità del segnale al di sotto della quale il dispositivo si sbloccherà dalla torre.",
+        "threshold_info_aria": "Informazioni sulla soglia di failover",
+        "threshold_placeholder": "Inserisci la soglia",
+        "threshold_update": "Aggiorna",
+        "threshold_error_range": "La soglia deve essere compresa tra 0 e 100",
+        "threshold_toast_success": "Soglia di failover aggiornata",
+        "signal_quality_label": "Qualità del segnale corrente",
+        "failover_status_label": "Stato del failover",
+        "connection_state_label": "Stato della connessione",
+        "schedule_status_label": "Pianifica lo stato di blocco",
+        "earfcn_label": "Canale corrente (EARFCN)",
+        "pci_label": "ID cella corrente (PCI)",
+        "failover_badge": {
+          "loading": "Caricamento",
+          "unknown": "Sconosciuto",
+          "monitoring": "Monitoraggio",
+          "unlocked_poor_signal": "Sbloccato a causa di segnale debole",
+          "disabled": "Disabilitato",
+          "ready": "Pronto"
+        },
+        "schedule_badge": {
+          "loading": "Caricamento",
+          "unknown": "Sconosciuto",
+          "active": "Attivo",
+          "inactive": "Inattivo"
+        },
+        "connection_badge": {
+          "loading": "Caricamento",
+          "unknown": "Sconosciuto",
+          "connected": "Connesso",
+          "limited": "Servizio limitato",
+          "searching": "Ricerca",
+          "no_service": "Nessun servizio"
+        },
+        "settings_unavailable_toast": "Impostazioni non disponibili: prova ad aggiornare la pagina"
+      },
+      "lte": {
+        "title": "LTE Blocco della torre",
+        "description": "Blocca una torre cellulare LTE specifica inserendone il canale e l'ID cella.",
+        "enabled_label": "Blocco BTS LTE abilitato",
+        "channel_label": "Canale (EARFCN)",
+        "channel_label_n": "Canale (EARFCN) {{n}}",
+        "channel_placeholder": "Inserisci EARFCN",
+        "channel_placeholder_n": "Inserisci EARFCN {{n}}",
+        "pci_label": "ID cella (PCI)",
+        "pci_label_n": "ID cella (PCI) {{n}}",
+        "pci_placeholder": "Inserisci PCI",
+        "pci_placeholder_n": "Inserisci PCI {{n}}",
+        "use_current": "Usa corrente",
+        "lock_dialog": {
+          "title": "Blocca sulla torre LTE?",
+          "description_single": "In questo modo il modem verrà bloccato su EARFCN {{earfcn}}, PCI {{pci}}. Il modem si collegherà solo a questa torre e potrebbe disconnettersi brevemente durante il passaggio.",
+          "description_multi_one": "Ciò bloccherà il modem sulla cella di destinazione {{count}}. Il modem si collegherà solo a queste torri e potrebbe disconnettersi brevemente durante il passaggio.",
+          "description_multi_other": "Ciò bloccherà il tuo modem sulle celle target {{count}}. Il modem si collegherà solo a queste torri e potrebbe disconnettersi brevemente durante il passaggio.",
+          "confirm": "Torre della serratura"
+        },
+        "unlock_dialog": {
+          "title": "Sbloccare la torre LTE?",
+          "description": "Ciò rimuoverà la serratura della torre LTE. Il modem sarà libero di selezionare qualsiasi torre disponibile e potrebbe disconnettersi brevemente durante il passaggio.",
+          "confirm": "Rimuovi blocco"
+        },
+        "toast": {
+          "failover_in_progress_title": "Controllo del failover in corso",
+          "failover_in_progress_description": "Il controllo della qualità del segnale è in corso, attendi.",
+          "no_targets_title": "Nessun bersaglio cellulare",
+          "no_targets_description": "Inserisci prima un canale e un ID cella.",
+          "lock_success": "LTE serratura della torre applicata",
+          "lock_error": "Impossibile bloccare la torre: controlla la connessione del modem",
+          "unlock_success": "LTE serratura della torre rimossa",
+          "unlock_error": "Impossibile rimuovere il blocco della torre",
+          "filled_current": "Riempito dalla torre attualmente collegata",
+          "no_active_connection": "Nessuna connessione LTE attiva"
+        }
+      },
+      "nr_sa": {
+        "title": "NR-SA Blocco BTS",
+        "description": "Blocca su una specifica torre cellulare 5G SA inserendo il canale, l'ID cella, la banda e la spaziatura della sottoportante.",
+        "description_suffix_nsa_mode": " Non compatibile con la modalità NR5G-NSA.",
+        "description_suffix_lte_only": " Nessuna connessione NR disponibile.",
+        "enabled_label": "Blocco BTS NR abilitato",
+        "arfcn_label": "Canale (ARFCN)",
+        "arfcn_placeholder": "Inserisci ARFCN",
+        "pci_label": "ID cella (PCI)",
+        "pci_placeholder": "Inserisci PCI",
+        "band_label": "NR Banda",
+        "band_placeholder": "Inserisci NR Banda",
+        "scs_label": "Spaziatura sottoportante",
+        "scs_placeholder": "SCS",
+        "use_current": "Usa corrente",
+        "lock_dialog": {
+          "title": "Blocca la Torre NR-SA?",
+          "description": "In questo modo il modem verrà bloccato su NR ARFCN {{arfcn}}, PCI {{pci}} (banda {{band}}). Il modem si collegherà solo a questa torre e potrebbe disconnettersi brevemente durante il passaggio.",
+          "confirm": "Torre della serratura"
+        },
+        "unlock_dialog": {
+          "title": "Sbloccare la torre NR-SA?",
+          "description": "Ciò rimuoverà la serratura della torre NR-SA. Il modem sarà libero di selezionare qualsiasi torre disponibile e potrebbe disconnettersi brevemente durante il passaggio.",
+          "confirm": "Rimuovi blocco"
+        },
+        "toast": {
+          "failover_in_progress_title": "Controllo del failover in corso",
+          "failover_in_progress_description": "Il controllo della qualità del segnale è in corso, attendi.",
+          "incomplete_title": "Campi incompleti",
+          "incomplete_description": "Compila tutti i campi richiesti della torre prima di bloccarla.",
+          "lock_success": "NR-SA serratura a torre applicata",
+          "lock_error": "Impossibile bloccare la torre: controlla la connessione del modem",
+          "unlock_success": "NR-La serratura della torre SA è stata rimossa",
+          "unlock_error": "Impossibile rimuovere il blocco della torre",
+          "filled_current": "Riempito dalla torre attualmente collegata",
+          "no_active_connection": "Nessuna connessione SA 5G attiva"
+        }
+      },
+      "schedule": {
+        "title": "Pianificazione del blocco della torre",
+        "description": "Imposta orari specifici per abilitare o disabilitare il blocco della torre.",
+        "enable_label": "Abilita il blocco programmato",
+        "enable_tooltip": "Pianifica il blocco della torre per attivarlo o disattivarlo automaticamente a orari specificati.",
+        "enable_info_aria": "Informazioni sulla pianificazione",
+        "start_time_label": "Ora di inizio",
+        "end_time_label": "Ora di fine",
+        "repeat_on_label": "Ripeti",
+        "repeat_on_aria": "Giorni della settimana",
+        "day_labels": {
+          "sun": "Sole",
+          "mon": "Lun",
+          "tue": "Mar",
+          "wed": "Mercoledì",
+          "thu": "Gio",
+          "fri": "Ven",
+          "sat": "Sab"
+        },
+        "toast_no_targets": "Nessun obiettivo di blocco configurato"
+      }
+    },
+    "frequency_locking": {
+      "page": {
+        "title": "Blocco della frequenza",
+        "description": "Blocca su EARFCN/NR-ARFCN specifici. Sperimentale: da usare con cautela."
+      },
+      "lte": {
+        "title": "LTE Blocco della frequenza",
+        "description_loading": "Blocca su frequenze specifiche del canale LTE.",
+        "description": "Blocca su frequenze specifiche del canale LTE. Massimo 2 canali.",
+        "tower_lock_active": "LTE Il blocco della torre è attivo. Disabilitarlo prima di utilizzare il blocco della frequenza.",
+        "experimental_warning": "Caratteristica sperimentale",
+        "enabled_label": "LTE Blocco frequenza abilitato",
+        "enabled_tooltip": "Il blocco su una frequenza non supportata potrebbe causare il riavvio imprevisto del modem. Non può essere utilizzato mentre il Blocco BTS è attivo.",
+        "enabled_info_aria": "LTE informazioni sul blocco della frequenza",
+        "channel_label": "Canale (EARFCN)",
+        "channel_label_optional": "Canale 2 (opzionale)",
+        "channel_placeholder": "Inserisci EARFCN",
+        "channel_placeholder_2": "Inserisci EARFCN 2",
+        "use_current": "Usa corrente",
+        "error_title": "Impossibile caricare lo stato di blocco della frequenza",
+        "lock_dialog": {
+          "title": "Blocca LTE Frequenza?",
+          "description_single": "In questo modo il modem verrà bloccato su EARFCN {{earfcn}}. Il modem utilizzerà solo questa frequenza e potrebbe disconnettersi brevemente.",
+          "description_multi": "Ciò bloccherà il tuo modem su EARFCN {{earfcns}}. Il modem utilizzerà solo queste frequenze e potrebbe disconnettersi brevemente.",
+          "confirm": "Blocca frequenza"
+        },
+        "unsupported_dialog": {
+          "title": "Avviso di frequenza non supportata",
+          "description_prefix": "Le frequenze inserite corrispondono a bande non supportate dal modem. Il blocco su una frequenza non supportata potrebbe causare il riavvio imprevisto del modem.",
+          "matched_bands_label": "Bande abbinate:",
+          "supported_bands_label": "Bande supportate:",
+          "confirm": "Blocca comunque",
+          "confirm_prompt": "Sei sicuro di voler procedere?",
+          "unknown": "Sconosciuto"
+        },
+        "unlock_dialog": {
+          "title": "Sbloccare la frequenza LTE?",
+          "description": "Ciò rimuoverà il blocco della frequenza LTE. Il modem sarà libero di utilizzare qualsiasi frequenza disponibile e potrebbe disconnettersi brevemente.",
+          "confirm": "Rimuovi blocco"
+        },
+        "toast": {
+          "no_frequencies_title": "Nessuna frequenza inserita",
+          "no_frequencies_description": "Immettere almeno un numero di canale prima dell'abilitazione.",
+          "lock_success": "LTE blocco della frequenza applicato",
+          "lock_error": "Impossibile applicare il blocco della frequenza LTE",
+          "unlock_success": "LTE blocco della frequenza cancellato",
+          "unlock_error": "Impossibile eliminare il blocco della frequenza LTE",
+          "filled_current": "Riempito dalla torre attualmente collegata",
+          "no_active_connection": "Nessuna connessione LTE attiva"
+        }
+      },
+      "nr": {
+        "title": "Blocco della frequenza NR5G",
+        "description_loading": "Blocca su frequenze NR specifiche (NR-ARFCN).",
+        "description": "Blocca su frequenze NR specifiche. Supporta fino a 32 voci (4 mostrate).",
+        "tower_lock_active": "NR Il blocco della torre è attivo. Disabilitarlo prima di utilizzare il blocco della frequenza.",
+        "experimental_warning": "Caratteristica sperimentale",
+        "enabled_label": "Blocco frequenza NR5G abilitato",
+        "enabled_tooltip": "Non può essere utilizzato insieme a NR Blocco torre (AT+QNWLOCK). SCS viene rilevato automaticamente dal tipo di banda ma può essere ignorato.",
+        "enabled_info_aria": "Informazioni sul blocco della frequenza NR5G",
+        "arfcn_label": "NR-ARFCN",
+        "arfcn_label_n": "NR-ARFCN {{n}}",
+        "arfcn_placeholder": "Inserisci {{label}}",
+        "scs_label": "SCS",
+        "scs_label_n": "SCS {{n}}",
+        "scs_placeholder": "SCS",
+        "scs_slot_aria": "{{label}} spazio {{n}}",
+        "use_current": "Usa corrente",
+        "error_title": "Impossibile caricare lo stato di blocco della frequenza",
+        "lock_dialog": {
+          "title": "Bloccare la frequenza NR5G?",
+          "description_single": "Ciò bloccherà il modem su NR-ARFCN {{arfcn}} (SCS {{scs}} kHz). Il modem utilizzerà solo questa frequenza e potrebbe disconnettersi brevemente.",
+          "description_multi": "Ciò bloccherà il tuo modem sulle frequenze {{count}} NR. Il modem utilizzerà solo queste frequenze e potrebbe disconnettersi brevemente.",
+          "confirm": "Blocca frequenza"
+        },
+        "unsupported_dialog": {
+          "title": "Avviso di banda non supportata",
+          "description_prefix": "I NR-ARFCN inseriti corrispondono a bande non supportate dal tuo modem. Il blocco su una frequenza non supportata può causare comportamenti imprevisti.",
+          "matched_bands_label": "Bande abbinate:",
+          "supported_bands_label": "Bande supportate:",
+          "confirm": "Blocca comunque",
+          "confirm_prompt": "Sei sicuro di voler procedere?",
+          "unknown": "Sconosciuto"
+        },
+        "unlock_dialog": {
+          "title": "Sbloccare la frequenza NR5G?",
+          "description": "Ciò rimuoverà il blocco della frequenza NR5G. Il modem sarà libero di utilizzare qualsiasi frequenza NR disponibile e potrebbe disconnettersi brevemente.",
+          "confirm": "Sblocca"
+        },
+        "toast": {
+          "no_frequencies_title": "Nessuna frequenza inserita",
+          "no_frequencies_description": "Inserisci almeno un NR-ARFCN e SCS prima di abilitare.",
+          "missing_scs_title": "SCS mancante",
+          "missing_scs_description": "Ciascun NR-ARFCN richiede un valore SCS. Seleziona la spaziatura della sottoportante.",
+          "lock_success": "Blocco della frequenza NR5G applicato",
+          "lock_error": "Impossibile applicare il blocco della frequenza NR5G",
+          "unlock_success": "Blocco della frequenza NR5G cancellato",
+          "unlock_error": "Impossibile eliminare il blocco della frequenza NR5G",
+          "filled_current": "Compilato da NR PCell attivo",
+          "no_active_connection": "Nessuna cella NR attiva"
+        }
+      },
+      "band_match": {
+        "no_match": "Nessun gruppo corrispondente trovato per {{label}}",
+        "possible_prefix": "Bande possibili: ",
+        "unsupported_suffix": " - non supportato",
+        "no_match_label": {
+          "this_channel": "questo canale",
+          "this_nr_arfcn": "questo NR-ARFCN",
+          "this_frequency": "questa frequenza"
+        }
+      }
+    }
+  },
+  "cell_scanner": {
+    "page": {
+      "title": "Scanner celle",
+      "description": "Scansiona le torri vicine su tutti i vettori. Migliori risultati senza un SIM attivo."
+    },
+    "scanner": {
+      "scanning": "Scansione...",
+      "start_new_scan": "Avvia nuova scansione",
+      "download_csv_aria": "Scarica CSV",
+      "empty_title": "Nessun risultato di scansione",
+      "empty_description": "Scopri le torri vicine di tutti i vettori e le bande.",
+      "scanning_title": "Scansione delle torri vicine...",
+      "scanning_hint": "Di solito ci vogliono 2-3 minuti. Le altre operazioni del modem vengono messe in pausa durante la scansione.",
+      "scanning_nav_warning": "Si prega di non chiudere la scheda o aggiornare la pagina.",
+      "scanning_elapsed_aria": "Tempo trascorso della scansione: {{time}}",
+      "error_fallback": "Scansione non riuscita",
+      "error_description": "Il modem potrebbe essere occupato o irraggiungibile. Controlla la connessione e riprova.",
+      "retry_scan": "Riprovare la scansione"
+    },
+    "result_table": {
+      "filter_placeholder": "Filtra per fornitore...",
+      "columns_button": "Colonne",
+      "column_headers": {
+        "network": "Rete",
+        "provider": "Fornitore",
+        "band": "Banda",
+        "earfcn": "EARFCN",
+        "pci": "PCI",
+        "cell_id": "Identificativo della cella",
+        "tac": "TAC",
+        "bandwidth": "BW",
+        "bandwidth_full": "Larghezza di banda",
+        "signal": "Segnale"
+      },
+      "mcc_mnc_aria": "Dettagli MCC/MNC",
+      "open_menu": "Apri il menu",
+      "lock_cell": "Blocca cella",
+      "empty_row": "Nessun risultato trovato",
+      "footer_of_total_one": "{{filtered}} di {{total}} cella",
+      "footer_of_total_other": "{{filtered}} di {{total}} celle",
+      "footer_total_one": "{{count}} cella trovata",
+      "footer_total_other": "{{count}} celle trovate",
+      "previous": "Precedente",
+      "next": "Avanti"
+    },
+    "lock_dialog": {
+      "title": "Bloccare sul cellulare?",
+      "description": "Ciò bloccherà il modem alla cella successiva. Si collegherà solo a questa cella specifica finché il blocco non verrà rimosso.",
+      "confirm": "Blocca cella",
+      "locking": "Blocco..."
+    },
+    "toast": {
+      "lock_success_title": "Cella bloccata",
+      "lock_success_description": "Bloccato su {{network_type}} PCI {{pci}} su EARFCN {{earfcn}}",
+      "lock_error_title": "Blocco non riuscito",
+      "lock_error_unknown": "Errore sconosciuto",
+      "lock_error_connection": "Impossibile connettersi al modem"
+    },
+    "signal_badge": {
+      "good": "Bene",
+      "fair": "Giusto",
+      "bad": "Cattivo",
+      "no_data": "Nessun dato"
+    },
+    "neighbour": {
+      "page": {
+        "title": "Scanner delle cellule vicine",
+        "description": "Analizza le torri vicine visibili dall'attuale cella di servizio."
+      },
+      "filter_placeholder": "Filtra per tipo di cella...",
+      "column_headers": {
+        "network": "Rete",
+        "cell_type": "Tipo di cella",
+        "frequency": "Frequenza",
+        "pci": "PCI",
+        "signal": "Segnale"
+      },
+      "toast_lock_success_description": "Bloccato su LTE PCI {{pci}} su EARFCN {{earfcn}}",
+      "footer_count_one": "{{count}} cella trovata",
+      "footer_count_other": "{{count}} celle trovate"
+    },
+    "frequency_calculator": {
+      "page": {
+        "title": "Calcolatore di frequenza",
+        "description": "Converte tra EARFCN/NR-ARFCN, frequenza e banda per LTE e 5G NR."
+      },
+      "calculator": {
+        "title": "E/ARFCN Calcolatrice",
+        "description": "Immettere un numero di canale per calcolare le informazioni sulla frequenza e sulla banda.",
+        "tabs": {
+          "auto": "Automatico",
+          "lte": "LTE",
+          "nr": "NR"
+        },
+        "input_label_lte": "E-ARFCN",
+        "input_label_nr": "NR-ARFCN",
+        "input_label_auto": "E/ARFCN Valore",
+        "input_placeholder": "Immettere il numero del canale",
+        "calculate": "Calcola",
+        "error_no_input": "Inserisci un valore E/ARFCN",
+        "error_invalid": "Inserisci un numero valido",
+        "error_no_band": "Impossibile identificare la banda per questo valore E/ARFCN",
+        "error_calculation": "Errore di calcolo: {{message}}",
+        "result_heading": "Risultato",
+        "network_type_label": "Tipo di rete",
+        "earfcn_label": "EARFCN",
+        "nr_arfcn_label": "NR-ARFCN",
+        "frequency_label": "Frequenza",
+        "possible_bands_heading": "Possibili bande operative",
+        "duplex_mode_label": "Modalità fronte-retro",
+        "downlink_range_label": "Gamma di downlink",
+        "uplink_range_label": "Gamma di collegamento in salita",
+        "earfcn_range_label": "EARFCN Intervallo",
+        "nr_arfcn_range_label": "NR-ARFCN Intervallo",
+        "dl_frequency_label": "Frequenza DL",
+        "ul_frequency_label": "Frequenza UL",
+        "ul_earfcn_label": "UL EARFCN",
+        "downlink_only": "Solo downlink",
+        "calculation_method_prefix": "Metodo di calcolo: ",
+        "calculation_method_nr": "3GPP TS 38.104 Sezione 5.4.2.1",
+        "calculation_method_lte": "3GPP TS 36.101 Sezione 5.7"
+      },
+      "history": {
+        "title": "Cronologia dei calcoli",
+        "description": "I tuoi calcoli recenti vengono salvati localmente.",
+        "clear": "Chiaro",
+        "empty": "Nessuna cronologia di calcolo ancora.",
+        "bands_label": "Bande: ",
+        "no_timestamp": "Nessun timestamp",
+        "delete_aria": "Elimina la voce della cronologia"
+      }
+    }
+  },
+  "antennas": {
+    "statistics": {
+      "page": {
+        "title": "Statistiche dell'antenna",
+        "description": "Metriche del segnale per antenna per ciascuna catena di ricevitori. Confronta la qualità del segnale tra le porte dell'antenna Principale, Diversity e MIMO."
+      },
+      "lte_card": {
+        "title": "LTE Segnale",
+        "description": "Metriche per antenna per 4G LTE",
+        "empty_title": "Nessun segnale LTE",
+        "empty_description": "Le metriche dell'antenna verranno visualizzate quando 4G LTE è attivo."
+      },
+      "nr_card": {
+        "title": "Segnale NR5G",
+        "description": "Metriche per antenna per 5G NR",
+        "empty_title": "Nessun segnale NR5G",
+        "empty_description": "Le metriche dell'antenna verranno visualizzate quando 5G NR è attivo."
+      },
+      "signal_strength_aria": "Potenza del segnale {{metric}}"
+    },
+    "ports": {
+      "main_name": "Principale",
+      "main_description": "Antenna di trasmissione/ricezione principale (ANT0)",
+      "diversity_name": "Diversità",
+      "diversity_description": "Antenna Diversity/ricezione (ANT1)",
+      "mimo3_name": "MIMO 3",
+      "mimo3_description": "MIMO flusso spaziale 1 (ANT2)",
+      "mimo4_name": "MIMO 4",
+      "mimo4_description": "MIMO flusso spaziale 2 (ANT3)"
+    },
+    "quality": {
+      "excellent": "Eccellente",
+      "good": "Bene",
+      "fair": "Giusto",
+      "poor": "Povero",
+      "none": "Nessuno"
+    },
+    "alignment": {
+      "page": {
+        "title": "Allineamento dell'antenna",
+        "description": "Intensità del segnale per antenna per ciascuna catena di ricevitori. Registra e confronta le posizioni per trovare l'obiettivo o il posizionamento migliore."
+      },
+      "stale_warning": "I dati del segnale sono obsoleti: il modem potrebbe non rispondere.",
+      "error_warning": "Impossibile raggiungere il modem. I dati mostrati potrebbero essere obsoleti.",
+      "empty_title": "Nessun dato dell'antenna",
+      "empty_description": "Le metriche dell'antenna verranno visualizzate quando il poller del modem è in esecuzione e riporta i dati del segnale per antenna.",
+      "card": {
+        "active": "Attivo",
+        "inactive": "Inattivo",
+        "lte_heading": "4G / LTE",
+        "lte_heading_anchor": "4G / LTE (Ancora)",
+        "nr_heading": "5G / NR",
+        "nr_heading_secondary": "5G / NR (Secondario)"
+      },
+      "meter": {
+        "title": "Misuratore di allineamento",
+        "description_directional": "Registra 3 angoli per trovare la mira migliore. Ciascuna registrazione ha una media di {{samples}} campioni.",
+        "description_omni": "Registra 3 posizioni per trovare il posizionamento migliore. Ciascuna registrazione ha una media di {{samples}} campioni.",
+        "toggle_directional": "Direzionale",
+        "toggle_omni": "Omni",
+        "reset": "Ripristina",
+        "live_signal_heading": "Segnale in tempo reale (antenna primaria)",
+        "lte_rsrp": "LTE RSRP",
+        "lte_sinr": "LTE SINR",
+        "nr_rsrp": "NR RSRP",
+        "nr_sinr": "NR SINR",
+        "slot_aria": "Spazio {{n}}: {{label}} — {{status}}",
+        "slot_status_recording": "registrazione",
+        "slot_status_recorded": "registrato",
+        "slot_status_recorded_best": "registrato, miglior risultato",
+        "slot_status_empty": "vuoto",
+        "angle_placeholder": "Angolo…",
+        "location_placeholder": "Posizione…",
+        "best_badge": "Migliore",
+        "sample_progress": "Esempio {{current}} di {{total}}",
+        "cancel": "Annulla",
+        "recorded_at": "Registrato {{time}}",
+        "not_recorded": "Non registrato",
+        "record_angle": "Angolo di registrazione",
+        "record_position": "Registra la posizione",
+        "recommended_prefix": "Consigliato: ",
+        "recommendation_directional": "Questo angolo ha prodotto il segnale composito più forte tra le posizioni registrate.",
+        "recommendation_omni": "Questa posizione ha prodotto il segnale composito più forte tra le posizioni registrate.",
+        "recommendation_remaining_one": " Registra lo slot rimanente {{count}} per un confronto più completo.",
+        "recommendation_remaining_other": " Registra gli slot rimanenti {{count}} per un confronto più completo.",
+        "lte_label": "LTE",
+        "nr_label": "NR",
+        "rsrp_label": "RSRP",
+        "sinr_label": "SINR",
+        "default_positions": {
+          "a": "Posizione A",
+          "b": "Posizione B",
+          "c": "Posizione C"
+        },
+        "radio_mode": {
+          "lte": "4G LTE",
+          "nr": "5GSA",
+          "endc": "5G NSA (EN-DC)"
+        }
+      }
+    }
+  },
+  "core_settings": {
+    "basic": {
+      "page": {
+        "title": "Impostazioni di base cellulare",
+        "description": "SIM preferenze relative a slot, stato radio e modalità di rete.",
+        "error_load": "Impossibile caricare le impostazioni del cellulare. I valori visualizzati potrebbero essere obsoleti."
+      },
+      "radio": {
+        "card": {
+          "title": "Impostazioni della radio del modem",
+          "description": "Configura lo slot SIM, la potenza della radio, il tipo di rete e le preferenze di roaming."
+        },
+        "sim_slot": {
+          "label": "Slot per SIM",
+          "placeholder": "Scegli SIM Slot",
+          "options": {
+            "sim1": "SIM 1",
+            "sim2": "SIM 2"
+          }
+        },
+        "radio_power": {
+          "label": "Potenza radiofonica",
+          "placeholder": "Scegli la modalità di alimentazione radio",
+          "options": {
+            "low_power": "Radio spenta (bassa potenza)",
+            "normal": "Funzionamento normale",
+            "airplane": "Modalità aereo (RF disattivato)"
+          }
+        },
+        "network_type": {
+          "label": "Tipo di rete preferito",
+          "placeholder": "Scegli Tipo di rete",
+          "options": {
+            "auto": "Automatico",
+            "lte": "LTE Solo",
+            "nr5g": "5G Solo",
+            "lte_nr5g": "LTE + 5G"
+          }
+        },
+        "architecture": {
+          "label": "5G Architettura",
+          "placeholder": "Scegli la modalità 5G",
+          "options": {
+            "auto": "Automatico (SA + NSA)",
+            "nsa": "Solo NSA (5G tramite LTE)",
+            "sa": "Solo SA (autonomo)"
+          }
+        },
+        "roaming": {
+          "label": "Preferenza di roaming",
+          "placeholder": "Scegli Preferenza roaming",
+          "options": {
+            "any": "Qualsiasi rete",
+            "home": "Solo rete domestica",
+            "partner": "Reti di partner"
+          }
+        },
+        "reset_aria": "Ripristina i valori salvati",
+        "toast": {
+          "success": "Impostazioni del modem salvate",
+          "error": "Impossibile salvare le impostazioni del modem",
+          "no_changes": "Nessuna modifica da salvare"
+        }
+      },
+      "ambr": {
+        "card": {
+          "title": "Limiti di velocità dati",
+          "description": "Le velocità massime di caricamento e download consentite dal tuo operatore per ciascuna connessione dati. Questi limiti sono stabiliti dalla politica di rete del tuo operatore."
+        },
+        "section": {
+          "lte": "LTE Tariffe",
+          "nr5g": "5G Tariffe"
+        },
+        "empty": {
+          "lte": "Nessun dato sulla tariffa LTE: non connesso a LTE",
+          "nr5g": "Nessun dato sulla tariffa 5G: non connesso a 5G"
+        },
+        "tooltip": {
+          "aria": "Maggiori informazioni",
+          "content": "Sebbene i dispositivi possano richiedere valori AMBR specifici, gli operatori possono ignorarli e imporre i propri limiti di velocità in base a piani di abbonamento, politiche di rete o condizioni di congestione."
+        }
+      }
+    },
+    "apn": {
+      "page": {
+        "title": "Gestione APN",
+        "description": "Configura gli APN e i profili firmware dell'operatore.",
+        "error_load": "Impossibile caricare le impostazioni APN. I valori visualizzati potrebbero essere obsoleti."
+      },
+      "card": {
+        "title": "APN Impostazioni",
+        "description": "Configura e gestisci i nomi dei punti di accesso (APN) per le tue connessioni cellulari."
+      },
+      "fields": {
+        "active_apn": {
+          "label": "Attivo APN *",
+          "placeholder": "Inserisci Attivo APN"
+        },
+        "carrier_preset": {
+          "label": "Preimpostazione portante",
+          "placeholder": "Scegli Preimpostazione operatore",
+          "option_none": "Nessuno"
+        },
+        "connection_profile": {
+          "label": "Profilo di connessione",
+          "placeholder": "Scegli Profilo di connessione",
+          "option_template": "Profilo {{cid}} — {{apn}}",
+          "option_empty_apn": "(vuoto)",
+          "option_active_suffix": " (Attivo)"
+        },
+        "ip_protocol": {
+          "label": "IP Protocollo",
+          "placeholder": "Scegli IP Protocollo",
+          "options": {
+            "ipv4v6": "IPv4 + IPv6 (predefinito)",
+            "ipv4": "IPv4 Solo",
+            "ipv6": "IPv6 Solo"
+          }
+        }
+      },
+      "managed_by_profile": "Le impostazioni di APN sono gestite da <strong>{{profile_name}}</strong>.",
+      "managed_by_profile_fallback": "profilo SIM personalizzato attivo",
+      "reset_aria": "Ripristina i valori salvati",
+      "toast": {
+        "success": "Le impostazioni APN sono state applicate correttamente",
+        "error": "Impossibile applicare le impostazioni APN"
+      },
+      "mbn": {
+        "card": {
+          "title": "Profilo del trasportatore",
+          "description": "Seleziona quale profilo firmware dell'operatore è attivo sul modem. Dopo le modifiche è necessario un riavvio."
+        },
+        "auto_select": {
+          "label": "Profilo di selezione automatica",
+          "placeholder": "Scegli Selezione automatica",
+          "options": {
+            "enabled": "Abilitato",
+            "disabled": "Disabilitato"
+          }
+        },
+        "configuration": {
+          "label": "Configurazione del corriere",
+          "placeholder": "Scegli Configurazione operatore",
+          "option_active_suffix": " (Attivo)"
+        },
+        "save": "Salva impostazioni",
+        "reset_aria": "Ripristina i valori salvati",
+        "reboot_dialog": {
+          "title": "Riavvio obbligatorio",
+          "description": "Le modifiche al profilo dell'operatore richiedono il riavvio del dispositivo per avere effetto. Desideri riavviare adesso?",
+          "cancel": "Riavvia più tardi",
+          "reboot": "Riavvia ora",
+          "rebooting": "Riavvio…"
+        },
+        "toast": {
+          "auto_enabled": "Selezione automatica abilitata: è necessario riavviare",
+          "auto_disabled": "Selezione automatica disabilitata: è necessario riavviare",
+          "profile_applied": "Profilo operatore applicato: è necessario riavviare",
+          "enable_error": "Impossibile abilitare la selezione automatica",
+          "disable_error": "Impossibile disattivare la selezione automatica",
+          "apply_error": "Impossibile applicare il profilo dell'operatore",
+          "no_changes": "Nessuna modifica da salvare",
+          "rebooting": "Il dispositivo si sta riavviando...",
+          "reboot_error": "Riavvio non riuscito: riavvia il dispositivo manualmente"
+        }
+      }
+    },
+    "imei": {
+      "page": {
+        "title": "Impostazioni IMEI",
+        "description": "Visualizza, modifica o esegui il backup del dispositivo IMEI."
+      },
+      "settings_card": {
+        "title": "Impostazioni IMEI",
+        "description": "Modifica l'identificatore IMEI del dispositivo. Dopo le modifiche è necessario un riavvio. Controllare le normative locali prima di apportare modifiche.",
+        "field_label": "Imposta dispositivo IMEI",
+        "field_placeholder": "Inserisci il dispositivo IMEI",
+        "field_description": "La modifica di IMEI richiederà il riavvio del dispositivo per avere effetto.",
+        "length_error_one": "IMEI deve essere esattamente 15 cifre ({{count}}/15)",
+        "length_error_other": "IMEI deve essere esattamente 15 cifre ({{count}}/15)",
+        "warning_aria": "IMEI avviso legale",
+        "warning_content": "Le normative sulle modifiche IMEI variano in base al Paese. Controlla le leggi locali prima di modificare IMEI.",
+        "write_button": "Scrivi IMEI",
+        "reset_aria": "Ripristina i valori salvati",
+        "reboot_dialog": {
+          "title": "Riavvio obbligatorio",
+          "description": "Le modifiche di IMEI richiedono il riavvio del dispositivo per avere effetto. Desideri riavviare adesso?",
+          "cancel": "Riavvia più tardi",
+          "reboot": "Riavvia ora",
+          "rebooting": "Riavvio…"
+        },
+        "toast": {
+          "no_changes": "Nessuna modifica da salvare",
+          "success": "IMEI salvato: è necessario riavviare per applicare",
+          "error": "Impossibile salvare IMEI",
+          "rebooting": "Il dispositivo si sta riavviando...",
+          "reboot_error": "Riavvio non riuscito: riavvia il dispositivo manualmente"
+        }
+      },
+      "backup_card": {
+        "title": "Dispositivo di backup IMEI",
+        "description_loading": "Configura automaticamente un backup IMEI per il tuo dispositivo per garantire la connettività in caso di problemi primari IMEI.",
+        "description": "Se la rete rifiuta l'attuale IMEI dopo un riavvio, il dispositivo può passare automaticamente a un backup IMEI e riavviarsi.",
+        "enable_label": "Abilita backup IMEI",
+        "enable_tooltip_aria": "Maggiori informazioni",
+        "enable_tooltip_content": "Passa a un IMEI di backup quando IMEI primario è stato rifiutato dalla rete.",
+        "field_label": "Imposta backup IMEI",
+        "field_placeholder": "Inserisci Backup IMEI",
+        "field_description": "Il passaggio al backup IMEI richiederà il riavvio del dispositivo per avere effetto.",
+        "warning_aria": "IMEI avviso legale",
+        "warning_content": "Le normative sulle modifiche IMEI variano in base al Paese. Controlla le leggi locali prima di modificare IMEI.",
+        "reset_aria": "Ripristina i valori salvati",
+        "enable_dialog": {
+          "title": "Backup IMEI Ripristino automatico",
+          "description": "Quando il backup IMEI è abilitato, il dispositivo controllerà automaticamente il rifiuto di IMEI dopo ogni riavvio successivo a una modifica di IMEI. Se la rete rifiuta IMEI primario, il dispositivo passerà al backup IMEI e si riavvierà automaticamente.",
+          "confirm": "Abilita backup"
+        },
+        "toast": {
+          "success": "Salvataggio backup configurazione IMEI",
+          "invalid": "Il backup IMEI deve contenere esattamente 15 cifre",
+          "error": "Impossibile salvare la configurazione di backup",
+          "no_changes": "Nessuna modifica da salvare"
+        }
+      },
+      "tools_card": {
+        "title": "IMEI Strumenti",
+        "description": "Genera e convalida i numeri IMEI utilizzando l'algoritmo Luhn. Solo per scopi didattici.",
+        "preset_label": "Preimpostazione del dispositivo",
+        "preset_description": "Seleziona un dispositivo TAC o inserisci un prefisso personalizzato di 8-12 cifre.",
+        "preset_placeholder": "Seleziona un dispositivo",
+        "preset_custom": "Prefisso personalizzato",
+        "custom_prefix_label": "Prefisso personalizzato",
+        "custom_prefix_placeholder": "Inserisci un prefisso di 8-12 cifre",
+        "custom_prefix_error_one": "Il prefisso deve contenere 8-12 cifre ({{count}} immesso)",
+        "custom_prefix_error_other": "Il prefisso deve contenere 8-12 cifre ({{count}} immesso)",
+        "custom_prefix_description": "Le cifre rimanenti e la cifra di controllo vengono generate automaticamente.",
+        "imei_label": "IMEI",
+        "imei_placeholder": "Genera o inserisci un IMEI di 15 cifre",
+        "imei_description": "La convalida Luhn viene eseguita automaticamente a 15 cifre. Puoi anche digitare o incollare qualsiasi IMEI per convalidarlo.",
+        "copy_aria": "Copia IMEI",
+        "copy_tooltip": "Copia negli appunti",
+        "breakdown_label": "Guasto",
+        "breakdown_validity": "Validità",
+        "breakdown_tac": "TAC (1–8)",
+        "breakdown_snr": "SNR (9-14)",
+        "breakdown_check": "Controllare (15)",
+        "breakdown_valid": "Valido IMEI",
+        "breakdown_invalid": "IMEI non valido",
+        "generate_button": "Genera IMEI",
+        "check_info_button": "Controlla le informazioni IMEI",
+        "copy_success": "Copiato negli appunti"
+      }
+    },
+    "network_priority": {
+      "page": {
+        "title": "Impostazioni priorità di rete",
+        "description": "Imposta l'ordine preferito delle connessioni di rete."
+      },
+      "card": {
+        "title": "Priorità di rete",
+        "description": "Imposta l'ordine di priorità delle tue connessioni di rete."
+      },
+      "drag_aria": "Trascina per riordinare",
+      "priority_label": "Priorità {{number}}",
+      "reset_aria": "Ripristina i valori salvati",
+      "toast": {
+        "success": "Priorità di rete aggiornata",
+        "error_fallback": "Impossibile impostare la priorità di rete",
+        "no_changes": "Nessuna modifica da salvare"
+      }
+    },
+    "fplmn": {
+      "page": {
+        "title": "Impostazioni FPLMN del dispositivo",
+        "description": "Controlla e cancella l'elenco delle reti vietate sul tuo SIM."
+      },
+      "card": {
+        "title": "Reti bloccate",
+        "description": "Il tuo SIM memorizza un elenco di reti che in precedenza hanno rifiutato il tuo dispositivo. La cancellazione di questo elenco potrebbe ripristinare la connettività e migliorare il roaming. <link>Ulteriori informazioni</link>."
+      },
+      "states": {
+        "error_title": "Impossibile controllare",
+        "found_title": "Reti bloccate trovate",
+        "found_description": "Il tuo SIM ha bloccato una o più reti, il che potrebbe impedire la connessione. Si consiglia di cancellare l'elenco.",
+        "found_clear": "Cancella reti bloccate",
+        "found_clearing": "Cancellazione…",
+        "none_title": "Nessuna rete bloccata",
+        "none_description": "Il tuo SIM non ha reti bloccate. Nessuna azione necessaria.",
+        "none_refresh": "Aggiorna stato"
+      },
+      "toast": {
+        "success": "Le reti bloccate sono state cancellate",
+        "error_fallback": "Impossibile eliminare le reti bloccate"
+      }
+    },
+    "info": {
+      "page": {
+        "title": "Informazioni cellulari e radio",
+        "description": "Visualizza informazioni dettagliate sullo stato della radio cellulare del tuo dispositivo, inclusi la potenza del segnale, il tipo di rete e lo stato della connessione."
+      },
+      "cell_data": {
+        "card": {
+          "title": "Informazioni rete mobile",
+          "description": "Informazioni dettagliate sulla rete cellulare connessa."
+        },
+        "info_aria": "Maggiori informazioni",
+        "rows": {
+          "isp": "ISP",
+          "apn": "Nome punto di accesso (APN)",
+          "apn_edit": "Modifica",
+          "network_type": "Tipo di rete",
+          "cell_id": "Identificativo della cella",
+          "cell_id_tooltip_row": "{{label}} ID:",
+          "sector_tooltip": "Settore:",
+          "tac": "Prefisso di monitoraggio",
+          "tac_hex_tooltip": "Esadecimale:",
+          "total_bandwidth": "Larghezza di banda totale in uso",
+          "carrier_aggregation": "Aggregazione dei vettori",
+          "active_mimo": "Attivo MIMO",
+          "active_mimo_link": "Per antenna",
+          "wan_ipv4": "WAN IPv4",
+          "wan_ipv6": "WAN IPv6",
+          "primary_dns": "Principale DNS",
+          "primary_dns_ipv4": "Primario DNS (IPv4)",
+          "primary_dns_ipv6": "Primario DNS (IPv6)",
+          "secondary_dns": "Secondario DNS",
+          "secondary_dns_ipv4": "Secondario DNS (IPv4)",
+          "secondary_dns_ipv6": "Secondario DNS (IPv6)"
+        },
+        "network_type_values": {
+          "nsa": "5G NR + LTE",
+          "sa": "5G NR SA",
+          "lte": "LTE"
+        },
+        "carrier_aggregation": {
+          "lte_carriers_one": "LTE ({{count}} corriere)",
+          "lte_carriers_other": "LTE ({{count}} vettori)",
+          "nr_carriers_one": "NR ({{count}} corriere)",
+          "nr_carriers_other": "NR ({{count}} vettori)",
+          "lte_anchor": "LTE",
+          "nr_leg": "NR",
+          "inactive": "Inattivo"
+        }
+      },
+      "active_bands": {
+        "card_title": "Bande cellulari attive",
+        "card_description_loading": "Informazioni dettagliate sulle bande cellulari attualmente attive.",
+        "card_description_one": "{{count}} operatore attivo. Espandi ciascuna banda per ottenere misurazioni dettagliate del segnale.",
+        "card_description_other": "{{count}} operatori attivi. Espandi ciascuna banda per ottenere misurazioni dettagliate del segnale.",
+        "empty": "Nessun componente trasportatore attivo rilevato. I dati di aggregazione dell'operatore vengono aggiornati ogni circa 30 secondi.",
+        "metrics": {
+          "rsrp": "RSRP",
+          "rsrq": "RSRQ",
+          "snr": "SNR",
+          "sinr": "SINR",
+          "rssi": "RSSI"
+        },
+        "info": {
+          "band_name": "Nome della banda",
+          "ul_frequency": "Frequenza UL",
+          "dl_frequency": "Frequenza DL",
+          "bandwidth": "Larghezza di banda",
+          "pci": "PCI"
+        }
+      }
+    }
+  }
+}
