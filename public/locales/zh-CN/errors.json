@@ -127,6 +127,7 @@
   "payload_too_large": "请求体过大",
   "rate_limited": "尝试次数过多 — 请稍后重试",
   "remove_failed": "删除项目失败",
+  "save_failed": "保存设置失败",
   "select_failed": "网络模式选择失败",
   "send_failed": "消息发送失败",
   "service_running": "服务正在运行 — 请先停止它",
