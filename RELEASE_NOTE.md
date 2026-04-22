@@ -16,6 +16,7 @@ Locking/unlocking a cell (manual, Signal Failover, or scheduled) briefly bounced
 
 - **Cleaner reconnect UX.** The "Disconnecting… / Reconnecting…" step indicator still transitions exactly as before — the visual flow is unchanged, only the transport underneath is fixed.
 - **MTU watcher logs its outcome.** Every lock/unlock emits `MTU stable at <value>` or `MTU already correct at <value>` to `logread` — quick confirmation your MTU survived.
+- **New Ethernet Port LEDs card (Local Network).** Opt-in toggle that disables Wake-on-LAN on `eth0` to restore RJ45 port LEDs on carrier boards that suppress them while WoL is armed — notably **rework.network's 5G2PHY** and other QCA8081-based designs. No functional impact: Wake-on-LAN is unused on always-on gateway devices. The card auto-hides on hardware where WoL control isn't available, so you'll only see it if it's useful. Toggling the switch briefly bounces the Ethernet link (~2–5 seconds) — the UI shows a countdown and reconnects automatically.
 
 ## 📥 Installation
 
