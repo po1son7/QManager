@@ -27,6 +27,12 @@ const CGI_ENDPOINT = "/cgi-bin/quecmanager/network/wol.sh";
 // ~30 s total has elapsed.
 const RETRY_DELAYS_MS = [1000, 2000, 4000, 8000, 8000, 8000];
 
+export interface SaveWolResult {
+  success: boolean;
+  errorCode?: string;
+  errorDetail?: string;
+}
+
 export interface UseWolSettingReturn {
   /** Current WoL status data (null before first fetch) */
   data: WolStatus | null;
@@ -42,8 +48,8 @@ export interface UseWolSettingReturn {
   error: string | null;
   /** Re-fetch WoL status */
   refresh: () => Promise<void>;
-  /** Toggle WoL disable. Returns true on success (after device is reachable again). */
-  saveWol: (disable_wol: boolean) => Promise<boolean>;
+  /** Toggle WoL disable. Returns a result object with raw error codes on failure. */
+  saveWol: (disable_wol: boolean) => Promise<SaveWolResult>;
 }
 
 export function useWolSetting(): UseWolSettingReturn {
@@ -123,7 +129,7 @@ export function useWolSetting(): UseWolSettingReturn {
   // Save WoL setting
   // ---------------------------------------------------------------------------
   const saveWol = useCallback(
-    async (disable_wol: boolean): Promise<boolean> => {
+    async (disable_wol: boolean): Promise<SaveWolResult> => {
       setError(null);
       setIsSaving(true);
 
@@ -135,13 +141,12 @@ export function useWolSetting(): UseWolSettingReturn {
           body: JSON.stringify({ disable_wol }),
         });
       } catch (err) {
+        const detail = err instanceof Error ? err.message : "Failed to save Wake-on-LAN setting";
         if (mountedRef.current) {
-          setError(
-            err instanceof Error ? err.message : "Failed to save Wake-on-LAN setting",
-          );
+          setError(detail);
           setIsSaving(false);
         }
-        return false;
+        return { success: false, errorDetail: detail };
       }
 
       if (!resp.ok) {
@@ -163,18 +168,18 @@ export function useWolSetting(): UseWolSettingReturn {
           );
           setIsSaving(false);
         }
-        return false;
+        return { success: false, errorCode: json?.error, errorDetail: json?.detail };
       }
 
       let json: WolSaveResponse;
       try {
         json = await resp.json();
-      } catch (err) {
+      } catch {
         if (mountedRef.current) {
           setError("Failed to parse save response");
           setIsSaving(false);
         }
-        return false;
+        return { success: false };
       }
 
       if (!json.success) {
@@ -189,14 +194,14 @@ export function useWolSetting(): UseWolSettingReturn {
           );
           setIsSaving(false);
         }
-        return false;
+        return { success: false, errorCode: json.error, errorDetail: json.detail };
       }
 
       // --- Disconnect window ---------------------------------------------------
       if (json.apply_in_progress) {
         const windowSec = json.disconnect_window_seconds ?? 8;
 
-        if (!mountedRef.current) return false;
+        if (!mountedRef.current) return { success: false };
         setIsSaving(false);
         setIsApplying(true);
         setApplyCountdown(windowSec);
@@ -257,11 +262,12 @@ export function useWolSetting(): UseWolSettingReturn {
           setIsApplying(false);
           setApplyCountdown(0);
           if (!succeeded) {
-            setError("Device did not respond after applying Wake-on-LAN setting");
-            return false;
+            const timeoutDetail = "Device did not respond after applying Wake-on-LAN setting";
+            setError(timeoutDetail);
+            return { success: false, errorDetail: timeoutDetail };
           }
         }
-        return succeeded;
+        return succeeded ? { success: true } : { success: false };
       }
 
       // Fallback: normal success path (no disconnect window)
@@ -269,7 +275,7 @@ export function useWolSetting(): UseWolSettingReturn {
         setIsSaving(false);
         await fetchWol(true);
       }
-      return true;
+      return { success: true };
     },
     [t, fetchWol],
   );

@@ -33,7 +33,7 @@ import { resolveErrorMessage } from "@/lib/i18n/resolve-error";
 const EthernetWolCard = () => {
   const { t } = useTranslation("local-network");
   const { t: tErrors } = useTranslation("errors");
-  const { data, isLoading, isSaving, isApplying, applyCountdown, error, saveWol } =
+  const { data, isLoading, isSaving, isApplying, applyCountdown, saveWol } =
     useWolSetting();
   const { saved, markSaved } = useSaveFlash();
 
@@ -55,8 +55,8 @@ const EthernetWolCard = () => {
   }, []);
 
   const handleSave = useCallback(async () => {
-    const success = await saveWol(disableWol);
-    if (success) {
+    const result = await saveWol(disableWol);
+    if (result.success) {
       markSaved();
       toast.success(
         disableWol
@@ -67,13 +67,13 @@ const EthernetWolCard = () => {
       toast.error(
         resolveErrorMessage(
           tErrors,
-          error ?? undefined,
-          undefined,
+          result.errorCode,
+          result.errorDetail,
           t("ethernet_leds.toast_error_save"),
         ),
       );
     }
-  }, [disableWol, saveWol, markSaved, t, tErrors, error]);
+  }, [disableWol, saveWol, markSaved, t, tErrors]);
 
   // --- Unsupported hardware: render nothing ----------------------------------
   if (!isLoading && data && !data.supported) {
