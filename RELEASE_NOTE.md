@@ -10,6 +10,7 @@ A small quality-of-life release: a new **Ethernet Port LEDs** control for carrie
 ## ✅ Improvements
 
 - **Contributor-friendly i18n workflow.** The `docs/i18n/CONTRIBUTING.md` guide is live, and the language-pack publishing pipeline is now scripted — expect more community packs in upcoming releases.
+- **Polished language-pack UI.** The sidebar switcher now shows both native and English names (e.g. *Italiano (Italian)*) with a base-code fallback so locales like `it-IT` no longer collapse to a bare `it`. Toast messages across install, remove, and activate flows now read formally and include the language code — e.g. *Language Italian (it) removed* instead of *it removed*.
 
 ## 📥 Installation
 

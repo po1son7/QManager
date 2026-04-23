@@ -65,7 +65,7 @@ export function LanguagePackCard() {
       }
       const englishName =
         AVAILABLE_LANGUAGES.find((e) => e.code === code)?.english_name ?? code;
-      toast.success(t("languages.toast.switched", { name: englishName }));
+      toast.success(t("languages.toast.switched", { name: englishName, code }));
     },
     [activeCode, i18n, t],
   );
@@ -73,8 +73,10 @@ export function LanguagePackCard() {
   const handleInstall = React.useCallback(
     async (code: LanguageCode) => {
       const englishName =
-        list?.manifest?.packs.find((p) => p.code === code)?.english_name ?? code;
-      toast.info(t("languages.toast.install_started", { name: englishName }));
+        list?.manifest?.packs.find((p) => p.code === code)?.english_name ??
+        AVAILABLE_LANGUAGES.find((e) => e.code === code)?.english_name ??
+        code;
+      toast.info(t("languages.toast.install_started", { name: englishName, code }));
       const res = await startInstall(code);
       if (!res.ok) {
         toast.error(
@@ -82,7 +84,7 @@ export function LanguagePackCard() {
             t,
             res.error,
             undefined,
-            t("languages.toast.install_failed", { name: englishName }),
+            t("languages.toast.install_failed", { name: englishName, code }),
           ),
         );
       }
@@ -98,8 +100,11 @@ export function LanguagePackCard() {
     if (prev === "running" && install.state === "success" && install.code) {
       const englishName =
         list?.manifest?.packs.find((p) => p.code === install.code)?.english_name ??
+        AVAILABLE_LANGUAGES.find((e) => e.code === install.code)?.english_name ??
         install.code;
-      toast.success(t("languages.toast.install_success", { name: englishName }));
+      toast.success(
+        t("languages.toast.install_success", { name: englishName, code: install.code }),
+      );
     } else if (prev === "running" && install.state === "cancelled") {
       toast.info(t("languages.toast.install_cancelled"));
     }
@@ -108,7 +113,9 @@ export function LanguagePackCard() {
   const handleRemove = React.useCallback(
     async (code: LanguageCode, isActive: boolean) => {
       const englishName =
-        AVAILABLE_LANGUAGES.find((e) => e.code === code)?.english_name ?? code;
+        AVAILABLE_LANGUAGES.find((e) => e.code === code)?.english_name ??
+        list?.manifest?.packs.find((p) => p.code === code)?.english_name ??
+        code;
       if (isActive) {
         // Switch to English BEFORE removing, to avoid i18next resolving the
         // freshly-deleted pack.
@@ -121,16 +128,18 @@ export function LanguagePackCard() {
       }
       const res = await remove(code);
       if (!res.ok) {
-        toast.error(t("languages.toast.remove_failed", { name: englishName }));
+        toast.error(t("languages.toast.remove_failed", { name: englishName, code }));
         return;
       }
       if (isActive) {
-        toast.success(t("languages.toast.remove_active_switched", { name: englishName }));
+        toast.success(
+          t("languages.toast.remove_active_switched", { name: englishName, code }),
+        );
       } else {
-        toast.success(t("languages.toast.remove_success", { name: englishName }));
+        toast.success(t("languages.toast.remove_success", { name: englishName, code }));
       }
     },
-    [i18n, remove, t],
+    [i18n, remove, list, t],
   );
 
   return (

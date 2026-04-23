@@ -42,6 +42,17 @@ export function LanguageSwitcher({ className }: { className?: string }) {
     );
   }, [installedCodes]);
 
+  const formatLabel = React.useCallback((lang: typeof AVAILABLE_LANGUAGES[number]) => {
+    return lang.native_name === lang.english_name
+      ? lang.native_name
+      : `${lang.native_name} (${lang.english_name})`;
+  }, []);
+
+  const activeLang =
+    visibleLanguages.find((l) => l.code === i18n.language) ??
+    AVAILABLE_LANGUAGES.find((l) => l.code === i18n.language) ??
+    AVAILABLE_LANGUAGES.find((l) => l.code === i18n.language.split("-")[0]);
+
   const handleChange = (value: string) => {
     i18n.changeLanguage(value);
   };
@@ -69,15 +80,13 @@ export function LanguageSwitcher({ className }: { className?: string }) {
         >
           <Languages className="size-4" />
           <SelectValue>
-            {visibleLanguages.find((l) => l.code === i18n.language)?.native_name ??
-              AVAILABLE_LANGUAGES.find((l) => l.code === i18n.language)?.native_name ??
-              i18n.language}
+            {activeLang ? formatLabel(activeLang) : i18n.language}
           </SelectValue>
         </SelectTrigger>
         <SelectContent>
           {visibleLanguages.map((lang) => (
             <SelectItem key={lang.code} value={lang.code}>
-              {lang.native_name}
+              {formatLabel(lang)}
             </SelectItem>
           ))}
         </SelectContent>

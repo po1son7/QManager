@@ -128,7 +128,7 @@ export function useLanguagePacks(manifestUrl: string = DEFAULT_MANIFEST_URL): Us
           t,
           res.error,
           undefined,
-          t("languages.toast.install_failed", { ns: "system-settings" }),
+          t("languages.toast.install_failed_generic", { ns: "system-settings" }),
         );
         setInstall({ state: "failed", code, progress: 100, message });
         return res;
