@@ -10,16 +10,6 @@
   ![Platform](https://img.shields.io/badge/platform-OpenWRT-orange?style=flat-square)
   ![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square)
   ![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square)
-
-  ---
-
-  ### 🌐 Select Language / Pilih Bahasa
-
-  | Language | Link |
-  |----------|------|
-  | 🇬🇧 English | [README.en.md](README.en.md) |
-  | 🇮🇩 Bahasa Indonesia | [README.id.md](README.id.md) |
-
 </div>
 
 ---
