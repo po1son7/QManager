@@ -1,0 +1,44 @@
+{
+  "actions": {
+    "save": "Simpan",
+    "cancel": "Batal",
+    "confirm": "Konfirmasi",
+    "apply": "Terapkan",
+    "close": "Tutup",
+    "retry": "Coba Lagi",
+    "reboot": "Reboot",
+    "log_out": "Keluar",
+    "reboot_device": "Reboot Perangkat",
+    "reconnect_modem": "Sambungkan Ulang Modem",
+    "change_display_name": "Ubah Nama Tampilan",
+    "change_password": "Ubah Kata Sandi"
+  },
+  "state": {
+    "loading": "Memuat…",
+    "saving": "Menyimpan…",
+    "applying": "Menerapkan…",
+    "disconnecting": "Memutuskan…",
+    "reconnecting": "Menyambungkan ulang…",
+    "installing": "Menginstal…",
+    "removing": "Menghapus…",
+    "enabled": "Aktif",
+    "disabled": "Nonaktif",
+    "on": "Nyala",
+    "off": "Mati"
+  },
+  "time": {
+    "just_now": "Baru saja",
+    "now": "Sekarang",
+    "unknown": "Tidak diketahui",
+    "minutes_ago_one": "{{count}} menit lalu",
+    "minutes_ago_other": "{{count}} menit lalu",
+    "hours_ago_one": "{{count}} jam lalu",
+    "hours_ago_other": "{{count}} jam lalu",
+    "days_ago_one": "{{count}} hari lalu",
+    "days_ago_other": "{{count}} hari lalu"
+  },
+  "language": {
+    "label": "Bahasa",
+    "switch_aria": "Ganti bahasa"
+  }
+}

@@ -41,6 +41,10 @@ export const AVAILABLE_LANGUAGES: readonly LanguageMeta[] = [
     rtl: false,
     bundled: false,
   },
+    {
+    code: "id",
+    native_name: "Indonesia",
+    english_name: "Indonesian",
   {
     code: "it",
     native_name: "Italiano",
