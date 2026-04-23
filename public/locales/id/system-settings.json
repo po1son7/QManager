@@ -411,6 +411,7 @@
       "install_started": "Menginstal {{name}}…",
       "install_success": "{{name}} terinstal",
       "install_failed": "Gagal menginstal {{name}}",
+      "install_failed_generic": "Gagal menginstal paket bahasa",
       "install_cancelled": "Instalasi dibatalkan",
       "install_in_progress": "Instalasi lain sedang berlangsung",
       "remove_success": "{{name}} dihapus",
