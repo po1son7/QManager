@@ -1,21 +1,18 @@
-# 🚀 QManager BETA v0.1.20
+# 🚀 QManager BETA v0.1.21
 
-A small but important reliability release for remote operators. The **Reconnect Modem** action in the user menu is now safe to use over Tailscale (or any VPN riding on the cellular link) without locking yourself out of your device.
+A small quality-of-life release: a new **Wake-on-LAN** control on the Local Network page, and two community-contributed language packs — **Italian** 🇮🇹 and **Indonesian** 🇮🇩.
 
-## 🛠️ Fix — Reconnect Modem no longer locks out remote users
+## ✨ New Features
 
-- **The bug.** Reconnect Modem issued `AT+COPS=2` (detach) and `AT+COPS=0` (reattach) as two separate HTTP requests from the browser, with a 3-second delay in between. When you were connected over Tailscale, the first request succeeded and immediately killed the cellular link — which killed Tailscale — which meant the second request (the one that tells the modem to reattach) never arrived. The modem was stranded deregistered and only a physical reboot could recover it.
-- **The fix.** The full detach → wait → reattach sequence now runs on-device via a single CGI call (`/cgi-bin/quecmanager/at_cmd/reconnect_modem.sh`). The browser fires one request and the device completes the whole procedure locally, including a deliberate 2-second gap so the modem fully detaches before reselecting. Your browser session may still blip while the cellular link cycles, but the modem always reattaches on its own.
-- **Safe over Tailscale, WireGuard, NetBird, or any tunnel that rides the modem's data path.** Also safer on flaky Wi-Fi admin sessions — no more "I clicked Reconnect and now I can't reach the modem."
-
-## 🛠️ Fix — Tower Lock no longer resets your custom MTU
-
-Locking/unlocking a cell (manual, Signal Failover, or scheduled) briefly bounced the data interface and the Quectel driver reset MTU to 1500. The old watcher gave up after one attempt and lost the race. The watcher now verifies MTU is stable across two consecutive reads and re-applies up to 3 times if the driver resets it again. Covers all lock/unlock paths.
+- **Wake-on-LAN card (Local Network).** Simple toggle to enable or disable Wake-on-LAN on the Ethernet port. When enabled, another device on the network can power this unit out of sleep by sending a magic packet; leave it disabled if you don't use it (most always-on modem gateways don't). The card auto-hides on hardware where WoL control isn't available. Toggling briefly bounces the Ethernet link (~2–5 seconds) — the UI shows a countdown and reconnects automatically.
+- **Italian language pack 🇮🇹.** QManager's first community-contributed translation, courtesy of **@fmase**. Install it from **System Settings → Languages → Available** — the pack downloads directly to the device, no firmware update needed. Partial translations fall back to English, so you'll never see an untranslated blank string.
+- **Indonesian language pack 🇮🇩.** Second community translation, courtesy of **@ikhsanh**. Install from the same Languages card. A handful of strings added late in this release cycle still fall back to English — a follow-up update is already requested.
 
 ## ✅ Improvements
 
-- **Cleaner reconnect UX.** The "Disconnecting… / Reconnecting…" step indicator still transitions exactly as before — the visual flow is unchanged, only the transport underneath is fixed.
-- **MTU watcher logs its outcome.** Every lock/unlock emits `MTU stable at <value>` or `MTU already correct at <value>` to `logread` — quick confirmation your MTU survived.
+- **Faster signal updates everywhere.** Per-antenna RSRP, RSRQ, and SINR now refresh every 2 seconds across Cellular Information, Antenna Statistics, and Antenna Alignment — five times more responsive than before. The dashboard Signal History chart now plots the last 10 seconds with relative `-10s … Now` labels (matching the Live Latency chart) so you can see signal swings the moment they happen. Antenna Alignment slot recordings finish in ~6 s instead of ~30 s.
+- **Contributor-friendly i18n workflow.** The `docs/i18n/CONTRIBUTING.md` guide is live, and the language-pack publishing pipeline is now scripted — expect more community packs in upcoming releases.
+- **Polished language-pack UI.** The sidebar switcher now shows both native and English names (e.g. *Italiano (Italian)*) with a base-code fallback so locales like `it-IT` no longer collapse to a bare `it`. Toast messages across install, remove, and activate flows now read formally and include the language code — e.g. *Language Italian (it) removed* instead of *it removed*.
 
 ## 📥 Installation
 
@@ -25,15 +22,15 @@ Locking/unlocking a cell (manual, Signal Failover, or scheduled) briefly bounced
 curl -fsSL -o /tmp/qmanager-installer.sh https://raw.githubusercontent.com/dr-dolomite/QManager/development-home/qmanager-installer.sh && sh /tmp/qmanager-installer.sh
 ```
 
-### Upgrading from v0.1.19
+### Upgrading from v0.1.20
 
 Head to **System Settings → Software Update** and run the update. **No migration steps required.**
 
-Your Custom SIM Profiles, tower locks, Signal Failover settings, VPN config, watchdog preferences, SMS alerts, and language packs are all preserved.
+Your Custom SIM Profiles, tower locks, Signal Failover settings, VPN config, watchdog preferences, SMS alerts, and installed language packs are all preserved.
 
 ## 💙 Thank You
 
-Special shout-out to **Outright** for the continued support and the field-side bug reports that drove this release — the Tailscale lockout in particular was exactly the kind of "works on my desk, breaks in the wild" issue that only surfaces with real-world remote operators. Thank you for the careful testing and detailed reproductions.
+A huge thank you to **@fmase** and **@ikhsanh** for the Italian and Indonesian language packs — the first two community translations shipped with QManager. If you'd like to translate QManager into your language, the guide at [`docs/i18n/CONTRIBUTING.md`](https://github.com/dr-dolomite/QManager/blob/development-home/docs/i18n/CONTRIBUTING.md) walks you through it — no coding required.
 
 Bug reports and feature requests are always welcome on [GitHub Issues](https://github.com/dr-dolomite/QManager/issues).
 

@@ -108,6 +108,21 @@ Sections: `## ✨ New Features`, `## ✅ Improvements`, `## 📥 Installation`, 
 - **LanguageSwitcher** lists bundled + installed packs. Downloadable-but-not-installed packs are hidden from the switcher — they only surface in the Languages card's Available section.
 - **i18next-icu is PINNED OUT** — native `_one`/`_other` plurals + default `{{var}}` interpolation handle every shipped string. Re-adding the plugin breaks plurals (Plan 4 post-ship incident — commit `00bdd9e`).
 
+#### Language Pack Publishing Workflow
+- **Builder**: `bun run package:lang <code> [version] [--update-manifest <url>] [--contributors <csv>] [--skip-check]`. Implemented as a pure TypeScript file at `scripts-dev/build-lang-pack.ts` (not `scripts/` — that dir is OpenWRT staging and gets shipped to devices). Runs entirely inside one bun process to avoid bash→node/bun PATH resolution hell (see commit `c4f3708` for the bash-based attempt that was reverted).
+- **`scripts-dev/` convention**: dev-only tooling. Excluded from `tsconfig.json` (Bun ambient globals, different target). NOT copied into the firmware tarball by `build.sh`.
+- **Pipeline**: validates code registration in `available-languages.ts` → extracts `LP_REQUIRED_NS` from `language_packs.sh` → verifies namespace files → JSON-parses every `*.json` → runs `bun run i18n:check` → tars flat (`tar -czf <archive> -C <localeDir> *.json`, spawned with cwd=outDir and RELATIVE paths for cross-shell compat) → sha256 + size → writes `.sha256` sidecar (upload alongside tarball) → walks dotted scalar paths for `completeness` ratio vs EN → optionally patches `language-packs/manifest.json` (dedupe by code, sort, atomic tmp+rename).
+- **Windows tar quirk**: Windows ships two tar variants — `System32\tar.exe` (bsdtar, used in pwsh/cmd) and MSYS2 GNU tar (used in Git Bash). Absolute-path forms are incompatible between them (`D:/foo/bar` fails under MSYS2 tar which reads `D:` as an rcp remote host; `/d/foo/bar` fails under bsdtar). Builder sidesteps this by spawning tar with `cwd=outDir` + relative paths. **Different tar flavors produce different sha256 for the same source files** (header format, file ordering, gzip params all differ) — pick one shell per pack so the manifest-hosted sha stays stable across republishes. Recommended: pwsh (matches typical dev default).
+- **Publishing steps** (same-day republish OK, tarball is deterministic if source files unchanged):
+  1. `bun run package:lang <code> [--contributors "@handle"]` → writes `qmanager-build/lang/qmanager-lang-<code>-<version>.tar.gz`.
+  2. Create GitHub **pre-release** (tag `lang-<code>-<version>`, target `development-home`) + upload tarball. Pre-release flag keeps it out of the firmware "Latest" feed.
+  3. Re-run with `--update-manifest <url>` to patch `language-packs/manifest.json`.
+  4. Commit manifest + push.
+- **GitHub raw CDN caches `raw.githubusercontent.com/.../development-home/manifest.json` for 5 min** (`max-age=300`). Same-day republish: devices see stale sha until cache expires. Verify with `curl -sI <url> | grep -iE "cache-control|source-age"`. No workaround — inherent to the CDN choice.
+- **If you republish and the sha changes, the old tarball asset must be replaced on the GitHub Release** or auto-install fails sha verification and falls back to the manual-install command. Frontend generates that command from the manifest's (possibly stale) sha.
+- **Contributors**: `--contributors "@handle"` or CSV. Rendered in Languages card via `manifestEntry.contributors` (`components/i18n/language-pack-row.tsx`). Falls back to `languages.row.translators_fallback` ("Community contributors") when absent/empty.
+- **Default manifest URL**: `lib/i18n/language-pack-manifest.ts::DEFAULT_MANIFEST_URL` points at the `development-home` raw URL. Change here if switching branches or CDNs.
+
 ### Error Code Vocabulary (Plan 12+)
 
 - **Namespace**: `errors` in `public/locales/{en,zh-CN}/errors.json`. Flat dictionary, 148 keys: 146 stable backend error-code strings + two catch-alls (`unknown`, `unknown_with_detail`).

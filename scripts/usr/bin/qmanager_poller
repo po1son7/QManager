@@ -10,8 +10,9 @@
 #   - Leaves gaps for terminal/watchdog to access the modem
 #
 # Tiers:
-#   Tier 1 (Hot):    Every cycle (~2s)  — AT+QENG="servingcell", /proc reads
-#   Tier 1.5 (Signal): Every 5 cycles (10s) — AT+QRSRP, AT+QRSRQ, AT+QSINR
+#   Tier 1 (Hot):    Every cycle (~2s)  — AT+QENG="servingcell", /proc reads,
+#                                         AT+QRSRP, AT+QRSRQ, AT+QSINR (per-antenna signal)
+#   Tier 1.5:        Every 5 cycles (10s) — watchcat state + ping history append
 #   Tier 2 (Warm):   Every 15 cycles    — AT+QTEMP, AT+COPS?, AT+CPIN?, AT+QUIMSLOT?,
 #                                         AT+QCAINFO, AT+QNWCFG="*_time_advance",
 #                                         AT+QNWCFG="*_mimo_layers" (network-mode-gated),
@@ -33,14 +34,14 @@ CACHE_FILE="/tmp/qmanager_status.json"
 CACHE_TMP="/tmp/qmanager_status.json.tmp"
 LONG_FLAG="/tmp/qmanager_long_running"
 POLL_INTERVAL=2        # seconds between Tier 1 cycles
-TIER1_5_EVERY=5        # Tier 1.5 (per-antenna signal) runs every N cycles (10s)
+TIER1_5_EVERY=5        # Tier 1.5 (watchcat state + ping history) runs every N cycles (10s)
 TIER2_EVERY=15         # Tier 2 runs every N cycles
 NETWORK_IFACE="wwan0"  # Network interface for traffic stats
 SIP_DELAY=0.1          # Delay between AT commands (seconds)
 
 # Signal history (NDJSON file for chart data)
 SIGNAL_HISTORY_FILE="/tmp/qmanager_signal_history.json"
-SIGNAL_HISTORY_MAX=180 # 30 min at 10s intervals
+SIGNAL_HISTORY_MAX=60  # 2 min at 2s intervals (Tier 1 cadence)
 
 # Ping history (NDJSON file for latency chart data)
 PING_HISTORY_FILE="/tmp/qmanager_ping_history.json"
@@ -616,9 +617,9 @@ poll_serving_cell() {
 }
 
 # =============================================================================
-# TIER 1.5: PER-ANTENNA SIGNAL (every 5 cycles / 10s)
+# TIER 1: PER-ANTENNA SIGNAL (every cycle / 2s)
 # =============================================================================
-# Three AT commands (~200ms each = ~600ms total modem lock per cycle).
+# One compound AT call (~200-400ms total modem lock per cycle).
 # Writes latest values to state vars AND appends to NDJSON history file.
 
 poll_per_antenna_signal() {
@@ -637,7 +638,7 @@ poll_per_antenna_signal() {
 }
 
 # Append current per-antenna values as one NDJSON line to the history file.
-# Capped at SIGNAL_HISTORY_MAX lines (~30 min at 10s intervals).
+# Capped at SIGNAL_HISTORY_MAX lines (~2 min at 2s intervals).
 append_signal_history() {
     local ts
     ts=$(date +%s)
@@ -1352,10 +1353,12 @@ poll_cycle() {
     fi
     sleep "$SIP_DELAY"
 
-    # Tier 1.5 (per-antenna signal history + watchcat state)
+    # Tier 1 (per-antenna signal)
+    poll_per_antenna_signal
+    sleep "$SIP_DELAY"
+
+    # Tier 1.5 (watchcat state — still every 10s)
     if [ $((cycle_count % TIER1_5_EVERY)) -eq 0 ]; then
-        poll_per_antenna_signal
-        sleep "$SIP_DELAY"
         read_watchcat_state
     fi
 
@@ -1384,7 +1387,7 @@ poll_cycle() {
 main() {
     qlog_info "========================================"
     qlog_info "QManager Poller starting"
-    qlog_info "Config: interval=${POLL_INTERVAL}s tier2_every=${TIER2_EVERY} iface=${NETWORK_IFACE}"
+    qlog_info "Config: interval=${POLL_INTERVAL}s signal=every-cycle tier2_every=${TIER2_EVERY} iface=${NETWORK_IFACE}"
     qlog_info "Log level: ${QLOG_LEVEL:-INFO}"
     qlog_info "========================================"
 

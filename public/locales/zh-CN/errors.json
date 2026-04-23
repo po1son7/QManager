@@ -127,6 +127,7 @@
   "payload_too_large": "请求体过大",
   "rate_limited": "尝试次数过多 — 请稍后重试",
   "remove_failed": "删除项目失败",
+  "save_failed": "保存设置失败",
   "select_failed": "网络模式选择失败",
   "send_failed": "消息发送失败",
   "service_running": "服务正在运行 — 请先停止它",
@@ -146,6 +147,8 @@
   "updater_missing": "找不到更新程序二进制文件",
   "updater_not_executable": "更新程序二进制文件不可执行",
   "usbnet_failed": "USB 网络接口配置失败",
+  "wol_not_supported": "此硬件不支持 Wake-on-LAN 控制",
+  "wol_save_failed": "保存 Wake-on-LAN 设置失败",
   "write_failed": "将配置写入存储失败",
   "wrong_schema": "备份架构版本与当前版本不匹配"
 }

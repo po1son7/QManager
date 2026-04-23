@@ -408,15 +408,16 @@
       "retry_button": "重试"
     },
     "toast": {
-      "install_started": "正在安装 {{name}}…",
-      "install_success": "已安装 {{name}}",
-      "install_failed": "安装 {{name}} 失败",
+      "install_started": "正在安装语言包 {{name}}（{{code}}）…",
+      "install_success": "已安装语言包 {{name}}（{{code}}）",
+      "install_failed": "安装语言包 {{name}}（{{code}}）失败",
+      "install_failed_generic": "安装语言包失败",
       "install_cancelled": "安装已取消",
       "install_in_progress": "已有另一个安装正在进行中",
-      "remove_success": "已删除 {{name}}",
-      "remove_failed": "删除 {{name}} 失败",
-      "remove_active_switched": "已删除 {{name}} — 已切换到英语",
-      "switched": "已切换到 {{name}}",
+      "remove_success": "已删除语言 {{name}}（{{code}}）",
+      "remove_failed": "删除语言 {{name}}（{{code}}）失败",
+      "remove_active_switched": "已删除语言 {{name}}（{{code}}）— 已切换到英语",
+      "switched": "已切换到语言 {{name}}（{{code}}）",
       "manifest_refreshed": "清单已刷新"
     },
     "install_failure_fallback": {

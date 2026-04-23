@@ -26,6 +26,7 @@
     "config_restore_section_success": "Section Restored",
     "config_restore_section_failed": "Section Failed",
     "config_restore_section_skipped": "Section Skipped",
-    "config_restore_completed": "Restore Completed"
+    "config_restore_completed": "Restore Completed",
+    "wol_changed": "WoL Setting Changed"
   }
 }

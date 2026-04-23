@@ -1,0 +1,36 @@
+{
+  "reboot": "Mulai Ulang",
+  "disconnect": "Putuskan",
+  "connect": "Sambungkan",
+  "signal_info": "Informasi Sinyal",
+  "ca_info": "Info CA",
+  "get_sim_slot": "Cek Slot SIM Aktif",
+  "switch_sim_slot_1": "Pindah ke SIM Slot 1",
+  "switch_sim_slot_2": "Pindah ke SIM Slot 2",
+  "get_apn_list": "Daftar APN Saat Ini",
+  "set_apn_nrbroadband": "Atur APN ke NRBROADBAND",
+  "show_imei": "Tampilkan IMEI Saat Ini",
+  "show_network_mode": "Tampilkan Mode Jaringan Saat Ini",
+  "set_network_mode_auto": "Atur Mode Jaringan ke Otomatis",
+  "set_network_mode_5g_lte": "Atur Mode Jaringan hanya ke 5G NR/4G LTE",
+  "set_network_mode_5g_only": "Atur Mode Jaringan hanya ke 5G NR",
+  "set_network_mode_lte_only": "Atur Mode Jaringan hanya ke 4G LTE",
+  "check_sa_nsa_status": "Periksa status SA/NSA",
+  "enable_sa_nsa": "Aktifkan SA dan NSA",
+  "disable_sa_only": "Nonaktifkan SA saja",
+  "disable_nsa_only": "Nonaktifkan NSA saja",
+  "get_5g_sa_bands": "Tampilkan pita 5G NR SA",
+  "get_5g_nsa_bands": "Tampilkan pita 5G NR NSA yang aktif",
+  "get_4g_lte_bands": "Tampilkan pita 4G LTE yang aktif",
+  "view_ip_addresses": "Tampilkan alamat IP yang digunakan",
+  "enable_ippt": "Aktifkan IPPT (MAC passthrough)",
+  "disable_ippt": "Nonaktifkan IPPT",
+  "blocked": {
+    "qscanfreq": "Gunakan halaman Cell Scanner untuk pemindaian frekuensi.",
+    "qscan": "Gunakan halaman Cell Scanner untuk pemindaian jaringan.",
+    "factory_reset": "Reset pabrik tidak diizinkan dari terminal."
+  },
+  "warnings": {
+    "disable_radio": "Ini akan menonaktifkan radio modem. Jika terhubung melalui Tailscale, Anda mungkin kehilangan akses ke antarmuka ini."
+  }
+}

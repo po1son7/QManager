@@ -204,30 +204,43 @@ if [ "$REQUEST_METHOD" = "POST" ]; then
         exit 0
     fi
 
-    # Apply speed limit via ethtool
-    if ! apply_speed_limit "$speed_limit"; then
-        qlog_error "Failed to apply speed limit: $speed_limit"
-        cgi_error "ethtool_failed" "Failed to set link speed limit"
+    # --- Persist to UCI BEFORE applying (cheap, no link bounce) --------------
+    ensure_uci_section
+    uci set quecmanager.eth_link.speed_limit="$speed_limit" 2>/dev/null
+
+    if ! uci commit quecmanager 2>/dev/null; then
+        qlog_error "uci commit failed for speed_limit=$speed_limit"
+        cgi_error "save_failed" "Failed to persist link speed setting"
         exit 0
     fi
 
-    # Force renegotiation
-    ethtool -r "$ETH_INTERFACE" 2>/dev/null
-
-    # Save to UCI
-    ensure_uci_section
-    uci set quecmanager.eth_link.speed_limit="$speed_limit"
-    uci commit quecmanager
-
-    # Setup boot persistence
+    # Setup boot persistence (cheap)
     init_script="/etc/init.d/qmanager_eth_link"
     if [ -x "$init_script" ]; then
         "$init_script" enable 2>/dev/null
     fi
 
-    qlog_info "Link speed limit set to: $speed_limit"
+    qlog_info "Link speed limit saved: $speed_limit (applying asynchronously)"
 
-    jq -n --arg speed_limit "$speed_limit" '{success: true, speed_limit: $speed_limit}'
+    # --- Emit HTTP response BEFORE the PHY link bounce -----------------------
+    # ethtool -s / ethtool -r cause a 2-5 s link renegotiation that kills
+    # in-flight HTTP responses. Send the JSON first, then background the
+    # apply so the client never sees a spurious network error.
+    jq -n --arg speed_limit "$speed_limit" '{
+        success: true,
+        apply_in_progress: true,
+        disconnect_window_seconds: 5,
+        speed_limit: $speed_limit
+    }'
+
+    # --- Fire-and-forget ethtool apply (double-fork) -------------------------
+    # 1 s delay ensures HTTP bytes flush before the PHY bounce.
+    ( (
+        sleep 1
+        apply_speed_limit "$speed_limit"
+        ethtool -r "$ETH_INTERFACE" 2>/dev/null
+    ) </dev/null >/dev/null 2>&1 & )
+
     exit 0
 fi
 
