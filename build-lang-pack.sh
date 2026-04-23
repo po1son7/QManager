@@ -107,7 +107,11 @@ resolve_bin() {
       candidates="/c/Program Files/nodejs/node.exe /c/Program Files/nodejs/node /usr/local/bin/node /usr/bin/node"
       ;;
     bun)
-      candidates="${BUN_INSTALL:-}/bin/bun ${BUN_INSTALL:-}/bin/bun.exe $HOME/.bun/bin/bun $HOME/.bun/bin/bun.exe /c/Users/$USER/.bun/bin/bun.exe /c/Users/$USERNAME/.bun/bin/bun.exe"
+      # Derive Windows user-profile path last — USERPROFILE is set in pwsh,
+      # USERNAME is set under cmd/bash. Each uses :- to avoid 'set -u' trips.
+      local _up="${USERPROFILE:-}"
+      _up="${_up//\\//}"
+      candidates="${BUN_INSTALL:-}/bin/bun ${BUN_INSTALL:-}/bin/bun.exe ${HOME:-}/.bun/bin/bun ${HOME:-}/.bun/bin/bun.exe /c/Users/${USER:-nobody}/.bun/bin/bun.exe /c/Users/${USERNAME:-nobody}/.bun/bin/bun.exe ${_up}/.bun/bin/bun.exe"
       ;;
   esac
   for cand in $candidates; do
