@@ -418,7 +418,7 @@ export interface SignalPerAntenna {
 
 /**
  * A single entry from the signal history NDJSON file.
- * One line is appended every 10 seconds (Tier 1.5 interval).
+ * One line is appended every 2 seconds (Tier 1 interval).
  */
 export interface SignalHistoryEntry {
   /** Unix epoch (seconds) */
