@@ -10,8 +10,9 @@
 #   - Leaves gaps for terminal/watchdog to access the modem
 #
 # Tiers:
-#   Tier 1 (Hot):    Every cycle (~2s)  — AT+QENG="servingcell", /proc reads
-#   Tier 1.5 (Signal): Every 5 cycles (10s) — AT+QRSRP, AT+QRSRQ, AT+QSINR
+#   Tier 1 (Hot):    Every cycle (~2s)  — AT+QENG="servingcell", /proc reads,
+#                                         AT+QRSRP, AT+QRSRQ, AT+QSINR (per-antenna signal)
+#   Tier 1.5:        Every 5 cycles (10s) — watchcat state + ping history append
 #   Tier 2 (Warm):   Every 15 cycles    — AT+QTEMP, AT+COPS?, AT+CPIN?, AT+QUIMSLOT?,
 #                                         AT+QCAINFO, AT+QNWCFG="*_time_advance",
 #                                         AT+QNWCFG="*_mimo_layers" (network-mode-gated),
@@ -33,7 +34,7 @@ CACHE_FILE="/tmp/qmanager_status.json"
 CACHE_TMP="/tmp/qmanager_status.json.tmp"
 LONG_FLAG="/tmp/qmanager_long_running"
 POLL_INTERVAL=2        # seconds between Tier 1 cycles
-TIER1_5_EVERY=5        # Tier 1.5 (per-antenna signal) runs every N cycles (10s)
+TIER1_5_EVERY=5        # Tier 1.5 (watchcat state + ping history) runs every N cycles (10s)
 TIER2_EVERY=15         # Tier 2 runs every N cycles
 NETWORK_IFACE="wwan0"  # Network interface for traffic stats
 SIP_DELAY=0.1          # Delay between AT commands (seconds)
@@ -1352,7 +1353,7 @@ poll_cycle() {
     fi
     sleep "$SIP_DELAY"
 
-    # Tier 1 (per-antenna signal — promoted from Tier 1.5 for 2s chart cadence)
+    # Tier 1 (per-antenna signal)
     poll_per_antenna_signal
     sleep "$SIP_DELAY"
 
