@@ -17,6 +17,13 @@ export const AVAILABLE_LANGUAGES: readonly LanguageMeta[] = [
     rtl: false,
     bundled: true,
   },
+  {
+    code: "zh-TW",
+    native_name: "繁體中文",
+    english_name: "Traditional Chinese",
+    rtl: false,
+    bundled: false,
+  },
   // Downloadable placeholders — Plan 11. `bundled: false` means the pack is NOT
   // shipped in the firmware tarball; the Languages card downloads it from the
   // remote manifest on demand. These entries let the LanguageSwitcher render
