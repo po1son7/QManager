@@ -6,7 +6,7 @@ LOCALES_DIR="$ROOT_DIR/public/locales"
 AVAIL_TS="$ROOT_DIR/lib/i18n/available-languages.ts"
 LP_LIB="$ROOT_DIR/scripts/usr/lib/qmanager/language_packs.sh"
 MANIFEST="$ROOT_DIR/language-packs/manifest.json"
-HELPER="$ROOT_DIR/scripts/build-lang-pack-helpers.mjs"
+HELPER="$ROOT_DIR/build-lang-pack-helpers.mjs"
 OUT_DIR="$ROOT_DIR/qmanager-build/lang"
 
 if [ -t 1 ]; then
