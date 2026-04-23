@@ -83,34 +83,41 @@ esac
 
 command -v sha256sum >/dev/null 2>&1 || fail "sha256sum not found in PATH"
 command -v tar >/dev/null 2>&1 || fail "tar not found in PATH"
-# Helper is plain ESM — bun or node both work. Prefer node for portability:
-# when bun spawns this script on Windows, bun itself isn't always resolvable
-# from inside the bash subshell, but node usually is.
-if command -v node >/dev/null 2>&1; then
-  HELPER_RUNNER="node"
-elif command -v bun >/dev/null 2>&1; then
-  HELPER_RUNNER="bun run"
-else
-  fail "Neither node nor bun found in PATH (one is required to run build-lang-pack-helpers.mjs)"
-fi
 
-# Resolve bun for i18n:check. command -v alone misses bun.exe when bun spawned
-# this bash subshell from a parent shell whose PATH didn't propagate cleanly
-# (common on Windows Git Bash). Fall back to BUN_INSTALL / ~/.bun/bin.
-BUN_BIN=""
-if command -v bun >/dev/null 2>&1; then
-  BUN_BIN="bun"
-else
-  for cand in \
-    "${BUN_INSTALL:-}/bin/bun" \
-    "${BUN_INSTALL:-}/bin/bun.exe" \
-    "$HOME/.bun/bin/bun" \
-    "$HOME/.bun/bin/bun.exe"; do
-    if [ -n "$cand" ] && [ -x "$cand" ]; then
-      BUN_BIN="$cand"
-      break
-    fi
+# Resolve node + bun robustly. On Windows, 'bun run package:lang' spawns this
+# bash subshell with a minimal PATH — 'command -v' misses bun.exe / node.exe
+# even though the parent pwsh session has them. Fall back to known install
+# locations (BUN_INSTALL, ~/.bun/bin, Program Files/nodejs).
+resolve_bin() {
+  # $1 = name ('node' or 'bun'); echoes the resolved path or nothing.
+  if command -v "$1" >/dev/null 2>&1; then
+    echo "$1"
+    return 0
+  fi
+  local candidates=""
+  case "$1" in
+    node)
+      candidates="/c/Program Files/nodejs/node.exe /c/Program Files/nodejs/node /usr/local/bin/node /usr/bin/node"
+      ;;
+    bun)
+      candidates="${BUN_INSTALL:-}/bin/bun ${BUN_INSTALL:-}/bin/bun.exe $HOME/.bun/bin/bun $HOME/.bun/bin/bun.exe"
+      ;;
+  esac
+  for cand in $candidates; do
+    [ -x "$cand" ] && { echo "$cand"; return 0; }
   done
+  return 1
+}
+
+NODE_BIN=$(resolve_bin node || true)
+BUN_BIN=$(resolve_bin bun || true)
+
+if [ -n "$NODE_BIN" ]; then
+  HELPER_RUNNER="$NODE_BIN"
+elif [ -n "$BUN_BIN" ]; then
+  HELPER_RUNNER="$BUN_BIN run"
+else
+  fail "Neither node nor bun found (checked PATH, BUN_INSTALL, ~/.bun/bin, /c/Program Files/nodejs)"
 fi
 
 [ -f "$AVAIL_TS" ] || fail "Missing $AVAIL_TS"
