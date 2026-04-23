@@ -31,6 +31,15 @@
     "label_duplex": "雙工模式",
     "alt_device_icon": "裝置圖示"
   },
+  "ethernet_leds": {
+    "card_title": "Wake-on-LAN",
+    "card_description": "啟用或停用乙太網埠上的 Wake-on-LAN。啟用後，網路中的其他裝置可透過傳送 magic packet 將本裝置從睡眠狀態喚醒。如果您不使用此功能，建議保持停用 — 大多數長時間運作的調變解調器閘道器並不需要它。",
+    "label_disable_wol": "停用 Wake-on-LAN",
+    "applying": "套用中… 連線可能會短暫中斷（{{seconds}} 秒）",
+    "toast_success_enabled": "Wake-on-LAN 已停用",
+    "toast_success_disabled": "Wake-on-LAN 已啟用",
+    "toast_error_save": "儲存 Wake-on-LAN 設定失敗"
+  },
   "dns": {
     "page_title": "自訂 DNS 設定",
     "page_description": "使用您偏好的解析器覆蓋運營商分配的 DNS 伺服器，適用於本地網路內的所有裝置。",

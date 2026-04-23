@@ -127,6 +127,7 @@
   "payload_too_large": "Body permintaan terlalu besar",
   "rate_limited": "Terlalu banyak percobaan gagal — silakan coba lagi nanti",
   "remove_failed": "Gagal menghapus item",
+  "save_failed": "Gagal menyimpan pengaturan",
   "select_failed": "Gagal memilih mode jaringan",
   "send_failed": "Gagal mengirim pesan",
   "service_running": "Layanan sedang berjalan — hentikan terlebih dahulu",
@@ -146,6 +147,8 @@
   "updater_missing": "Binary updater tidak ditemukan",
   "updater_not_executable": "Binary updater tidak dapat dieksekusi",
   "usbnet_failed": "Konfigurasi antarmuka jaringan USB gagal",
+  "wol_not_supported": "Kontrol Wake-on-LAN tidak didukung pada perangkat keras ini",
+  "wol_save_failed": "Gagal menyimpan pengaturan Wake-on-LAN",
   "write_failed": "Gagal menulis konfigurasi ke penyimpanan",
   "wrong_schema": "Versi skema cadangan tidak cocok dengan versi saat ini"
 }

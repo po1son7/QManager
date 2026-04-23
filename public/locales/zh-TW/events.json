@@ -26,6 +26,7 @@
     "config_restore_section_success": "分段恢復成功",
     "config_restore_section_failed": "分段恢復失敗",
     "config_restore_section_skipped": "分段已跳過",
-    "config_restore_completed": "恢復完成"
+    "config_restore_completed": "恢復完成",
+    "wol_changed": "WoL 設定已變更"
   }
 }

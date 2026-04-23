@@ -31,6 +31,15 @@
     "label_duplex": "Duplex",
     "alt_device_icon": "Ikon Perangkat"
   },
+  "ethernet_leds": {
+    "card_title": "Wake-on-LAN",
+    "card_description": "Aktifkan atau nonaktifkan Wake-on-LAN pada port Ethernet. Jika diaktifkan, perangkat lain di jaringan dapat menyalakan unit ini dari mode tidur dengan mengirim magic packet. Biarkan nonaktif jika tidak digunakan — sebagian besar gateway modem yang selalu menyala tidak membutuhkannya.",
+    "label_disable_wol": "Nonaktifkan Wake-on-LAN",
+    "applying": "Menerapkan... koneksi Anda mungkin terputus sebentar ({{seconds}}d)",
+    "toast_success_enabled": "Wake-on-LAN dinonaktifkan",
+    "toast_success_disabled": "Wake-on-LAN diaktifkan",
+    "toast_error_save": "Gagal menyimpan pengaturan Wake-on-LAN"
+  },
   "dns": {
     "page_title": "Pengaturan DNS Kustom",
     "page_description": "Timpa server DNS yang ditetapkan operator dengan resolver pilihan Anda untuk semua perangkat di jaringan lokal.",

@@ -411,6 +411,7 @@
       "install_started": "正在安裝 {{name}}…",
       "install_success": "已安裝 {{name}}",
       "install_failed": "安裝 {{name}} 失敗",
+      "install_failed_generic": "安裝語言包失敗",
       "install_cancelled": "安裝已取消",
       "install_in_progress": "已有另一個安裝正在進行中",
       "remove_success": "已刪除 {{name}}",
