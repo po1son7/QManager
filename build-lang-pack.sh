@@ -86,10 +86,17 @@ command -v tar >/dev/null 2>&1 || fail "tar not found in PATH"
 
 # Resolve node + bun robustly. On Windows, 'bun run package:lang' spawns this
 # bash subshell with a minimal PATH — 'command -v' misses bun.exe / node.exe
-# even though the parent pwsh session has them. Fall back to known install
-# locations (BUN_INSTALL, ~/.bun/bin, Program Files/nodejs).
+# even though the parent pwsh session has them. Strategies in order:
+#   1. $npm_execpath — bun sets this to its own binary when running package scripts
+#   2. command -v on PATH
+#   3. Known install locations
 resolve_bin() {
   # $1 = name ('node' or 'bun'); echoes the resolved path or nothing.
+  # For 'bun', try npm_execpath first (points at bun.exe in package scripts).
+  if [ "$1" = "bun" ] && [ -n "${npm_execpath:-}" ] && [ -x "$npm_execpath" ]; then
+    echo "$npm_execpath"
+    return 0
+  fi
   if command -v "$1" >/dev/null 2>&1; then
     echo "$1"
     return 0
@@ -100,7 +107,7 @@ resolve_bin() {
       candidates="/c/Program Files/nodejs/node.exe /c/Program Files/nodejs/node /usr/local/bin/node /usr/bin/node"
       ;;
     bun)
-      candidates="${BUN_INSTALL:-}/bin/bun ${BUN_INSTALL:-}/bin/bun.exe $HOME/.bun/bin/bun $HOME/.bun/bin/bun.exe"
+      candidates="${BUN_INSTALL:-}/bin/bun ${BUN_INSTALL:-}/bin/bun.exe $HOME/.bun/bin/bun $HOME/.bun/bin/bun.exe /c/Users/$USER/.bun/bin/bun.exe /c/Users/$USERNAME/.bun/bin/bun.exe"
       ;;
   esac
   for cand in $candidates; do
@@ -117,8 +124,19 @@ if [ -n "$NODE_BIN" ]; then
 elif [ -n "$BUN_BIN" ]; then
   HELPER_RUNNER="$BUN_BIN run"
 else
-  fail "Neither node nor bun found (checked PATH, BUN_INSTALL, ~/.bun/bin, /c/Program Files/nodejs)"
+  printf "  Diagnostic:\n"
+  printf "    npm_execpath = %s\n" "${npm_execpath:-<unset>}"
+  printf "    BUN_INSTALL  = %s\n" "${BUN_INSTALL:-<unset>}"
+  printf "    HOME         = %s\n" "${HOME:-<unset>}"
+  printf "    USER         = %s\n" "${USER:-<unset>}"
+  printf "    USERNAME     = %s\n" "${USERNAME:-<unset>}"
+  printf "    PATH         = %s\n" "${PATH:-<unset>}"
+  fail "Neither node nor bun found. Set NODE_BIN or BUN_BIN env var to the binary path and re-run."
 fi
+
+# Env overrides for edge cases — respect if set before our detection.
+[ -n "${NODE_BIN_OVERRIDE:-}" ] && [ -x "$NODE_BIN_OVERRIDE" ] && HELPER_RUNNER="$NODE_BIN_OVERRIDE"
+[ -n "${BUN_BIN_OVERRIDE:-}" ] && [ -x "$BUN_BIN_OVERRIDE" ] && BUN_BIN="$BUN_BIN_OVERRIDE"
 
 [ -f "$AVAIL_TS" ] || fail "Missing $AVAIL_TS"
 [ -f "$LP_LIB" ] || fail "Missing $LP_LIB"
