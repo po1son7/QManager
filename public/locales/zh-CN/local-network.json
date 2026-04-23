@@ -31,6 +31,15 @@
     "label_duplex": "双工模式",
     "alt_device_icon": "设备图标"
   },
+  "ethernet_leds": {
+    "card_title": "Wake-on-LAN",
+    "card_description": "启用或禁用以太网端口的 Wake-on-LAN。启用后，网络上的其他设备可通过发送魔术包将本机从休眠状态唤醒。若未使用此功能，请保持禁用 — 始终在线的调制解调器网关通常不需要它。",
+    "label_disable_wol": "关闭 Wake-on-LAN",
+    "applying": "正在应用… 连接可能会短暂中断（{{seconds}} 秒）",
+    "toast_success_enabled": "已禁用 Wake-on-LAN",
+    "toast_success_disabled": "已启用 Wake-on-LAN",
+    "toast_error_save": "保存 Wake-on-LAN 设置失败"
+  },
   "dns": {
     "page_title": "自定义 DNS 设置",
     "page_description": "使用您偏好的解析器覆盖运营商分配的 DNS 服务器，适用于本地网络内的所有设备。",

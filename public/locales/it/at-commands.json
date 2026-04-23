@@ -1,0 +1,36 @@
+{
+  "reboot": "Riavvia",
+  "disconnect": "Disconnetti",
+  "connect": "Connettiti",
+  "signal_info": "Informazioni sul segnale",
+  "ca_info": "Informazioni CA",
+  "get_sim_slot": "Ottieni lo slot SIM corrente",
+  "switch_sim_slot_1": "Passa allo slot SIM 1",
+  "switch_sim_slot_2": "Passa allo slot SIM 2",
+  "get_apn_list": "Ottieni l'elenco APN corrente",
+  "set_apn_nrbroadband": "Imposta APN su NRBROADBAND",
+  "show_imei": "Mostra IMEI attuale",
+  "show_network_mode": "Mostra la modalità di rete corrente",
+  "set_network_mode_auto": "Impostare la modalità di rete su AUTO",
+  "set_network_mode_5g_lte": "Imposta la modalità di rete su 5G NR/4G LTE Solo",
+  "set_network_mode_5g_only": "Imposta la modalità di rete su 5G Solo NR",
+  "set_network_mode_lte_only": "Imposta la modalità di rete solo su 4G LTE",
+  "check_sa_nsa_status": "Controlla lo stato di disabilitazione SA/NSA",
+  "enable_sa_nsa": "Abilita sia SA che NSA",
+  "disable_sa_only": "Disabilita solo SA",
+  "disable_nsa_only": "Disabilita solo NSA",
+  "get_5g_sa_bands": "Controlla le bande attive per 5G NR SA",
+  "get_5g_nsa_bands": "Controlla le bande attive per 5G NR NSA",
+  "get_4g_lte_bands": "Controlla le bande attive per 4G LTE",
+  "view_ip_addresses": "Visualizza indirizzi IPv4/IPv6 assegnati",
+  "enable_ippt": "Abilita IPPT (passthrough MAC)",
+  "disable_ippt": "Disabilita IPPT",
+  "blocked": {
+    "qscanfreq": "Utilizzare la pagina Cell Scanner per la scansione della frequenza.",
+    "qscan": "Utilizzare la pagina Cell Scanner per la scansione di rete.",
+    "factory_reset": "Ripristino impostazioni di fabbrica non consentito dal terminale."
+  },
+  "warnings": {
+    "disable_radio": "Ciò disabiliterà la radio del modem. Se ti connetti tramite Tailscale, potresti perdere l'accesso a questa interfaccia utente."
+  }
+}

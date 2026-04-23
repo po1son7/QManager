@@ -408,15 +408,16 @@
       "retry_button": "Retry"
     },
     "toast": {
-      "install_started": "Installing {{name}}…",
-      "install_success": "{{name}} installed",
-      "install_failed": "Failed to install {{name}}",
-      "install_cancelled": "Install cancelled",
+      "install_started": "Installing language pack {{name}} ({{code}})…",
+      "install_success": "Language pack {{name}} ({{code}}) installed",
+      "install_failed": "Failed to install language pack {{name}} ({{code}})",
+      "install_failed_generic": "Failed to install language pack",
+      "install_cancelled": "Installation cancelled",
       "install_in_progress": "Another install is already in progress",
-      "remove_success": "{{name}} removed",
-      "remove_failed": "Failed to remove {{name}}",
-      "remove_active_switched": "{{name}} removed — switched to English",
-      "switched": "Switched to {{name}}",
+      "remove_success": "Language {{name}} ({{code}}) removed",
+      "remove_failed": "Failed to remove language {{name}} ({{code}})",
+      "remove_active_switched": "Language {{name}} ({{code}}) removed — switched to English",
+      "switched": "Language switched to {{name}} ({{code}})",
       "manifest_refreshed": "Catalog refreshed"
     },
     "install_failure_fallback": {

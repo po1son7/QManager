@@ -8,46 +8,39 @@ import type { SignalHistoryEntry } from "@/types/modem-status";
 // useSignalHistory — Polling Hook for Signal History Chart
 // =============================================================================
 // Fetches the per-antenna signal history NDJSON (converted to JSON array by
-// the CGI endpoint) at the same cadence as Tier 1.5 polling (10s).
+// the CGI endpoint) at the same cadence as the poller's Tier 1 (2s).
 //
 // Returns raw history entries and a chart-ready transformation that computes
-// the best (highest) non-null antenna value per RAT per timestamp — matching
-// the existing LTE-vs-5G chart layout.
+// the best (highest) non-null antenna value per RAT per timestamp, with
+// relative time labels ('-Ns' / 'Now') matching the Live Latency chart.
 //
 // Usage:
 //   const { chartData, isLoading, error } = useSignalHistory();
 // =============================================================================
 
-/** CGI endpoint that serves the NDJSON file as a JSON array */
 const HISTORY_ENDPOINT = "/cgi-bin/quecmanager/at_cmd/fetch_signal_history.sh";
 
-/** Poll every 10s to match Tier 1.5 backend interval */
-const DEFAULT_POLL_INTERVAL = 10_000;
+/** Poll cadence — matches poller Tier 1 (2s). */
+const DEFAULT_POLL_INTERVAL = 2_000;
+
+/** Number of trailing entries shown on the chart (6 entries × 2s = last 10s). */
+const CHART_POINTS = 6;
 
 // --- Types -------------------------------------------------------------------
 
-/** Shape expected by the Recharts AreaChart in signal-history.tsx */
 export interface SignalChartPoint {
-  /** Formatted time string, e.g. "14:32" */
+  /** Relative time label, e.g. "-10s" or "Now". */
   time: string;
-  /** Best-antenna LTE RSRP (dBm), or null if no LTE data */
   rsrp4G: number | null;
-  /** Best-antenna NR RSRP (dBm), or null if no NR data */
   rsrp5G: number | null;
-  /** Best-antenna LTE RSRQ (dB) */
   rsrq4G: number | null;
-  /** Best-antenna NR RSRQ (dB) */
   rsrq5G: number | null;
-  /** Best-antenna LTE SINR (dB) */
   sinr4G: number | null;
-  /** Best-antenna NR SINR (dB) */
   sinr5G: number | null;
 }
 
 export interface UseSignalHistoryOptions {
-  /** Polling interval in ms (default: 10000) */
   pollInterval?: number;
-  /** Whether polling is active (default: true) */
   enabled?: boolean;
 }
 
@@ -64,11 +57,6 @@ export interface UseSignalHistoryReturn {
 
 // --- Helpers -----------------------------------------------------------------
 
-/**
- * Returns the best (highest / least negative) non-null value from a 4-element
- * antenna array. For RSRP/RSRQ/SINR, higher is always better.
- * Returns null if all values are null.
- */
 function bestAntenna(values: (number | null)[]): number | null {
   let best: number | null = null;
   for (const v of values) {
@@ -80,18 +68,25 @@ function bestAntenna(values: (number | null)[]): number | null {
 }
 
 /**
- * Transforms a raw SignalHistoryEntry into a chart point.
+ * Formats a relative-time label for an entry given the most-recent entry's ts.
+ *
+ * - Equal or future timestamps return "Now" (future = clock skew, clamp safely).
+ * - Older entries return "-Ns" rounded to the nearest whole second.
+ *
+ * Exported for unit tests.
  */
-function toChartPoint(entry: SignalHistoryEntry): SignalChartPoint {
-  const date = new Date(entry.ts * 1000);
-  const time = date.toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
+export function formatRelativeTime(entryTs: number, latestTs: number): string {
+  const diff = Math.round(latestTs - entryTs);
+  if (diff <= 0) return "Now";
+  return `-${diff}s`;
+}
 
+function toChartPoint(
+  entry: SignalHistoryEntry,
+  latestTs: number,
+): SignalChartPoint {
   return {
-    time,
+    time: formatRelativeTime(entry.ts, latestTs),
     rsrp4G: bestAntenna(entry.lte_rsrp),
     rsrp5G: bestAntenna(entry.nr_rsrp),
     rsrq4G: bestAntenna(entry.lte_rsrq),
@@ -104,7 +99,7 @@ function toChartPoint(entry: SignalHistoryEntry): SignalChartPoint {
 // --- Hook --------------------------------------------------------------------
 
 export function useSignalHistory(
-  options: UseSignalHistoryOptions = {}
+  options: UseSignalHistoryOptions = {},
 ): UseSignalHistoryReturn {
   const { pollInterval = DEFAULT_POLL_INTERVAL, enabled = true } = options;
 
@@ -119,24 +114,27 @@ export function useSignalHistory(
   const fetchHistory = useCallback(async () => {
     try {
       const response = await authFetch(HISTORY_ENDPOINT);
-
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
       const json: SignalHistoryEntry[] = await response.json();
-
       if (!mountedRef.current) return;
 
       setRaw(json);
-      // Limit to last 10 data points for chart readability
-      const recent = json.slice(-10);
-      setChartData(recent.map(toChartPoint));
+
+      const recent = json.slice(-CHART_POINTS);
+      if (recent.length === 0) {
+        setChartData([]);
+      } else {
+        const latestTs = recent[recent.length - 1].ts;
+        setChartData(recent.map((entry) => toChartPoint(entry, latestTs)));
+      }
+
       setError(null);
       setIsLoading(false);
     } catch (err) {
       if (!mountedRef.current) return;
-
       const message =
         err instanceof Error ? err.message : "Failed to fetch signal history";
       setError(message);

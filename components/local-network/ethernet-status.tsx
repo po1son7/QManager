@@ -2,6 +2,7 @@
 
 import { useTranslation } from "react-i18next";
 import EthernetStatusCard from "./ethernet-card";
+import EthernetWolCard from "./ethernet-wol-card";
 
 const EthernetStatusComponent = () => {
   const { t } = useTranslation("local-network");
@@ -13,6 +14,7 @@ const EthernetStatusComponent = () => {
       </div>
       <div className="grid grid-cols-1 @3xl/main:grid-cols-2 grid-flow-row gap-4">
         <EthernetStatusCard />
+        <EthernetWolCard />
       </div>
     </div>
   );

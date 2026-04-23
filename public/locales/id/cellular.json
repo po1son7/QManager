@@ -1,0 +1,1281 @@
+{
+  "custom_profiles": {
+    "page": {
+      "title": "Profil SIM Kustom",
+      "description": "Gabungkan pengaturan APN, IMEI, dan TTL/HL ke dalam profil sekali klik"
+    },
+    "view": {
+      "title": "Profil Tersimpan",
+      "description": "Kelola profil SIM kustom Anda.",
+      "count_one": "{{count}} Profil Tersimpan",
+      "count_other": "{{count}} Profil Tersimpan"
+    },
+    "table": {
+      "headers": {
+        "profile": "Profil",
+        "status": "Status",
+        "last_updated": "Terakhir Diperbarui",
+        "actions": ""
+      },
+      "status_badge": {
+        "active": "Aktif",
+        "inactive": "Nonaktif",
+        "sim_mismatch": "SIM Tidak Sesuai"
+      },
+      "pagination": {
+        "total_one": "{{count}} Total profil",
+        "total_other": "{{count}} Total profil",
+        "page_info": "halaman {{current}} dari {{total}}",
+        "previous": "Sebelumnya",
+        "next": "Selanjutnya"
+      },
+      "empty_row": "Belum ada profil. Buat untuk memulai.",
+      "actions_menu": {
+        "open_menu": "Buka Menu",
+        "edit": "Edit",
+        "activate": "Aktifkan",
+        "deactivate": "Nonaktifkan",
+        "delete": "Hapus"
+      },
+      "delete_confirm": {
+        "title": "Hapus Profil",
+        "description": "Apakah Anda yakin ingin menghapus \"{{name}}\"? Tindakan ini tidak dapat dibatalkan. Menghapus profil ini tidak akan mengubah konfigurasi modem Anda saat ini.",
+        "confirm_button": "Hapus",
+        "deleting": "Menghapus.."
+      }
+    },
+    "form": {
+      "create_title": "Buat Profil SIM Kustom",
+      "create_description": "Buat profil SIM kustom dengan pengaturan APN, TTL, dan IMEI tertentu",
+      "edit_title": "Edit Profil",
+      "edit_description": "Mengedit \"{{name}}\". Perbarui kolom di bawah ini.",
+      "load_current_button": "Muat SIM Saat Ini",
+      "fields": {
+        "profile_name_label": "Nama Profil ",
+        "profile_name_placeholder": "Profil LTE Saya",
+        "profile_name_required": "Nama Profile diperlukan.",
+        "sim_iccid_label": "SIM ICCID",
+        "sim_iccid_placeholder": "Isi otomatis dari SIM saat ini",
+        "mno_label": "Operator Jaringan Seluler",
+        "mno_placeholder": "Pilih operator…",
+        "mno_custom": "Kustom",
+        "apn_name_label": "Nama APN",
+        "apn_name_placeholder": "internet",
+        "ip_protocol_label": "Protokol IP",
+        "ip_protocol_ipv4": "Hanya IPv4",
+        "ip_protocol_ipv6": "Hanya IPv6",
+        "ip_protocol_dual": "IPv4 + IPv6 (Dual Stack)",
+        "cid_label": "Slot Profil (CID)",
+        "cid_error": "CID Harus 1–15.",
+        "imei_label": "IMEI yang Diutamakan",
+        "imei_placeholder": "Biarkan kosong untuk Menggunakan IMEI saat ini",
+        "imei_error": "IMEI harus 15 digit.",
+        "ttl_label": "Nilai TTL",
+        "ttl_error": "TTL Harus 0–255.",
+        "hl_label": "Limit Hop",
+        "hl_error": "HL Harus 0–255."
+      },
+      "buttons": {
+        "create_submit": "Buat Profil",
+        "update_submit": "Perbarui Profil",
+        "reset": "Atur Ulang"
+      },
+      "toast": {
+        "create_success": "Profil berhasil dibuat.",
+        "create_error": "Gagal membuat profil",
+        "update_success": "Profil berhasil diperbarui",
+        "update_error": "Gagal memperbarui profil."
+      }
+    },
+    "activate_dialog": {
+      "title": "Aktifkan Profil",
+      "description": "Terapkan \"{{name}}\" ke modem? Ini akan memperbarui pengaturan APN, TTL/HL, dan IMEI sesuai konfigurasi profil. Pengaturan yang tidak berubah akan dilewati.",
+      "confirm": "Aktifkan"
+    },
+    "deactivate_dialog": {
+      "title": "Nonaktifkan Profil",
+      "description": "Hapus penanda profil aktif? Pengaturan modem saat ini (APN, IMEI, TTL) tidak akan dikembalikan — hanya label \"Aktif\" yang akan dihapus",
+      "confirm": "Menonaktifkan",
+      "deactivating": "Menonaktifkan…"
+    },
+    "apply_dialog": {
+      "title": "Menerapkan Profil",
+      "status_badge": {
+        "applying": "Menerapkan…",
+        "complete": "Selesai",
+        "partial": "Sebagian",
+        "failed": "Gagal"
+      },
+      "step_labels": {
+        "apn": "Konfigurasi APN",
+        "ttl_hl": "TTL / Hop Limit",
+        "imei": "IMEI"
+      },
+      "reboot_notice": "Modem sedang memulai ulang untuk menerapkan perubahan IMEI. Dashboard akan tersambung kembali secara otomatis."
+    },
+    "empty_state": {
+      "title": "Tidak ada profil",
+      "description": "Kelola profil SIM kustom Anda di sini.",
+      "description_full": "Anda belum membuat profil SIM kustom. Gunakan formulir untuk membuat profil pertama Anda.",
+      "refresh": "Muat Ulang"
+    }
+  },
+  "scenarios": {
+    "page": {
+      "title": "Skenario Koneksi",
+      "description": "Kelola dan sesuaikan skenario koneksi untuk profil seluler Anda guna mengoptimalkan kinerja dan keandalan jaringan."
+    },
+    "default_balanced_name": "Seimbang",
+    "default_balanced_description": "Pemilihan band otomatis",
+    "default_gaming_name": "Game",
+    "default_gaming_description": "Latensi rendah, prioritas SA",
+    "default_streaming_name": "Streaming",
+    "default_streaming_description": "Bandwidth tinggi, koneksi stabil",
+    "default_gaming_optimization": "Latensi",
+    "default_streaming_optimization": "Throughput",
+    "default_custom_optimization": "Kustom",
+    "mode_option_auto": "Auto",
+    "mode_option_lte": "Hanya LTE ",
+    "mode_option_nrsa": "Hanya 5G SA ",
+    "mode_option_nrsa_nsa": "5G SA / NSA",
+    "scenario_item": {
+      "active_badge": "Aktif",
+      "delete_confirm": {
+        "title": "Hapus Skenario",
+        "description": "Apakah kamu yakin untuk menghapus \"{{name}}\"? Tindakan ini tidak dapat dibatalkan.",
+        "confirm": "Hapus",
+        "deleting": "Menghapus…"
+      }
+    },
+    "add_button": {
+      "label": "Buat Skenario",
+      "description": "Tambahkan konfigurasi kustom"
+    },
+    "active_config_card": {
+      "configuration": "{{name}} konfigurasi",
+      "status": {
+        "applying": "Menerapkan…",
+        "active": "Aktif",
+        "not_active": "Tidak Aktif"
+      },
+      "config_labels": {
+        "network_mode": "Mode Jaringan",
+        "optimization": "Optimalisasi",
+        "lte_bands": "LTE Band",
+        "nrsa_bands": "NR5G-SA Band",
+        "nrsa_nsa_bands": "NR5G-NSA Band"
+      },
+      "config_values": {
+        "auto": "Auto",
+        "lte_only": "Hanya LTE ",
+        "nrsa_only": "Hanya 5G SA ",
+        "nrsa_nsa": "5G SA / NSA",
+        "bands_auto": "Auto"
+      },
+      "edit_aria": "Edit pengaturan skenario",
+      "activate": "Aktifkan"
+    },
+    "add_dialog": {
+      "title": "Skenario Koneksi Baru",
+      "fields": {
+        "name_label": "Nama Skenario",
+        "name_placeholder": "contoh: Bekerja dari Rumah",
+        "description_label": "Deskripsi",
+        "description_placeholder": "contoh: Dioptimalkan untuk panggilan video",
+        "network_mode_label": "Mode Jaringan",
+        "network_mode_aria": "Mode Jaringan",
+        "lte_bands_label": "Kunci Band LTE",
+        "lte_bands_placeholder": "contoh: 1, 3, 7, 28 (kosong = Otomatis)",
+        "sa_bands_label": "Kunci Band NR5G-SA",
+        "sa_bands_placeholder": "Contoh., 41, 78",
+        "nsa_bands_label": "Kunci Band NR5G-NSA",
+        "nsa_bands_placeholder": "Contoh., 41, 78",
+        "theme_label": "Tema Kartu",
+        "preview_label": "Pratinjau",
+        "preview_placeholder": "Konfigurasi kustom"
+      },
+      "buttons": {
+        "create": "Buat Skenario",
+        "creating": "Membuat…"
+      },
+      "toast": {
+        "success": "Skenario berhasil dibuat.",
+        "error": "Skenario gagal dibuat"
+      }
+    },
+    "edit_dialog": {
+      "title": "Edit Konfigurasi",
+      "fields": {
+        "name_label": "Nama Skenario",
+        "name_placeholder": "Nama Skenario",
+        "description_label": "Deskripsi",
+        "description_placeholder": "Deskripsi Skenario",
+        "network_mode_label": "Mode Jaringan",
+        "network_mode_aria": "Mode Jaringan",
+        "optimization_label": "Label Optimasi",
+        "optimization_placeholder": "contoh: Latensi, Throughput, Kustom",
+        "lte_bands_label": "Kunci Band LTE",
+        "lte_bands_placeholder": "contoh: 1, 3, 7, 28 (kosong = Otomatis)",
+        "sa_bands_label": "Kunci Band NR5G-SA",
+        "sa_bands_placeholder": "e.g., 41, 78",
+        "nsa_bands_label": "Kunci BandNR5G-NSA",
+        "nsa_bands_placeholder": "Contoh: 41, 78",
+        "theme_label": "Tema Kartu",
+        "preview_label": "Pratinjau",
+        "preview_placeholder": "Konfigurasi kustom"
+      },
+      "buttons": {
+        "save": "Simpan Perubahan",
+        "saving": "Menyimpan…"
+      },
+      "toast": {
+        "success": "Memperbarui Skenario.",
+        "error": "Gagal Memperbarui Skenario."
+      }
+    },
+    "activation_toast": {
+      "success": "Beralih ke {{name}} Skenario.",
+      "error": "Gagal mengaktifkan {{name}} Skenario."
+    },
+    "deletion_toast": {
+      "success": "Skenario berhasil dihapus.",
+      "error": "Skenario gagal dihapus."
+    }
+  },
+  "sms": {
+    "page": {
+      "title": "Pusat SMS ",
+      "description": "Lihat, kelola, dan kirim pesan SMS dari modem Anda."
+    },
+    "inbox": {
+      "title": "Kotak Masuk",
+      "description": "Lihat dan kelola pesan SMS Anda.",
+      "storage_suffix": " — {{used}}/{{total}} pesan tersimpan",
+      "table": {
+        "headers": {
+          "from": "Dari",
+          "message": "Pesan",
+          "date": "Tanggal"
+        },
+        "actions": {
+          "open_menu": "Buka menu",
+          "view": "Lihat",
+          "delete": "Hapus"
+        },
+        "empty_row": "Tidak ada pesan ditemukan.",
+        "select_all_aria": "Pilih semua",
+        "select_row_aria": "Pilih baris"
+      },
+      "buttons": {
+        "refresh_aria": "Muat ulang kotak masuk",
+        "delete_selected": "Hapus ({{count}})",
+        "delete_selected_aria": "Hapus {{count}} terpilih",
+        "delete_all": "Hapus Semua",
+        "delete_all_aria": "Hapus semua pesan",
+        "new_message": "Pesan Baru",
+        "prev": "Sebelum",
+        "next": "Selanjutnya"
+      },
+      "pagination": {
+        "total_one": "{{count}} pesan",
+        "total_other": "{{count}} pesan",
+        "page_info": "{{current}} / {{total}}"
+      },
+      "error": {
+        "title": "Gagal memuat pesan",
+        "description_prefix": "Gagal memuat pesan"
+      },
+      "view_dialog": {
+        "title": "Pesan dari {{sender}}",
+        "timestamp_aria": "{{timestamp}}"
+      },
+      "delete_single_confirm": {
+        "title": "Hapus Pesan",
+        "description": "Apakah Anda yakin ingin menghapus pesan ini dari {{sender}}? Tindakan ini tidak dapat dibatalkan.",
+        "confirm": "Menghapus",
+        "deleting": "Menghapus…"
+      },
+      "delete_all_confirm": {
+        "title": "Hapus Semua Pesan",
+        "description": "Apakah Anda yakin ingin menghapus semua {{count}} messages? Tindakan ini tidak dapat dibatalkan.",
+        "confirm": "Hapus semua"
+      },
+      "delete_selected_confirm": {
+        "title": "Hapus pesan terpilih",
+        "description_one": "Apakah Anda yakin ingin menghapus {{count}} pesan terpilih? Tindakan ini tidak dapat dibatalkan.",
+        "description_other": "Apakah Anda yakin ingin menghapus {{count}} pesan terpilih? Tindakan ini tidak dapat dibatalkan.",
+        "confirm": "Menghapus ({{count}})",
+        "deleting": "Menghapus…"
+      },
+      "toast": {
+        "delete_success": "Pesan berhasil dihapus",
+        "delete_error": "Pesan gagal dihapus",
+        "delete_all_success": "Semua pesan berhasil dihapus",
+        "delete_all_error": "Gagal menghapus pesan",
+        "delete_selected_success_one": "{{count}} pesan terhapus",
+        "delete_selected_success_other": "{{count}} pesan terhapus",
+        "delete_selected_error": "Gagal menghapus pesan yang dipilih"
+      }
+    },
+    "compose": {
+      "title": "Pesan baru",
+      "description": "Tulis dan kirim pesan SMS.",
+      "fields": {
+        "phone_label": "Nomor Telepon",
+        "phone_placeholder": "+1234567890",
+        "message_label": "Pesan",
+        "message_placeholder": "Tulis Pesan...",
+        "char_counter": "{{count}}/{{max}}"
+      },
+      "unicode_indicator": " (Unicode)",
+      "limit_warning": "Pesan melebihi batas satu SMS. Pesan akan dikirim dalam beberapa bagian.",
+      "buttons": {
+        "send": "Kirim",
+        "sending": "Mengirim…"
+      },
+      "toast": {
+        "success": "SMS berhasil terkirim",
+        "error": "SMS gagal terkirim"
+      }
+    }
+  },
+  "cell_locking": {
+    "band_locking": {
+      "page": {
+        "title": "Penguncian Band",
+        "description": "Batasi band LTE dan NR yang dapat digunakan oleh modem."
+      },
+      "scenario_override_banner": "Konfigurasi band dikelola oleh <strong>{{scenario_name}}</strong> skenario.",
+      "settings_card": {
+        "title": "Pengaturan Penguncian Band",
+        "description": "Batasi modem hanya ke band LTE dan 5G tertentu. Aktifkan failover untuk kembali ke semua band jika band yang dikunci kehilangan sinyal.",
+        "band_failover_label": "Band Failover",
+        "band_failover_tooltip": "Saat diaktifkan, perangkat akan otomatis beralih ke band default jika band yang dikunci tidak tersedia setelah 15 detik.",
+        "band_failover_info_aria": "Info band failover",
+        "status_label": "Status Band Failover",
+        "status": {
+          "disabled": "Nonaktif",
+          "fallback_active": "Fallback Aktif",
+          "ready": "Siap"
+        },
+        "active_lte_bands": "Band LTE Aktif",
+        "active_lte_channels": "Channel LTE Aktif",
+        "active_nr_bands": "Band 5G Aktif",
+        "active_nr_channels": "Channel 5G Aktif",
+        "toast": {
+          "failover_enabled": "Failover band diaktifkan",
+          "failover_disabled": "Failover band dinonaktifkan",
+          "failover_error": "Gagal memperbarui failover band"
+        }
+      },
+      "cards": {
+        "lte": {
+          "title": "Penguncian Band LTE",
+          "description": "Pilih band LTE yang ingin dikunci untuk perangkat Anda."
+        },
+        "nsa_nr5g": {
+          "title": "Penguncian Band NSA",
+          "description": "Pilih band 5G NSA yang ingin dikunci (5G melalui LTE sebagai anchor)."
+        },
+        "sa_nr5g": {
+          "title": "Penguncian Band SA",
+          "description": "Pilih band 5G SA yang ingin dikunci (5G standalone)."
+        }
+      },
+      "card_badges": {
+        "scenario_controlled": "Dikontrol oleh Skenario",
+        "all_unlocked": "Semua Tidak Dikunci",
+        "bands_locked": "{{locked}} / {{total}} Bands"
+      },
+      "card_empty": "Tidak ada band yang didukung dilaporkan oleh modem untuk kategori ini.",
+      "card_buttons": {
+        "lock_selected": "Kunci band terpilih",
+        "select_all": "Pilih semua",
+        "deselect_all": "Batalkan Pilih Semua",
+        "unlock_all_aria": "Buka kunci semua band",
+        "unlock_all_title": "Buka kunci semua band (reset)"
+      },
+      "card_live_region": "Menerapkan {{category_label}} kunci band…",
+      "card_category_label": {
+        "lte": "LTE",
+        "nsa_nr5g": "NSA",
+        "sa_nr5g": "SA"
+      },
+      "toast": {
+        "select_one_band": "Pilih setidaknya satu band untuk dikunci",
+        "locked_success": "{{category_label}} band berhasil dikunci",
+        "lock_error": "Gagal menerapkan penguncian band",
+        "unlocked_success": "{{category_label}} bands unlocked",
+        "unlock_error": "Unlock band gagal"
+      }
+    },
+    "tower_locking": {
+      "page": {
+        "title": "Penguncian Tower",
+        "description": "Kunci ke tower seluler tertentu berdasarkan PCI dan EARFCN."
+      },
+      "settings": {
+        "title": "Pengaturan Penguncian Tower",
+        "description_loading": "Kunci modem ke tower seluler tertentu. Menjaga koneksi tetap stabil tanpa berpindah-pindah antar tower.",
+        "description": "Kunci modem ke tower seluler tertentu. Menjaga koneksi tetap stabil tanpa berpindah-pindah antar tower. Tidak kompatibel dengan 5G NSA.",
+        "persist_label": "Pertahankan Penguncian Setelah Reboot",
+        "persist_tooltip": "Saat diaktifkan, penguncian tower akan dipulihkan secara otomatis setelah reboot.",
+        "persist_info_aria": "Info Pertahankan Penguncian Setelah Reboot",
+        "failover_label": "Sinyal Failover",
+        "failover_tooltip": "Saat diaktifkan, perangkat akan membuka kunci dari tower jika kualitas sinyal menurun di bawah ambang tertentu atau menjadi tidak tersedia.",
+        "failover_info_aria": "info Sinyal Failover ",
+        "failover_no_lock": "Tidak ada penguncian aktif",
+        "failover_hint": "Failover nonaktif — aktifkan untuk membuka kunci otomatis saat sinyal buruk",
+        "failover_toast_disabled": "Failover nonaktif",
+        "threshold_label": "Ambang batas Failover (%)",
+        "threshold_tooltip": "Ini hanya akan berlaku jika failover diaktifkan. Atur ambang kualitas sinyal di mana perangkat akan membuka kunci dari tower jika berada di bawah nilai tersebut.",
+        "threshold_info_aria": "info Ambang batas Failover",
+        "threshold_placeholder": "masukkan Ambang batas",
+        "threshold_update": "Perbarui",
+        "threshold_error_range": "Ambang batas harus antara 0 dan 100",
+        "threshold_toast_success": "Ambang batas failover berhasil diperbarui",
+        "signal_quality_label": "Kualitas Sinyal Saat Ini",
+        "failover_status_label": "Status Failover",
+        "connection_state_label": "Status Koneksi",
+        "schedule_status_label": "Status Penguncian Terjadwal",
+        "earfcn_label": "Channel Saat Ini (EARFCN)",
+        "pci_label": "Cell ID Saat Ini (PCI)",
+        "failover_badge": {
+          "loading": "Memuat",
+          "unknown": "Tidak Diketahui",
+          "monitoring": "Monitoring",
+          "unlocked_poor_signal": "Unlock karena Sinyal Buruk",
+          "disabled": "Nonaktif",
+          "ready": "Siap"
+        },
+        "schedule_badge": {
+          "loading": "Memuat",
+          "unknown": "Tidak Diketahui",
+          "active": "Aktif",
+          "inactive": "Tidak Aktif"
+        },
+        "connection_badge": {
+          "loading": "Memuat",
+          "unknown": "Tidak Diketahui",
+          "connected": "Terhubung",
+          "limited": "Layanan Terbatas",
+          "searching": "Mencari",
+          "no_service": "Tidak Ada Layanan"
+        },
+        "settings_unavailable_toast": "Pengaturan tidak tersedia — coba muat ulang halaman"
+      },
+      "lte": {
+        "title": "Penguncian Tower LTE",
+        "description": "Kunci ke tower seluler LTE tertentu dengan memasukkan kanal dan ID sel.",
+        "enabled_label": "Penguncian Tower LTE Aktif",
+        "channel_label": "Channel (EARFCN)",
+        "channel_label_n": "Channel (EARFCN) {{n}}",
+        "channel_placeholder": "Masukkan EARFCN",
+        "channel_placeholder_n": "Masukkan EARFCN {{n}}",
+        "pci_label": "ID Sel (PCI)",
+        "pci_label_n": "ID Sel (PCI) {{n}}",
+        "pci_placeholder": "Masukkan PCI",
+        "pci_placeholder_n": "Masukkan PCI {{n}}",
+        "use_current": "Gunakan Saat Ini",
+        "lock_dialog": {
+          "title": "Kunci ke Tower LTE?",
+          "description_single": "Ini akan mengunci modem Anda ke EARFCN {{earfcn}}, PCI {{pci}}. Modem hanya akan terhubung ke tower ini dan mungkin akan terputus sebentar saat proses perpindahan.",
+          "description_multi_one": "Ini akan mengunci modem Anda ke {{count}} target sel. Modem hanya akan terhubung ke tower ini dan mungkin akan terputus sebentar saat proses perpindahan.",
+          "description_multi_other": "Ini akan mengunci modem Anda ke {{count}} target sel. Modem hanya akan terhubung ke tower ini dan mungkin akan terputus sebentar saat proses perpindahan.",
+          "confirm": "Kunci Tower"
+        },
+        "unlock_dialog": {
+          "title": "Buka Kunci Tower LTE?",
+          "description": "Ini akan menghapus penguncian tower LTE. Modem akan bebas memilih tower yang tersedia dan mungkin akan terputus sebentar saat proses perpindahan.",
+          "confirm": "Hapus Penguncian"
+        },
+        "toast": {
+          "failover_in_progress_title": "Pemeriksaan failover sedang berlangsung",
+          "failover_in_progress_description": "Pemeriksaan kualitas sinyal sedang berjalan, harap tunggu.",
+          "no_targets_title": "Tidak ada target sel",
+          "no_targets_description": "Masukkan channel dan ID sel terlebih dahulu.",
+          "lock_success": "Penguncian tower LTE berhasil diterapkan",
+          "lock_error": "Gagal mengunci tower — periksa koneksi modem",
+          "unlock_success": "Penguncian tower LTE berhasil dilepas",
+          "unlock_error": "Gagal menghapus penguncian tower",
+          "filled_current": "Diisi dari tower yang sedang terhubung",
+          "no_active_connection": "Tidak ada koneksi LTE aktif"
+        }
+      },
+      "nr_sa": {
+        "title": "Penguncian Tower NR-SA",
+        "description": "Kunci ke tower seluler 5G SA tertentu dengan memasukkan kanal, ID sel, band, dan subcarrier spacing.",
+        "description_suffix_nsa_mode": " Tidak kompatibel dengan mode NR5G-NSA.",
+        "description_suffix_lte_only": " Tidak ada koneksi NR tersedia.",
+        "enabled_label": "Penguncian Tower NR Aktif",
+        "arfcn_label": "channel (ARFCN)",
+        "arfcn_placeholder": "Masukkan ARFCN",
+        "pci_label": "ID Sel (PCI)",
+        "pci_placeholder": "Masukkan PCI",
+        "band_label": "Band NR",
+        "band_placeholder": "Masukkan Band NR",
+        "scs_label": "Subcarrier Spacing",
+        "scs_placeholder": "SCS",
+        "use_current": "Gunakan Saat Ini",
+        "lock_dialog": {
+          "title": "Kunci ke Tower NR-SA?",
+          "description": "Ini akan mengunci modem Anda ke NR ARFCN {{arfcn}}, PCI {{pci}} (Band {{band}}). Modem hanya akan terhubung ke tower ini dan mungkin akan terputus sebentar saat proses perpindahan.",
+          "confirm": "Kunci Tower"
+        },
+        "unlock_dialog": {
+          "title": "Buka Kunci Tower NR-SA?",
+          "description": "Ini akan menghapus penguncian tower NR-SA. Modem akan bebas memilih tower yang tersedia dan mungkin akan terputus sebentar saat proses perpindahan.",
+          "confirm": "Hapus Penguncian"
+        },
+        "toast": {
+          "failover_in_progress_title": "Pemeriksaan failover sedang berlangsung",
+          "failover_in_progress_description": "Pemeriksaan kualitas sinyal sedang berjalan, harap tunggu.",
+          "incomplete_title": "Kolom belum lengkap",
+          "incomplete_description": "Harap isi semua kolom tower yang diperlukan sebelum mengunci.",
+          "lock_success": "Penguncian tower NR-SA berhasil diterapkan",
+          "lock_error": "Gagal mengunci tower — periksa koneksi modem",
+          "unlock_success": "Penguncian tower NR-SA berhasil dilepas",
+          "unlock_error": "Gagal menghapus penguncian tower",
+          "filled_current": "Diisi dari tower yang sedang terhubung",
+          "no_active_connection": "Tidak ada koneksi 5G SA aktif"
+        }
+      },
+      "schedule": {
+        "title": "Jadwal Penguncian Tower",
+        "description": "Atur waktu tertentu untuk mengaktifkan atau menonaktifkan penguncian tower.",
+        "enable_label": "Aktifkan Penguncian Terjadwal",
+        "enable_tooltip": "Jadwalkan penguncian tower untuk aktif atau nonaktif secara otomatis pada waktu tertentu.",
+        "enable_info_aria": "Info jadwal penguncian tower",
+        "start_time_label": "Waktu Mulai",
+        "end_time_label": "Waktu Selesai",
+        "repeat_on_label": "Ulangi Pada",
+        "repeat_on_aria": "Hari dalam seminggu",
+        "day_labels": {
+          "sun": "Min",
+          "mon": "Sen",
+          "tue": "Sel",
+          "wed": "Rab",
+          "thu": "Kam",
+          "fri": "Jum",
+          "sat": "Sab"
+        },
+        "toast_no_targets": "Tidak ada target penguncian yang dikonfigurasi"
+      }
+    },
+    "frequency_locking": {
+      "page": {
+        "title": "Penguncian Frekuensi",
+        "description": "Kunci ke EARFCN/NR-ARFCN tertentu. Eksperimental — gunakan dengan hati-hati."
+      },
+      "lte": {
+        "title": "Penguncian Frekuensi LTE",
+        "description_loading": "Kunci ke frekuensi channel LTE tertentu.",
+        "description": "Kunci ke frekuensi channel LTE tertentu. Maksimal 2 channel.",
+        "tower_lock_active": "Penguncian Tower LTE sedang aktif. Nonaktifkan terlebih dahulu sebelum menggunakan penguncian frekuensi.",
+        "experimental_warning": "Fitur Eksperimental",
+        "enabled_label": "Penguncian Frekuensi LTE Aktif",
+        "enabled_tooltip": "Mengunci ke frekuensi yang tidak didukung dapat menyebabkan modem restart secara tiba-tiba. Tidak dapat digunakan bersamaan dengan Penguncian Tower.",
+        "enabled_info_aria": "Info penguncian frekuensi LTE",
+        "channel_label": "Channel (EARFCN)",
+        "channel_label_optional": "Channel 2 (Opsional)",
+        "channel_placeholder": "Masukkan EARFCN",
+        "channel_placeholder_2": "Masukkan EARFCN 2",
+        "use_current": "Gunakan Saat Ini",
+        "error_title": "Gagal memuat status penguncian frekuensi",
+        "lock_dialog": {
+          "title": "Kunci Frekuensi LTE?",
+          "description_single": "Ini akan mengunci modem Anda ke EARFCN {{earfcn}}. Modem hanya akan menggunakan frekuensi ini dan mungkin akan terputus sebentar.",
+          "description_multi": "Ini akan mengunci modem Anda ke EARFCN {{earfcns}}. Modem hanya akan menggunakan frekuensi ini dan mungkin akan terputus sebentar.",
+          "confirm": "Kunci Frekuensi"
+        },
+        "unsupported_dialog": {
+          "title": "Peringatan Frekuensi Tidak Didukung",
+          "description_prefix": "Frekuensi yang Anda masukkan cocok dengan band yang tidak didukung oleh modem Anda. Mengunci ke frekuensi yang tidak didukung dapat menyebabkan modem restart secara tiba-tiba.",
+          "matched_bands_label": "Band yang cocok:",
+          "supported_bands_label": "Band yang didukung:",
+          "confirm": "Tetap Kunci",
+          "confirm_prompt": "Apakah Anda yakin ingin melanjutkan?",
+          "unknown": "Tidak Diketahui"
+        },
+        "unlock_dialog": {
+          "title": "Buka Kunci Frekuensi LTE?",
+          "description": "Ini akan menghapus penguncian frekuensi LTE. Modem akan bebas menggunakan frekuensi yang tersedia dan mungkin akan terputus sebentar.",
+          "confirm": "Hapus Penguncian"
+        },
+        "toast": {
+          "no_frequencies_title": "Tidak ada frekuensi yang dimasukkan",
+          "no_frequencies_description": "Masukkan setidaknya satu nomor channel sebelum mengaktifkan.",
+          "lock_success": "Penguncian frekuensi LTE berhasil diterapkan",
+          "lock_error": "Gagal menerapkan penguncian frekuensi LTE",
+          "unlock_success": "Penguncian frekuensi LTE berhasil dilepas",
+          "unlock_error": "Gagal melepas penguncian frekuensi LTE",
+          "filled_current": "Diisi dari tower yang sedang terhubung",
+          "no_active_connection": "Tidak ada koneksi LTE aktif"
+        }
+      },
+      "nr": {
+        "title": "Penguncian Frekuensi NR5G",
+        "description_loading": "Kunci ke frekuensi NR tertentu (NR-ARFCN).",
+        "description": "Kunci ke frekuensi NR tertentu. Mendukung hingga 32 entri (4 ditampilkan).",
+        "tower_lock_active": "Penguncian Tower NR sedang aktif. Nonaktifkan terlebih dahulu sebelum menggunakan penguncian frekuensi.",
+        "experimental_warning": "Fitur Eksperimental",
+        "enabled_label": "Penguncian Frekuensi NR5G Aktif",
+        "enabled_tooltip": "Tidak dapat digunakan bersamaan dengan Penguncian Tower NR (AT+QNWLOCK). SCS dideteksi otomatis dari jenis band tetapi dapat diubah manual.",
+        "enabled_info_aria": "Info penguncian frekuensi NR5G",
+        "arfcn_label": "NR-ARFCN",
+        "arfcn_label_n": "NR-ARFCN {{n}}",
+        "arfcn_placeholder": "Masukkan {{label}}",
+        "scs_label": "SCS",
+        "scs_label_n": "SCS {{n}}",
+        "scs_placeholder": "SCS",
+        "scs_slot_aria": "Slot {{label}} {{n}}",
+        "use_current": "Gunakan Saat Ini",
+        "error_title": "Gagal memuat status penguncian frekuensi",
+        "lock_dialog": {
+          "title": "Kunci Frekuensi NR5G?",
+          "description_single": "Ini akan mengunci modem Anda ke NR-ARFCN {{arfcn}} (SCS {{scs}} kHz). Modem hanya akan menggunakan frekuensi ini dan mungkin akan terputus sebentar.",
+          "description_multi": "Ini akan mengunci modem Anda ke {{count}} frekuensi NR. Modem hanya akan menggunakan frekuensi ini dan mungkin akan terputus sebentar.",
+          "confirm": "Kunci Frekuensi"
+        },
+        "unsupported_dialog": {
+          "title": "Peringatan Band Tidak Didukung",
+          "description_prefix": "NR-ARFCN yang Anda masukkan cocok dengan band yang tidak didukung oleh modem Anda. Mengunci ke frekuensi yang tidak didukung dapat menyebabkan perilaku yang tidak terduga.",
+          "matched_bands_label": "Band yang cocok:",
+          "supported_bands_label": "Band yang didukung:",
+          "confirm": "Tetap Kunci",
+          "confirm_prompt": "Apakah Anda yakin ingin melanjutkan?",
+          "unknown": "Tidak Diketahui"
+        },
+        "unlock_dialog": {
+          "title": "Buka Kunci Frekuensi NR5G?",
+          "description": "Ini akan menghapus penguncian frekuensi NR5G. Modem akan bebas menggunakan frekuensi NR yang tersedia dan mungkin akan terputus sebentar.",
+          "confirm": "Buka Kunci"
+        },
+        "toast": {
+          "no_frequencies_title": "Tidak ada frekuensi yang dimasukkan",
+          "no_frequencies_description": "Masukkan setidaknya satu NR-ARFCN dan SCS sebelum mengaktifkan.",
+          "missing_scs_title": "SCS tidak diisi",
+          "missing_scs_description": "Setiap NR-ARFCN memerlukan nilai SCS. Silakan pilih subcarrier spacing.",
+          "lock_success": "Penguncian frekuensi NR5G berhasil diterapkan",
+          "lock_error": "Gagal menerapkan penguncian frekuensi NR5G",
+          "unlock_success": "Penguncian frekuensi NR5G berhasil dilepas",
+          "unlock_error": "Gagal melepas penguncian frekuensi NR5G",
+          "filled_current": "Diisi dari NR PCell aktif",
+          "no_active_connection": "Tidak ada sel NR aktif"
+        }
+      },
+      "band_match": {
+        "no_match": "Tidak ditemukan band yang cocok untuk {{label}}",
+        "possible_prefix": "Band yang mungkin: ",
+        "unsupported_suffix": " — tidak didukung",
+        "no_match_label": {
+          "this_channel": "channel ini",
+          "this_nr_arfcn": "NR-ARFCN ini",
+          "this_frequency": "frekuensi ini"
+        }
+      }
+    }
+  },
+  "cell_scanner": {
+    "page": {
+      "title": "Pemindai Sel",
+      "description": "Pindai tower terdekat di semua operator. Hasil terbaik tanpa SIM aktif."
+    },
+    "scanner": {
+      "scanning": "Memindai...",
+      "start_new_scan": "Mulai Pemindaian Baru",
+      "download_csv_aria": "Unduh CSV",
+      "empty_title": "Tidak Ada Hasil Pemindaian",
+      "empty_description": "Temukan tower terdekat di semua operator dan band.",
+      "scanning_title": "Memindai tower terdekat...",
+      "scanning_hint": "Biasanya memakan waktu 2-3 menit. Operasi modem lainnya dijeda selama pemindaian.",
+      "scanning_nav_warning": "Jangan tutup tab atau muat ulang halaman.",
+      "scanning_elapsed_aria": "Waktu pemindaian berlalu: {{time}}",
+      "error_fallback": "Pemindaian gagal",
+      "error_description": "Modem mungkin sibuk atau tidak dapat dijangkau. Periksa koneksi Anda dan coba lagi.",
+      "retry_scan": "Coba Lagi Pemindaian"
+    },
+    "result_table": {
+      "filter_placeholder": "Filter berdasarkan penyedia...",
+      "columns_button": "Kolom",
+      "column_headers": {
+        "network": "Jaringan",
+        "provider": "Penyedia",
+        "band": "Band",
+        "earfcn": "EARFCN",
+        "pci": "PCI",
+        "cell_id": "ID Sel",
+        "tac": "TAC",
+        "bandwidth": "BW",
+        "bandwidth_full": "Bandwidth",
+        "signal": "Sinyal"
+      },
+      "mcc_mnc_aria": "Detail MCC/MNC",
+      "open_menu": "Buka menu",
+      "lock_cell": "Kunci Sel",
+      "empty_row": "Tidak ada hasil ditemukan.",
+      "footer_of_total_one": "{{filtered}} dari {{total}} sel",
+      "footer_of_total_other": "{{filtered}} dari {{total}} sel",
+      "footer_total_one": "{{count}} sel ditemukan",
+      "footer_total_other": "{{count}} sel ditemukan",
+      "previous": "Sebelumnya",
+      "next": "Selanjutnya"
+    },
+    "lock_dialog": {
+      "title": "Kunci ke Sel?",
+      "description": "Ini akan mengunci modem ke sel berikut. Modem hanya akan terhubung ke sel ini sampai penguncian dihapus.",
+      "confirm": "Kunci Sel",
+      "locking": "Mengunci..."
+    },
+    "toast": {
+      "lock_success_title": "Sel Terkunci",
+      "lock_success_description": "Terkunci ke {{network_type}} PCI {{pci}} pada EARFCN {{earfcn}}",
+      "lock_error_title": "Penguncian Gagal",
+      "lock_error_unknown": "Kesalahan tidak diketahui",
+      "lock_error_connection": "Gagal terhubung ke modem"
+    },
+    "signal_badge": {
+      "good": "Baik",
+      "fair": "Cukup",
+      "bad": "Buruk",
+      "no_data": "Tidak ada data"
+    },
+    "neighbour": {
+      "page": {
+        "title": "Pemindai Sel Tetangga",
+        "description": "Analisis tower tetangga yang terlihat dari sel yang sedang melayani."
+      },
+      "filter_placeholder": "Filter berdasarkan jenis sel...",
+      "column_headers": {
+        "network": "Jaringan",
+        "cell_type": "Jenis Sel",
+        "frequency": "Frekuensi",
+        "pci": "PCI",
+        "signal": "Sinyal"
+      },
+      "toast_lock_success_description": "Terkunci ke LTE PCI {{pci}} pada EARFCN {{earfcn}}",
+      "footer_count_one": "{{count}} sel ditemukan",
+      "footer_count_other": "{{count}} sel ditemukan"
+    },
+    "frequency_calculator": {
+      "page": {
+        "title": "Kalkulator Frekuensi",
+        "description": "Konversi antara EARFCN/NR-ARFCN, frekuensi, dan band untuk LTE dan 5G NR."
+      },
+      "calculator": {
+        "title": "Kalkulator E/ARFCN",
+        "description": "Masukkan nomor channel untuk menghitung informasi frekuensi dan band.",
+        "tabs": {
+          "auto": "Otomatis",
+          "lte": "LTE",
+          "nr": "NR"
+        },
+        "input_label_lte": "E-ARFCN",
+        "input_label_nr": "NR-ARFCN",
+        "input_label_auto": "Nilai E/ARFCN",
+        "input_placeholder": "Masukkan nomor channel",
+        "calculate": "Hitung",
+        "error_no_input": "Silakan masukkan nilai E/ARFCN",
+        "error_invalid": "Silakan masukkan angka yang valid",
+        "error_no_band": "Tidak dapat mengidentifikasi band untuk nilai E/ARFCN ini",
+        "error_calculation": "Kesalahan perhitungan: {{message}}",
+        "result_heading": "Hasil",
+        "network_type_label": "Jenis Jaringan",
+        "earfcn_label": "EARFCN",
+        "nr_arfcn_label": "NR-ARFCN",
+        "frequency_label": "Frekuensi",
+        "possible_bands_heading": "Band Operasi yang Mungkin",
+        "duplex_mode_label": "Mode Duplex",
+        "downlink_range_label": "Rentang Downlink",
+        "uplink_range_label": "Rentang Uplink",
+        "earfcn_range_label": "Rentang EARFCN",
+        "nr_arfcn_range_label": "Rentang NR-ARFCN",
+        "dl_frequency_label": "Frekuensi DL",
+        "ul_frequency_label": "Frekuensi UL",
+        "ul_earfcn_label": "UL EARFCN",
+        "downlink_only": "Hanya Downlink",
+        "calculation_method_prefix": "Metode perhitungan: ",
+        "calculation_method_nr": "3GPP TS 38.104 Section 5.4.2.1",
+        "calculation_method_lte": "3GPP TS 36.101 Section 5.7"
+      },
+      "history": {
+        "title": "Riwayat Perhitungan",
+        "description": "Perhitungan terbaru Anda disimpan secara lokal.",
+        "clear": "Hapus",
+        "empty": "Belum ada riwayat perhitungan.",
+        "bands_label": "Band: ",
+        "no_timestamp": "Tidak ada stempel waktu",
+        "delete_aria": "Hapus entri riwayat"
+      }
+    }
+  },
+  "antennas": {
+    "statistics": {
+      "page": {
+        "title": "Statistik Antena",
+        "description": "Metrik sinyal per antena untuk setiap rantai penerima. Bandingkan kualitas sinyal pada port antena Main, Diversity, dan MIMO."
+      },
+      "lte_card": {
+        "title": "Sinyal LTE",
+        "description": "Metrik per antena untuk 4G LTE",
+        "empty_title": "Tidak Ada Sinyal LTE",
+        "empty_description": "Metrik antena akan muncul saat 4G LTE aktif."
+      },
+      "nr_card": {
+        "title": "Sinyal NR5G",
+        "description": "Metrik per antena untuk 5G NR",
+        "empty_title": "Tidak Ada Sinyal NR5G",
+        "empty_description": "Metrik antena akan muncul saat 5G NR aktif."
+      },
+      "signal_strength_aria": "Kekuatan sinyal {{metric}}"
+    },
+    "ports": {
+      "main_name": "Main",
+      "main_description": "Antena utama kirim/terima (ANT0)",
+      "diversity_name": "Diversity",
+      "diversity_description": "Antena diversity / penerima (ANT1)",
+      "mimo3_name": "MIMO 3",
+      "mimo3_description": "MIMO spatial stream 1 (ANT2)",
+      "mimo4_name": "MIMO 4",
+      "mimo4_description": "MIMO spatial stream 2 (ANT3)"
+    },
+    "quality": {
+      "excellent": "Sangat Baik",
+      "good": "Baik",
+      "fair": "Cukup",
+      "poor": "Buruk",
+      "none": "Tidak Ada"
+    },
+    "alignment": {
+      "page": {
+        "title": "Penyelarasan Antena",
+        "description": "Kekuatan sinyal per antena untuk setiap rantai penerima. Rekam dan bandingkan posisi untuk menemukan arah atau penempatan terbaik."
+      },
+      "stale_warning": "Data sinyal sudah basi — modem mungkin tidak merespons.",
+      "error_warning": "Tidak dapat menjangkau modem. Data yang ditampilkan mungkin sudah usang.",
+      "empty_title": "Tidak Ada Data Antena",
+      "empty_description": "Metrik antena akan muncul saat poller modem berjalan dan melaporkan data sinyal per antena.",
+      "card": {
+        "active": "Aktif",
+        "inactive": "Nonaktif",
+        "lte_heading": "4G / LTE",
+        "lte_heading_anchor": "4G / LTE (Anchor)",
+        "nr_heading": "5G / NR",
+        "nr_heading_secondary": "5G / NR (Sekunder)"
+      },
+      "meter": {
+        "title": "Meter Penyelarasan",
+        "description_directional": "Rekam 3 sudut untuk menemukan arah terbaik. Setiap rekaman merata-ratakan {{samples}} sampel.",
+        "description_omni": "Rekam 3 posisi untuk menemukan penempatan terbaik. Setiap rekaman merata-ratakan {{samples}} sampel.",
+        "toggle_directional": "Directional",
+        "toggle_omni": "Omni",
+        "reset": "Atur Ulang",
+        "live_signal_heading": "Sinyal Langsung (Antena Utama)",
+        "lte_rsrp": "LTE RSRP",
+        "lte_sinr": "LTE SINR",
+        "nr_rsrp": "NR RSRP",
+        "nr_sinr": "NR SINR",
+        "slot_aria": "Slot {{n}}: {{label}} — {{status}}",
+        "slot_status_recording": "merekam",
+        "slot_status_recorded": "terekam",
+        "slot_status_recorded_best": "terekam, hasil terbaik",
+        "slot_status_empty": "kosong",
+        "angle_placeholder": "Sudut…",
+        "location_placeholder": "Lokasi…",
+        "best_badge": "Terbaik",
+        "sample_progress": "Sampel {{current}} dari {{total}}",
+        "cancel": "Batal",
+        "recorded_at": "Direkam {{time}}",
+        "not_recorded": "Belum direkam",
+        "record_angle": "Rekam Sudut",
+        "record_position": "Rekam Posisi",
+        "recommended_prefix": "Rekomendasi: ",
+        "recommendation_directional": "Sudut ini menghasilkan sinyal komposit terkuat dari semua posisi yang direkam.",
+        "recommendation_omni": "Lokasi ini menghasilkan sinyal komposit terkuat dari semua posisi yang direkam.",
+        "recommendation_remaining_one": " Rekam {{count}} slot tersisa untuk perbandingan yang lebih lengkap.",
+        "recommendation_remaining_other": " Rekam {{count}} slot tersisa untuk perbandingan yang lebih lengkap.",
+        "lte_label": "LTE",
+        "nr_label": "NR",
+        "rsrp_label": "RSRP",
+        "sinr_label": "SINR",
+        "default_positions": {
+          "a": "Posisi A",
+          "b": "Posisi B",
+          "c": "Posisi C"
+        },
+        "radio_mode": {
+          "lte": "4G LTE",
+          "nr": "5G SA",
+          "endc": "5G NSA (EN-DC)"
+        }
+      }
+    }
+  },
+  "core_settings": {
+    "basic": {
+      "page": {
+        "title": "Pengaturan Dasar Seluler",
+        "description": "Slot SIM, status radio, dan preferensi mode jaringan.",
+        "error_load": "Gagal memuat pengaturan seluler. Nilai yang ditampilkan mungkin sudah usang."
+      },
+      "radio": {
+        "card": {
+          "title": "Pengaturan Radio Modem",
+          "description": "Konfigurasi slot SIM, daya radio, jenis jaringan, dan preferensi roaming."
+        },
+        "sim_slot": {
+          "label": "Slot SIM",
+          "placeholder": "Pilih Slot SIM",
+          "options": {
+            "sim1": "SIM 1",
+            "sim2": "SIM 2"
+          }
+        },
+        "radio_power": {
+          "label": "Daya Radio",
+          "placeholder": "Pilih Mode Daya Radio",
+          "options": {
+            "low_power": "Radio Mati (Daya Rendah)",
+            "normal": "Operasi Normal",
+            "airplane": "Mode Pesawat (RF Mati)"
+          }
+        },
+        "network_type": {
+          "label": "Jenis Jaringan Pilihan",
+          "placeholder": "Pilih Jenis Jaringan",
+          "options": {
+            "auto": "Otomatis",
+            "lte": "Hanya LTE",
+            "nr5g": "Hanya 5G",
+            "lte_nr5g": "LTE + 5G"
+          }
+        },
+        "architecture": {
+          "label": "Arsitektur 5G",
+          "placeholder": "Pilih Mode 5G",
+          "options": {
+            "auto": "Otomatis (SA + NSA)",
+            "nsa": "Hanya NSA (5G melalui LTE)",
+            "sa": "Hanya SA (Standalone)"
+          }
+        },
+        "roaming": {
+          "label": "Preferensi Roaming",
+          "placeholder": "Pilih Preferensi Roaming",
+          "options": {
+            "any": "Semua Jaringan",
+            "home": "Hanya Jaringan Asal",
+            "partner": "Jaringan Mitra"
+          }
+        },
+        "reset_aria": "Atur ulang ke nilai tersimpan",
+        "toast": {
+          "success": "Pengaturan modem tersimpan",
+          "error": "Gagal menyimpan pengaturan modem",
+          "no_changes": "Tidak ada perubahan untuk disimpan"
+        }
+      },
+      "ambr": {
+        "card": {
+          "title": "Batas Kecepatan Data",
+          "description": "Kecepatan unggah dan unduh maksimum yang diizinkan operator Anda untuk setiap koneksi data. Batas ini ditetapkan oleh kebijakan jaringan operator Anda."
+        },
+        "section": {
+          "lte": "Kecepatan LTE",
+          "nr5g": "Kecepatan 5G"
+        },
+        "empty": {
+          "lte": "Tidak ada data kecepatan LTE — tidak terhubung ke LTE",
+          "nr5g": "Tidak ada data kecepatan 5G — tidak terhubung ke 5G"
+        },
+        "tooltip": {
+          "aria": "Info lebih lanjut",
+          "content": "Meskipun perangkat dapat meminta nilai AMBR tertentu, operator dapat mengabaikannya dan menerapkan batas kecepatan sendiri berdasarkan paket berlangganan, kebijakan jaringan, atau kondisi kepadatan."
+        }
+      }
+    },
+    "apn": {
+      "page": {
+        "title": "Manajemen APN",
+        "description": "Konfigurasi APN dan profil firmware operator.",
+        "error_load": "Gagal memuat pengaturan APN. Nilai yang ditampilkan mungkin sudah usang."
+      },
+      "card": {
+        "title": "Pengaturan APN",
+        "description": "Konfigurasi dan kelola Access Point Name (APN) untuk koneksi seluler Anda."
+      },
+      "fields": {
+        "active_apn": {
+          "label": "APN Aktif *",
+          "placeholder": "Masukkan APN Aktif"
+        },
+        "carrier_preset": {
+          "label": "Preset Operator",
+          "placeholder": "Pilih Preset Operator",
+          "option_none": "Tidak Ada"
+        },
+        "connection_profile": {
+          "label": "Profil Koneksi",
+          "placeholder": "Pilih Profil Koneksi",
+          "option_template": "Profil {{cid}} — {{apn}}",
+          "option_empty_apn": "(kosong)",
+          "option_active_suffix": " (Aktif)"
+        },
+        "ip_protocol": {
+          "label": "Protokol IP",
+          "placeholder": "Pilih Protokol IP",
+          "options": {
+            "ipv4v6": "IPv4 + IPv6 (Default)",
+            "ipv4": "Hanya IPv4",
+            "ipv6": "Hanya IPv6"
+          }
+        }
+      },
+      "managed_by_profile": "Pengaturan APN dikelola oleh <strong>{{profile_name}}</strong>.",
+      "managed_by_profile_fallback": "Profil SIM Kustom aktif",
+      "reset_aria": "Atur ulang ke nilai tersimpan",
+      "toast": {
+        "success": "Pengaturan APN berhasil diterapkan",
+        "error": "Gagal menerapkan pengaturan APN"
+      },
+      "mbn": {
+        "card": {
+          "title": "Profil Operator",
+          "description": "Pilih profil firmware operator mana yang aktif pada modem. Reboot diperlukan setelah perubahan."
+        },
+        "auto_select": {
+          "label": "Pilih Otomatis Profil",
+          "placeholder": "Pilih Pilihan Otomatis",
+          "options": {
+            "enabled": "Aktif",
+            "disabled": "Nonaktif"
+          }
+        },
+        "configuration": {
+          "label": "Konfigurasi Operator",
+          "placeholder": "Pilih Konfigurasi Operator",
+          "option_active_suffix": " (Aktif)"
+        },
+        "save": "Simpan Pengaturan",
+        "reset_aria": "Atur ulang ke nilai tersimpan",
+        "reboot_dialog": {
+          "title": "Reboot Diperlukan",
+          "description": "Perubahan profil operator memerlukan reboot perangkat agar berlaku. Apakah Anda ingin reboot sekarang?",
+          "cancel": "Reboot Nanti",
+          "reboot": "Reboot Sekarang",
+          "rebooting": "Memulai ulang…"
+        },
+        "toast": {
+          "auto_enabled": "Pilihan otomatis diaktifkan — reboot diperlukan",
+          "auto_disabled": "Pilihan otomatis dinonaktifkan — reboot diperlukan",
+          "profile_applied": "Profil operator diterapkan — reboot diperlukan",
+          "enable_error": "Gagal mengaktifkan pilihan otomatis",
+          "disable_error": "Gagal menonaktifkan pilihan otomatis",
+          "apply_error": "Gagal menerapkan profil operator",
+          "no_changes": "Tidak ada perubahan untuk disimpan",
+          "rebooting": "Perangkat sedang memulai ulang…",
+          "reboot_error": "Reboot gagal — mulai ulang perangkat secara manual"
+        }
+      }
+    },
+    "imei": {
+      "page": {
+        "title": "Pengaturan IMEI",
+        "description": "Lihat, ubah, atau cadangkan IMEI perangkat."
+      },
+      "settings_card": {
+        "title": "Pengaturan IMEI",
+        "description": "Ubah pengidentifikasi IMEI perangkat. Reboot diperlukan setelah perubahan. Periksa regulasi lokal Anda sebelum mengubah.",
+        "field_label": "Atur IMEI Perangkat",
+        "field_placeholder": "Masukkan IMEI Perangkat",
+        "field_description": "Mengubah IMEI memerlukan reboot perangkat agar berlaku.",
+        "length_error_one": "IMEI harus tepat 15 digit ({{count}}/15)",
+        "length_error_other": "IMEI harus tepat 15 digit ({{count}}/15)",
+        "warning_aria": "Peringatan hukum IMEI",
+        "warning_content": "Regulasi modifikasi IMEI berbeda di setiap negara. Periksa hukum lokal Anda sebelum mengubah IMEI.",
+        "write_button": "Tulis IMEI",
+        "reset_aria": "Atur ulang ke nilai tersimpan",
+        "reboot_dialog": {
+          "title": "Reboot Diperlukan",
+          "description": "Perubahan IMEI memerlukan reboot perangkat agar berlaku. Apakah Anda ingin reboot sekarang?",
+          "cancel": "Reboot Nanti",
+          "reboot": "Reboot Sekarang",
+          "rebooting": "Memulai ulang…"
+        },
+        "toast": {
+          "no_changes": "Tidak ada perubahan untuk disimpan",
+          "success": "IMEI tersimpan — reboot diperlukan untuk menerapkan",
+          "error": "Gagal menyimpan IMEI",
+          "rebooting": "Perangkat sedang memulai ulang…",
+          "reboot_error": "Reboot gagal — mulai ulang perangkat secara manual"
+        }
+      },
+      "backup_card": {
+        "title": "Cadangan IMEI Perangkat",
+        "description_loading": "Secara otomatis menyiapkan IMEI cadangan untuk perangkat Anda guna memastikan konektivitas jika ada masalah IMEI utama.",
+        "description": "Jika jaringan menolak IMEI saat ini setelah reboot, perangkat dapat secara otomatis beralih ke IMEI cadangan dan restart.",
+        "enable_label": "Aktifkan IMEI Cadangan",
+        "enable_tooltip_aria": "Info lebih lanjut",
+        "enable_tooltip_content": "Beralih ke IMEI cadangan saat IMEI utama ditolak oleh jaringan.",
+        "field_label": "Atur IMEI Cadangan",
+        "field_placeholder": "Masukkan IMEI Cadangan",
+        "field_description": "Beralih ke IMEI cadangan memerlukan reboot perangkat agar berlaku.",
+        "warning_aria": "Peringatan hukum IMEI",
+        "warning_content": "Regulasi modifikasi IMEI berbeda di setiap negara. Periksa hukum lokal Anda sebelum mengubah IMEI.",
+        "reset_aria": "Atur ulang ke nilai tersimpan",
+        "enable_dialog": {
+          "title": "Pemulihan Otomatis IMEI Cadangan",
+          "description": "Saat IMEI cadangan diaktifkan, perangkat akan secara otomatis memeriksa penolakan IMEI setelah setiap reboot setelah perubahan IMEI. Jika jaringan menolak IMEI utama, perangkat akan beralih ke IMEI cadangan dan reboot secara otomatis.",
+          "confirm": "Aktifkan Cadangan"
+        },
+        "toast": {
+          "success": "Konfigurasi IMEI cadangan tersimpan",
+          "invalid": "IMEI cadangan harus tepat 15 digit",
+          "error": "Gagal menyimpan konfigurasi cadangan",
+          "no_changes": "Tidak ada perubahan untuk disimpan"
+        }
+      },
+      "tools_card": {
+        "title": "Alat IMEI",
+        "description": "Hasilkan dan validasi nomor IMEI menggunakan algoritma Luhn. Hanya untuk tujuan edukasi.",
+        "preset_label": "Preset Perangkat",
+        "preset_description": "Pilih TAC perangkat atau masukkan prefix kustom 8–12 digit.",
+        "preset_placeholder": "Pilih perangkat",
+        "preset_custom": "Prefix Kustom",
+        "custom_prefix_label": "Prefix Kustom",
+        "custom_prefix_placeholder": "Masukkan prefix 8–12 digit",
+        "custom_prefix_error_one": "Prefix harus 8–12 digit ({{count}} dimasukkan)",
+        "custom_prefix_error_other": "Prefix harus 8–12 digit ({{count}} dimasukkan)",
+        "custom_prefix_description": "Digit yang tersisa dan digit cek dihasilkan secara otomatis.",
+        "imei_label": "IMEI",
+        "imei_placeholder": "Hasilkan atau masukkan IMEI 15 digit",
+        "imei_description": "Validasi Luhn berjalan otomatis pada 15 digit. Anda juga dapat mengetik atau menempel IMEI apa pun untuk memvalidasinya.",
+        "copy_aria": "Salin IMEI",
+        "copy_tooltip": "Salin ke clipboard",
+        "breakdown_label": "Rincian",
+        "breakdown_validity": "Validitas",
+        "breakdown_tac": "TAC (1–8)",
+        "breakdown_snr": "SNR (9–14)",
+        "breakdown_check": "Cek (15)",
+        "breakdown_valid": "IMEI Valid",
+        "breakdown_invalid": "IMEI Tidak Valid",
+        "generate_button": "Hasilkan IMEI",
+        "check_info_button": "Cek Info IMEI",
+        "copy_success": "Disalin ke clipboard"
+      }
+    },
+    "network_priority": {
+      "page": {
+        "title": "Pengaturan Prioritas Jaringan",
+        "description": "Atur urutan prioritas koneksi jaringan."
+      },
+      "card": {
+        "title": "Prioritas Jaringan",
+        "description": "Atur urutan prioritas koneksi jaringan Anda."
+      },
+      "drag_aria": "Seret untuk mengurutkan ulang",
+      "priority_label": "Prioritas {{number}}",
+      "reset_aria": "Atur ulang ke nilai tersimpan",
+      "toast": {
+        "success": "Prioritas jaringan diperbarui",
+        "error_fallback": "Gagal mengatur prioritas jaringan",
+        "no_changes": "Tidak ada perubahan untuk disimpan"
+      }
+    },
+    "fplmn": {
+      "page": {
+        "title": "Pengaturan FPLMN Perangkat",
+        "description": "Periksa dan hapus daftar jaringan terlarang pada SIM Anda."
+      },
+      "card": {
+        "title": "Jaringan yang Diblokir",
+        "description": "SIM Anda menyimpan daftar jaringan yang sebelumnya menolak perangkat Anda. Menghapus daftar ini dapat memulihkan konektivitas dan meningkatkan roaming. <link>Pelajari lebih lanjut</link>."
+      },
+      "states": {
+        "error_title": "Tidak Dapat Memeriksa",
+        "found_title": "Jaringan Terblokir Ditemukan",
+        "found_description": "SIM Anda telah memblokir satu atau lebih jaringan, yang mungkin mencegah koneksi. Disarankan untuk menghapus daftar.",
+        "found_clear": "Hapus Jaringan Terblokir",
+        "found_clearing": "Menghapus…",
+        "none_title": "Tidak Ada Jaringan Terblokir",
+        "none_description": "SIM Anda tidak memiliki jaringan terblokir. Tidak perlu tindakan.",
+        "none_refresh": "Muat Ulang Status"
+      },
+      "toast": {
+        "success": "Jaringan terblokir berhasil dihapus",
+        "error_fallback": "Gagal menghapus jaringan terblokir"
+      }
+    },
+    "info": {
+      "page": {
+        "title": "Informasi Seluler dan Radio",
+        "description": "Lihat informasi detail tentang status radio seluler perangkat Anda, termasuk kekuatan sinyal, jenis jaringan, dan status koneksi."
+      },
+      "cell_data": {
+        "card": {
+          "title": "Informasi Seluler",
+          "description": "Informasi detail tentang jaringan seluler yang terhubung."
+        },
+        "info_aria": "Info lebih lanjut",
+        "rows": {
+          "isp": "ISP",
+          "apn": "Access Point Name (APN)",
+          "apn_edit": "Edit",
+          "network_type": "Jenis Jaringan",
+          "cell_id": "ID Sel",
+          "cell_id_tooltip_row": "ID {{label}}:",
+          "sector_tooltip": "Sektor:",
+          "tac": "Tracking Area Code",
+          "tac_hex_tooltip": "Hex:",
+          "total_bandwidth": "Total Bandwidth yang Digunakan",
+          "carrier_aggregation": "Carrier Aggregation",
+          "active_mimo": "MIMO Aktif",
+          "active_mimo_link": "Per Antena",
+          "wan_ipv4": "WAN IPv4",
+          "wan_ipv6": "WAN IPv6",
+          "primary_dns": "DNS Primer",
+          "primary_dns_ipv4": "DNS Primer (IPv4)",
+          "primary_dns_ipv6": "DNS Primer (IPv6)",
+          "secondary_dns": "DNS Sekunder",
+          "secondary_dns_ipv4": "DNS Sekunder (IPv4)",
+          "secondary_dns_ipv6": "DNS Sekunder (IPv6)"
+        },
+        "network_type_values": {
+          "nsa": "5G NR + LTE",
+          "sa": "5G NR SA",
+          "lte": "LTE"
+        },
+        "carrier_aggregation": {
+          "lte_carriers_one": "LTE ({{count}} carrier)",
+          "lte_carriers_other": "LTE ({{count}} carrier)",
+          "nr_carriers_one": "NR ({{count}} carrier)",
+          "nr_carriers_other": "NR ({{count}} carrier)",
+          "lte_anchor": "LTE",
+          "nr_leg": "NR",
+          "inactive": "Tidak Aktif"
+        }
+      },
+      "active_bands": {
+        "card_title": "Band Seluler Aktif",
+        "card_description_loading": "Informasi detail tentang band seluler yang sedang aktif.",
+        "card_description_one": "{{count}} carrier aktif. Perluas setiap band untuk metrik sinyal detail.",
+        "card_description_other": "{{count}} carrier aktif. Perluas setiap band untuk metrik sinyal detail.",
+        "empty": "Tidak ada komponen carrier aktif terdeteksi. Data carrier aggregation diperbarui setiap ~30 detik.",
+        "metrics": {
+          "rsrp": "RSRP",
+          "rsrq": "RSRQ",
+          "snr": "SNR",
+          "sinr": "SINR",
+          "rssi": "RSSI"
+        },
+        "info": {
+          "band_name": "Nama Band",
+          "ul_frequency": "Frekuensi UL",
+          "dl_frequency": "Frekuensi DL",
+          "bandwidth": "Bandwidth",
+          "pci": "PCI"
+        }
+      }
+    }
+  }
+}

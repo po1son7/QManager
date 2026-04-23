@@ -1,0 +1,61 @@
+#!/bin/sh /etc/rc.common
+# =============================================================================
+# qmanager_wol_fix — Init Script: Ethernet WoL LED Fix Persistence
+# =============================================================================
+# Re-arms the Wake-on-LAN LED fix after boot when the user has opted in.
+# Reads UCI quecmanager.network.disable_wol — if set to 1, runs
+# `ethtool -s eth0 wol d` to keep RJ45 port LEDs working on carrier boards
+# using QCA8081 PHYs (e.g. rework.network 5G2PHY).
+#
+# Non-procd: runs once at boot and exits (mirrors qmanager_eth_link).
+# Idempotent: skips apply when current Wake-on mode is already 'd'.
+#
+# Usage:
+#   /etc/init.d/qmanager_wol_fix start|enable|disable
+#
+# Install location: /etc/init.d/qmanager_wol_fix
+# =============================================================================
+
+START=99
+STOP=10
+
+ETH_INTERFACE="eth0"
+
+start() {
+    # Guard: UCI flag must be set to 1
+    disable_wol=$(uci get quecmanager.network.disable_wol 2>/dev/null)
+    if [ "$disable_wol" != "1" ]; then
+        return 0
+    fi
+
+    # Guard: ethtool must be available
+    if ! command -v ethtool >/dev/null 2>&1; then
+        logger -t qmanager_wol_fix "ethtool not found — skipping"
+        return 0
+    fi
+
+    # Guard: eth0 must exist
+    if [ ! -d "/sys/class/net/$ETH_INTERFACE" ]; then
+        logger -t qmanager_wol_fix "interface $ETH_INTERFACE not found — skipping"
+        return 0
+    fi
+
+    # Idempotency check: skip if WoL is already disabled
+    eth_output=$(ethtool "$ETH_INTERFACE" 2>/dev/null)
+    current_wol=$(printf '%s' "$eth_output" | grep "Wake-on:" | grep -v "Supports" | awk '{print $2}')
+    if [ "$current_wol" = "d" ]; then
+        logger -t qmanager_wol_fix "Wake-on already disabled — skip"
+        return 0
+    fi
+
+    # Apply the WoL disable
+    if ethtool -s "$ETH_INTERFACE" wol d 2>/dev/null; then
+        logger -t qmanager_wol_fix "Wake-on-LAN disabled (was: ${current_wol:-unknown})"
+    else
+        logger -t qmanager_wol_fix "ethtool wol d failed — skipping"
+    fi
+}
+
+stop() {
+    :
+}

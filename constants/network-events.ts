@@ -33,4 +33,5 @@ export const EVENT_TAB_CATEGORIES: Record<NetworkEventType, EventTabCategory> =
     config_restore_section_failed: "dataConnection",
     config_restore_section_skipped: "dataConnection",
     config_restore_completed: "dataConnection",
+    wol_changed: "dataConnection",
   };

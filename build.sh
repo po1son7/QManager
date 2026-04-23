@@ -32,6 +32,32 @@ mkdir -p "$STAGING_DIR"
 step "Copying frontend build output..."
 cp -r "$OUT_DIR" "$STAGING_DIR/out"
 
+# Strip non-bundled locales. BUNDLED_CODES in lib/i18n/available-languages.ts
+# is the single source of truth — packs marked bundled: false are downloaded
+# from the remote manifest at runtime (see `Language Packs` in CLAUDE.md).
+# Shipping them here wastes firmware space AND defeats the manifest update
+# path (the user's Languages card wouldn't be able to update them).
+BUNDLED_CODES="en zh-CN"
+LOCALES_OUT="$STAGING_DIR/out/locales"
+if [ -d "$LOCALES_OUT" ]; then
+  step "Filtering bundled locales (keeping: $BUNDLED_CODES)..."
+  STRIPPED=0
+  for locale_dir in "$LOCALES_OUT"/*/; do
+    [ -d "$locale_dir" ] || continue
+    code="$(basename "$locale_dir")"
+    keep=0
+    for bc in $BUNDLED_CODES; do
+      [ "$code" = "$bc" ] && { keep=1; break; }
+    done
+    if [ "$keep" -eq 0 ]; then
+      rm -rf "$locale_dir"
+      STRIPPED=$((STRIPPED + 1))
+      printf "  Stripped: %s\n" "$code"
+    fi
+  done
+  [ "$STRIPPED" -eq 0 ] && printf "  (no non-bundled locales to strip)\n"
+fi
+
 step "Copying backend scripts..."
 mkdir -p "$STAGING_DIR/scripts"
 for item in "$SCRIPTS_DIR"/*; do

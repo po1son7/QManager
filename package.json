@@ -1,6 +1,6 @@
 {
   "name": "qmanager",
-  "version": "v0.1.20",
+  "version": "v0.1.21-test1",
   "private": true,
   "scripts": {
     "dev": "bun --bun next dev",
@@ -8,6 +8,7 @@
     "start": "bun --bun next start",
     "lint": "eslint",
     "package": "bun --bun next build && bash build.sh",
+    "package:lang": "bun run scripts-dev/build-lang-pack.ts",
     "i18n:check": "bun run lib/i18n/check.ts",
     "test:i18n": "bun test lib/i18n"
   },

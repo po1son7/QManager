@@ -526,7 +526,7 @@ function VideoOptimizerForm({
                   onChange={(e) => setRepeatsText(e.target.value)}
                   disabled={isSaving}
                   aria-invalid={!repeatsValid}
-                  className="w-24"
+                  className="w-24 max-w-xs"
                 />
               </Field>
 

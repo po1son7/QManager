@@ -1,0 +1,44 @@
+{
+  "actions": {
+    "save": "Salva",
+    "cancel": "Annulla",
+    "confirm": "Conferma",
+    "apply": "Applica",
+    "close": "Chiudi",
+    "retry": "Riprova",
+    "reboot": "Riavvia",
+    "log_out": "Esci",
+    "reboot_device": "Riavvia il dispositivo",
+    "reconnect_modem": "Riconnetti modem",
+    "change_display_name": "Modifica nome visualizzato",
+    "change_password": "Cambia password"
+  },
+  "state": {
+    "loading": "Caricamento…",
+    "saving": "Salvataggio…",
+    "applying": "Applicazione…",
+    "disconnecting": "Disconnessione…",
+    "reconnecting": "Riconnessione…",
+    "installing": "Installazione…",
+    "removing": "Rimozione…",
+    "enabled": "Abilita",
+    "disabled": "Disabilita",
+    "on": "Attivo",
+    "off": "Disattivo"
+  },
+  "time": {
+    "just_now": "Proprio adesso",
+    "now": "Ora",
+    "unknown": "Sconosciuto",
+    "minutes_ago_one": "{{count}}m fa",
+    "minutes_ago_other": "{{count}}m fa",
+    "hours_ago_one": "{{count}}h fa",
+    "hours_ago_other": "{{count}}h fa",
+    "days_ago_one": "{{count}}d fa",
+    "days_ago_other": "{{count}}d fa"
+  },
+  "language": {
+    "label": "Lingua",
+    "switch_aria": "Cambia lingua"
+  }
+}

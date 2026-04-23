@@ -9,7 +9,7 @@ Help translate QManager into your language. No coding required — just edit JSO
 3. Translate the **values** in each JSON file (never the keys).
 4. Register the language in `lib/i18n/available-languages.ts`.
 5. Run `bun run i18n:check`.
-6. Open a pull request.
+6. Open a pull request **against the `development-home` branch** (not `main`).
 
 ## 1. Set up
 
@@ -78,7 +78,7 @@ Open a pull request to the `development-home` branch. CI runs `bun run i18n:chec
 
 ## Improving an existing translation
 
-Just edit the JSON values directly and open a PR — no other steps needed.
+Just edit the JSON values directly and open a PR against `development-home` — no other steps needed.
 
 ## Style
 
