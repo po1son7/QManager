@@ -197,7 +197,7 @@ export function LanguagePackRow({
           <div>
             <div className="text-muted-foreground">{t("languages.row.completeness_label")}</div>
             <div className="text-foreground">
-              {t("languages.row.completeness_value", { percent: Math.round(manifestEntry.completeness * 100) })}
+              {t("languages.row.completeness_value", { percent: Math.floor(manifestEntry.completeness * 100) })}
             </div>
           </div>
           <div>
