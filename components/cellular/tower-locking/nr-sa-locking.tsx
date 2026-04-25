@@ -33,7 +33,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { TbInfoCircleFilled } from "react-icons/tb";
 import { Input } from "@/components/ui/input";
-import { Loader2 } from "lucide-react";
+import { Loader2, TriangleAlertIcon } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -45,6 +45,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import {
   nrCarriersFromQcainfo,
+  formatCarrierLabel,
+  defaultScsForBand,
+  compositeValue,
+  parseCompositeValue,
   type CarrierOption,
 } from "./simple-mode-utils";
 
@@ -127,6 +131,50 @@ const NRSALockingComponent = ({
     [modemData],
   );
   const hasOptions = carrierOptions.length > 0;
+
+  const handleCarrierPick = (value: string) => {
+    const parsed = parseCompositeValue(value);
+    if (!parsed) return;
+    const opt = carrierOptions.find(
+      (o) => o.earfcn === parsed.earfcn && o.pci === parsed.pci,
+    );
+    if (!opt) return;
+
+    setArfcn(String(opt.earfcn));
+    setPci(String(opt.pci));
+    setBand(String(opt.bandNumber));
+
+    // SCS resolution: trust live serving cell when picking the PCC.
+    const liveScs = modemData?.nr?.scs ?? null;
+    const liveArfcn = modemData?.nr?.arfcn ?? null;
+    const livePci = modemData?.nr?.pci ?? null;
+    const isLiveServingCell =
+      liveArfcn === opt.earfcn && livePci === opt.pci && liveScs !== null;
+
+    if (isLiveServingCell) {
+      setScs(String(liveScs));
+      setScsSource("servingcell");
+    } else {
+      const fallback = defaultScsForBand(opt.bandNumber);
+      setScs(fallback !== null ? String(fallback) : "");
+      setScsSource("band_default");
+    }
+  };
+
+  const currentArfcnComposite = useMemo(() => {
+    const aNum = parseInt(arfcn, 10);
+    const pNum = parseInt(pci, 10);
+    if (Number.isNaN(aNum) || Number.isNaN(pNum)) return "";
+    return compositeValue(aNum, pNum);
+  }, [arfcn, pci]);
+
+  const arfcnInList = useMemo(
+    () =>
+      carrierOptions.find(
+        (o) => compositeValue(o.earfcn, o.pci) === currentArfcnComposite,
+      ),
+    [carrierOptions, currentArfcnComposite],
+  );
 
   // Derive enabled state from modem state or config
   const isEnabled = modemState?.nr_locked ?? config?.nr_sa?.enabled ?? false;
@@ -313,14 +361,47 @@ const NRSALockingComponent = ({
                     <div className="grid grid-cols-2 gap-4">
                       <Field>
                         <FieldLabel htmlFor="nrarfcn1">{t("cell_locking.tower_locking.nr_sa.arfcn_label")}</FieldLabel>
-                        <Input
-                          id="nrarfcn1"
-                          type="text"
-                          placeholder={t("cell_locking.tower_locking.nr_sa.arfcn_placeholder")}
-                          value={arfcn}
-                          onChange={(e) => setArfcn(e.target.value)}
-                          disabled={isDisabled}
-                        />
+                        {simpleMode && hasOptions ? (
+                          <Select
+                            value={arfcnInList ? currentArfcnComposite : ""}
+                            onValueChange={handleCarrierPick}
+                            disabled={isDisabled}
+                          >
+                            <SelectTrigger id="nrarfcn1" className="w-full">
+                              {arfcnInList ? (
+                                <SelectValue />
+                              ) : arfcn && pci ? (
+                                <span className="italic text-muted-foreground line-clamp-1">
+                                  {t("cell_locking.tower_locking.nr_sa.simple_mode.custom_value_label", {
+                                    arfcn,
+                                    pci,
+                                  })}
+                                </span>
+                              ) : (
+                                <SelectValue placeholder={t("cell_locking.tower_locking.nr_sa.simple_mode.select_placeholder")} />
+                              )}
+                            </SelectTrigger>
+                            <SelectContent>
+                              {carrierOptions.map((opt) => {
+                                const value = compositeValue(opt.earfcn, opt.pci);
+                                return (
+                                  <SelectItem key={value} value={value}>
+                                    {formatCarrierLabel(opt)}
+                                  </SelectItem>
+                                );
+                              })}
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <Input
+                            id="nrarfcn1"
+                            type="text"
+                            placeholder={t("cell_locking.tower_locking.nr_sa.arfcn_placeholder")}
+                            value={arfcn}
+                            onChange={(e) => setArfcn(e.target.value)}
+                            disabled={isDisabled}
+                          />
+                        )}
                       </Field>
                       <Field>
                         <FieldLabel htmlFor="nrpci">{t("cell_locking.tower_locking.nr_sa.pci_label")}</FieldLabel>
@@ -347,7 +428,25 @@ const NRSALockingComponent = ({
                         />
                       </Field>
                       <Field>
-                        <FieldLabel htmlFor="scs">{t("cell_locking.tower_locking.nr_sa.scs_label")}</FieldLabel>
+                        <div className="flex items-center justify-between gap-2">
+                          <FieldLabel htmlFor="scs">{t("cell_locking.tower_locking.nr_sa.scs_label")}</FieldLabel>
+                          {simpleMode && scsSource === "band_default" && band && (
+                            <TooltipProvider delayDuration={200}>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="cursor-help">
+                                    <TriangleAlertIcon className="size-3.5 text-warning" aria-hidden="true" />
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  {t("cell_locking.tower_locking.nr_sa.simple_mode.scs_band_default_warning", {
+                                    band,
+                                  })}
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          )}
+                        </div>
                         <Select
                           value={scs}
                           onValueChange={(v) => {
