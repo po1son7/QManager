@@ -189,14 +189,14 @@ function renderBody({ data, isLoading, isStale, error, t }: BodyProps) {
   const signalLine = formatSignalLine(data.signal, t, reachable);
 
   const uptime = formatUptime(data.uptime_seconds);
-  const uptimeText = t(`overview.uptime.${uptime.key}`, uptime as never);
+  const uptimeText = t(`overview.uptime.${uptime.key}`, { ...uptime });
 
   const rowsMutedClass = reachable ? "" : "text-muted-foreground";
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5" aria-live="polite" aria-atomic="true">
       {/* Connection state row */}
-      <div className="flex flex-wrap items-center gap-2" aria-live="polite">
+      <div className="flex flex-wrap items-center gap-2">
         <Badge variant="outline" className={badge.classes}>
           <badge.Icon
             className={`size-3 ${badge.spin ? "animate-spin" : ""}`}
