@@ -13,8 +13,6 @@ import type {
   ServiceStatus,
 } from "@/types/modem-status";
 
-export type PublicOverviewState = "ok" | "setup_required" | "unavailable";
-
 export interface PublicOverviewNetwork {
   type: NetworkType;
   service_status: ServiceStatus;
@@ -56,3 +54,5 @@ export type PublicOverview =
   | PublicOverviewOk
   | PublicOverviewSetupRequired
   | PublicOverviewUnavailable;
+
+export type PublicOverviewState = PublicOverview["state"];
