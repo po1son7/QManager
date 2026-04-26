@@ -97,6 +97,7 @@ const EthernetStatusCard = () => {
           duplex: data.duplex,
           auto_negotiation: data.auto_negotiation,
           speed_limit: data.speed_limit,
+          supports_2500: data.supports_2500,
         });
       }
     } catch {
@@ -177,6 +178,7 @@ const EthernetStatusCard = () => {
                   duplex: pollData.duplex,
                   auto_negotiation: pollData.auto_negotiation,
                   speed_limit: pollData.speed_limit,
+                  supports_2500: pollData.supports_2500,
                 });
                 setError(null);
                 hasDataRef.current = true;
