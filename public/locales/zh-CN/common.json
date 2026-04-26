@@ -43,7 +43,7 @@
   },
   "overview": {
     "title": "欢迎使用 QManager",
-    "tagline": "实时调制解调器状态 — 登录以使用完整功能",
+    "tagline": "实时调制解调器状态",
     "login_button": "登录",
     "field": {
       "carrier": "运营商",

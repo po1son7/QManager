@@ -43,7 +43,7 @@
   },
   "overview": {
     "title": "Welcome to QManager",
-    "tagline": "Live modem status — log in for full controls",
+    "tagline": "Live modem status",
     "login_button": "Login",
     "field": {
       "carrier": "Carrier",
