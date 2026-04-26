@@ -65,11 +65,6 @@ export function defaultScsForBand(bandNumber: number): number | null {
   return null;
 }
 
-export function formatCarrierLabel(opt: CarrierOption): string {
-  const base = `${opt.earfcn} (${opt.band})`;
-  return opt.rsrp !== null ? `${base} · ${opt.rsrp} dBm` : base;
-}
-
 export function compositeValue(earfcn: number, pci: number): string {
   return `${earfcn}:${pci}`;
 }

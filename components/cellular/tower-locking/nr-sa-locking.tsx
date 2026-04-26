@@ -45,12 +45,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import {
   nrCarriersFromQcainfo,
-  formatCarrierLabel,
   defaultScsForBand,
   compositeValue,
   parseCompositeValue,
   type CarrierOption,
 } from "./simple-mode-utils";
+import { CarrierLabel } from "./carrier-label";
 
 import type {
   TowerLockConfig,
@@ -387,7 +387,7 @@ const NRSALockingComponent = ({
                                 const value = compositeValue(opt.earfcn, opt.pci);
                                 return (
                                   <SelectItem key={value} value={value}>
-                                    {formatCarrierLabel(opt)}
+                                    <CarrierLabel opt={opt} />
                                   </SelectItem>
                                 );
                               })}

@@ -52,11 +52,11 @@ import {
 } from "@/components/ui/select";
 import {
   lteCarriersFromQcainfo,
-  formatCarrierLabel,
   compositeValue,
   parseCompositeValue,
   type CarrierOption,
 } from "./simple-mode-utils";
+import { CarrierLabel } from "./carrier-label";
 
 const STORAGE_KEY_LTE_SIMPLE_MODE = "qmanager_tower_lte_simple_mode";
 
@@ -261,7 +261,7 @@ const LTELockingComponent = ({
             return (
               <SelectItem key={value} value={value} disabled={disabled}>
                 <span className="flex items-center gap-2">
-                  <span>{formatCarrierLabel(opt)}</span>
+                  <CarrierLabel opt={opt} />
                   {disabled && (
                     <span className="text-xs text-muted-foreground">
                       {t("cell_locking.tower_locking.lte.simple_mode.slot_used_suffix", {
