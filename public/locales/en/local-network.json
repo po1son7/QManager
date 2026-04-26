@@ -28,6 +28,7 @@
     "option_speed_10": "10 Mbps",
     "option_speed_100": "100 Mbps",
     "option_speed_1000": "1000 Mbps",
+    "option_speed_2500": "2500 Mbps",
     "label_duplex": "Duplex",
     "alt_device_icon": "Device Icon"
   },
