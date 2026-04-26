@@ -714,6 +714,27 @@ stop_services() {
     info "All services stopped"
 }
 
+seed_uci_defaults() {
+    step "Seeding UCI defaults"
+
+    # Wake-on-LAN disabled by default (CLAUDE.md / Ethernet WoL change).
+    # Only seed when the key is ABSENT — preserves any explicit user choice
+    # (whether 0=enabled or 1=disabled) across upgrades. The qmanager_wol_fix
+    # init.d picks up the value at next boot via its existing
+    # `disable_wol == "1"` guard; no live ethtool call needed here because
+    # install ends in a reboot.
+    if ! uci -q get quecmanager.network >/dev/null 2>&1; then
+        uci set quecmanager.network=network
+    fi
+    if ! uci -q get quecmanager.network.disable_wol >/dev/null 2>&1; then
+        uci set quecmanager.network.disable_wol=1
+        info "Seeded quecmanager.network.disable_wol=1 (WoL disabled by default)"
+    else
+        info "quecmanager.network.disable_wol already set — preserving user choice"
+    fi
+    uci commit quecmanager 2>/dev/null || warn "uci commit quecmanager failed"
+}
+
 enable_services() {
     step "Enabling init.d services"
 
@@ -1168,7 +1189,7 @@ main() {
         TOTAL_STEPS=$(( TOTAL_STEPS + 2 ))                            # backup + frontend
     fi
     if [ "$DO_BACKEND" = "1" ]; then
-        TOTAL_STEPS=$(( TOTAL_STEPS + 3 ))                            # backend + bundled + cleanup
+        TOTAL_STEPS=$(( TOTAL_STEPS + 4 ))                            # backend + bundled + cleanup + seed
         [ "$DO_ENABLE" = "1" ] && TOTAL_STEPS=$(( TOTAL_STEPS + 1 ))  # enable
         if [ "$DO_START" = "1" ]; then
             TOTAL_STEPS=$(( TOTAL_STEPS + 3 ))                        # start + health + at_stack_check
@@ -1207,6 +1228,7 @@ main() {
         install_backend
         install_bundled_binaries
         cleanup_legacy_scripts
+        seed_uci_defaults
 
         [ "$DO_ENABLE" = "1" ] && enable_services
 
