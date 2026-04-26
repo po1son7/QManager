@@ -88,8 +88,16 @@ describe("formatUptime", () => {
     expect(formatUptime(NaN)).toEqual({ key: "minutes", minutes: 0 });
   });
 
-  it("rounds 23h 59m 59s up to next hour bucket cleanly", () => {
+  it("truncates sub-minute seconds at the day boundary (86399s stays in hours bucket)", () => {
     const seconds = 23 * 3600 + 59 * 60 + 59;
     expect(formatUptime(seconds)).toEqual({ key: "hours", hours: 23, minutes: 59 });
+  });
+
+  it("promotes exactly 86400s to the days bucket", () => {
+    expect(formatUptime(86400)).toEqual({ key: "days", days: 1, hours: 0 });
+  });
+
+  it("promotes exactly 3600s to the hours bucket", () => {
+    expect(formatUptime(3600)).toEqual({ key: "hours", hours: 1, minutes: 0 });
   });
 });
