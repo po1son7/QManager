@@ -952,11 +952,14 @@ migrate_tailscale_firewall_zone() {
 
     # Collect forwarding indices in reverse order (delete tail-first so the
     # in-place index renumber done by uci doesn't shift our remaining targets).
+    # Only break on src lookup failure (end-of-list). A missing dest is
+    # treated as a non-match so manual or partial UCI edits don't truncate
+    # the scan early.
     local fwd_indices="" src dest
     i=0
     while true; do
         src=$(uci -q get "firewall.@forwarding[$i].src") || break
-        dest=$(uci -q get "firewall.@forwarding[$i].dest") || break
+        dest=$(uci -q get "firewall.@forwarding[$i].dest" 2>/dev/null || echo "")
         if [ "$src" = "tailscale" ] || [ "$dest" = "tailscale" ]; then
             fwd_indices="$i $fwd_indices"
         fi
@@ -977,7 +980,10 @@ migrate_tailscale_firewall_zone() {
         i=$((i + 1))
     done
 
-    uci commit firewall || warn "uci commit firewall failed during migration"
+    if ! uci commit firewall 2>/dev/null; then
+        warn "uci commit firewall failed — legacy Tailscale zone may persist until next reboot"
+        return 0
+    fi
 
     # Best-effort: drop the dead mwan3 ipset entry if NetBird is NOT installed.
     # When NetBird is present, its CGI/init.d will re-assert the entry — there
