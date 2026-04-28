@@ -142,12 +142,12 @@ netbird_fw_ensure_zone() {
     uci set "firewall.@zone[-1].forward=ACCEPT"
     uci set "firewall.@zone[-1].device=$device"
 
-    # Forwarding: vpn → lan
+    # Forwarding: netbird → lan
     uci add firewall forwarding >/dev/null
     uci set "firewall.@forwarding[-1].src=$zone_name"
     uci set "firewall.@forwarding[-1].dest=lan"
 
-    # Forwarding: lan → vpn
+    # Forwarding: lan → netbird
     uci add firewall forwarding >/dev/null
     uci set "firewall.@forwarding[-1].src=lan"
     uci set "firewall.@forwarding[-1].dest=$zone_name"
@@ -203,7 +203,7 @@ netbird_fw_remove_zone() {
     while true; do
         val=$(uci -q get "firewall.@zone[$i].name") || break
         if [ "$val" = "$zone_name" ]; then
-            uci delete "firewall.@zone[$i]"
+            uci delete "firewall.@zone[$i]" 2>/dev/null
             break
         fi
         i=$((i + 1))
