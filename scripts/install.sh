@@ -916,6 +916,88 @@ install_bundled_binaries() {
     fi
 }
 
+# --- Tailscale Firewall Zone Migration ---------------------------------------
+# Removes the legacy 'tailscale' fw4 zone and its forwarding rules from UCI.
+# Pre-sdxpinn-patch QManager builds added this zone to make the modem reachable
+# over Tailscale's magic IP (100.x.x.x). The patched RM551E firmware now
+# handles routing/firewall for tailscale0 on its own, so the zone is dead
+# config and is removed unconditionally on every install.
+# Idempotent — fast no-op when no 'tailscale' zone exists (the steady state).
+
+migrate_tailscale_firewall_zone() {
+    step "Migrating legacy Tailscale firewall zone"
+
+    if ! command -v uci >/dev/null 2>&1; then
+        info "uci not available — skipping firewall zone migration"
+        return 0
+    fi
+
+    # Find a 'tailscale' named zone in UCI
+    local found=0 i=0 val
+    while true; do
+        val=$(uci -q get "firewall.@zone[$i].name") || break
+        if [ "$val" = "tailscale" ]; then
+            found=1
+            break
+        fi
+        i=$((i + 1))
+    done
+
+    if [ "$found" = "0" ]; then
+        info "No legacy Tailscale firewall zone present"
+        return 0
+    fi
+
+    info "Removing legacy Tailscale firewall zone and forwarding rules"
+
+    # Collect forwarding indices in reverse order (delete tail-first so the
+    # in-place index renumber done by uci doesn't shift our remaining targets).
+    local fwd_indices="" src dest
+    i=0
+    while true; do
+        src=$(uci -q get "firewall.@forwarding[$i].src") || break
+        dest=$(uci -q get "firewall.@forwarding[$i].dest") || break
+        if [ "$src" = "tailscale" ] || [ "$dest" = "tailscale" ]; then
+            fwd_indices="$i $fwd_indices"
+        fi
+        i=$((i + 1))
+    done
+    for idx in $fwd_indices; do
+        uci delete "firewall.@forwarding[$idx]" 2>/dev/null || true
+    done
+
+    # Remove the zone itself
+    i=0
+    while true; do
+        val=$(uci -q get "firewall.@zone[$i].name") || break
+        if [ "$val" = "tailscale" ]; then
+            uci delete "firewall.@zone[$i]" 2>/dev/null || true
+            break
+        fi
+        i=$((i + 1))
+    done
+
+    uci commit firewall || warn "uci commit firewall failed during migration"
+
+    # Best-effort: drop the dead mwan3 ipset entry if NetBird is NOT installed.
+    # When NetBird is present, its CGI/init.d will re-assert the entry — there
+    # is no ordering guarantee here, so we only clear when no consumer remains.
+    # Ipset entries are in-kernel only, harmless if absent.
+    if ! command -v netbird >/dev/null 2>&1; then
+        if command -v ipset >/dev/null 2>&1 && \
+           ipset list mwan3_connected_ipv4 >/dev/null 2>&1; then
+            ipset del mwan3_connected_ipv4 100.64.0.0/10 2>/dev/null || true
+        fi
+    fi
+
+    # Restart firewall so the deletions take effect immediately. The default
+    # install path ends with a reboot, which would also achieve this — but the
+    # OTA path uses --no-reboot, where this restart matters.
+    /etc/init.d/firewall restart >/dev/null 2>&1 || true
+
+    info "Legacy Tailscale firewall zone removed"
+}
+
 # --- Cleanup Legacy ----------------------------------------------------------
 # Removes qmanager_* files on disk that are NOT in the fresh source tree.
 # This is the ONLY place where legacy cleanup happens — integrated into the
@@ -1189,7 +1271,7 @@ main() {
         TOTAL_STEPS=$(( TOTAL_STEPS + 2 ))                            # backup + frontend
     fi
     if [ "$DO_BACKEND" = "1" ]; then
-        TOTAL_STEPS=$(( TOTAL_STEPS + 4 ))                            # backend + bundled + cleanup + seed
+        TOTAL_STEPS=$(( TOTAL_STEPS + 5 ))                            # backend + bundled + cleanup + migrate_tailscale_fw + seed
         [ "$DO_ENABLE" = "1" ] && TOTAL_STEPS=$(( TOTAL_STEPS + 1 ))  # enable
         if [ "$DO_START" = "1" ]; then
             TOTAL_STEPS=$(( TOTAL_STEPS + 3 ))                        # start + health + at_stack_check
@@ -1228,6 +1310,7 @@ main() {
         install_backend
         install_bundled_binaries
         cleanup_legacy_scripts
+        migrate_tailscale_firewall_zone
         seed_uci_defaults
 
         [ "$DO_ENABLE" = "1" ] && enable_services
