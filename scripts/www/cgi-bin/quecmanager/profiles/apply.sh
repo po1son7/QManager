@@ -76,6 +76,13 @@ if [ ! -x "$APPLY_BIN" ]; then
     exit 0
 fi
 
+# --- Check: USB mode compatible with Verizon profiles? -----------------------
+_apply_mno=$(jq -r '.mno // empty' "$PROFILE_DIR/${PROFILE_ID}.json" 2>/dev/null)
+if [ "$_apply_mno" = "vzw" ] && ! usb_mode_supports_mpdn; then
+    cgi_error "usb_mode_incompatible_for_verizon" "Verizon profiles require USB mode ECM or RNDIS"
+    exit 0
+fi
+
 # --- Clear previous state file -----------------------------------------------
 rm -f "$STATE_FILE"
 
