@@ -110,7 +110,8 @@
       "step_labels": {
         "apn": "APN Configurazione",
         "ttl_hl": "TTL / Limite salto",
-        "imei": "IMEI"
+        "imei": "IMEI",
+        "mpdn_rule": "Instradamento dati"
       },
       "reboot_notice": "Il modem si sta riavviando per applicare la modifica IMEI. La dashboard si ricollegherà automaticamente."
     },

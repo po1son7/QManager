@@ -110,7 +110,8 @@
       "step_labels": {
         "apn": "APN Configuration",
         "ttl_hl": "TTL / Hop Limit",
-        "imei": "IMEI"
+        "imei": "IMEI",
+        "mpdn_rule": "Data Routing"
       },
       "reboot_notice": "Modem is restarting to apply IMEI change. Dashboard will reconnect automatically."
     },

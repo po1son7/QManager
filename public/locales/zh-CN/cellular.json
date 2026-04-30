@@ -110,7 +110,8 @@
       "step_labels": {
         "apn": "APN 配置",
         "ttl_hl": "TTL / 跳数限制",
-        "imei": "IMEI"
+        "imei": "IMEI",
+        "mpdn_rule": "数据路由"
       },
       "reboot_notice": "调制解调器正在重启以应用 IMEI 更改，仪表板将自动重新连接。"
     },

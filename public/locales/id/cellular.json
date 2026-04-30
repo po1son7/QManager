@@ -110,7 +110,8 @@
       "step_labels": {
         "apn": "Konfigurasi APN",
         "ttl_hl": "TTL / Hop Limit",
-        "imei": "IMEI"
+        "imei": "IMEI",
+        "mpdn_rule": "Perutean Data"
       },
       "reboot_notice": "Modem sedang memulai ulang untuk menerapkan perubahan IMEI. Dashboard akan tersambung kembali secara otomatis."
     },
