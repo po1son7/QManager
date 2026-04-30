@@ -47,9 +47,14 @@
     "login_button": "登录",
     "field": {
       "carrier": "运营商",
-      "bands": "频段",
-      "pci": "物理小区 ID (PCI)",
-      "uptime": "运行时间"
+      "aggregation": "频段",
+      "uptime": "运行时间",
+      "empty": "—"
+    },
+    "aggregation": {
+      "band_with_bw": "{{band}} ({{bandwidth}} MHz)",
+      "band_only": "{{band}}",
+      "pci_label": "PCI"
     },
     "signal": {
       "dual": "{{rsrp}} dBm · {{sinr}} dB SINR",
@@ -78,7 +83,8 @@
     "empty": {
       "title": "调制解调器状态不可用",
       "subtitle": "登录以查看诊断详情。",
-      "fetch_error": "无法连接到设备。"
+      "fetch_error": "无法连接到设备。",
+      "retry": "重试"
     },
     "uptime": {
       "days": "{{days}}天 {{hours}}小时",

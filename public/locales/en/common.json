@@ -47,9 +47,14 @@
     "login_button": "Login",
     "field": {
       "carrier": "Carrier",
-      "bands": "Bands",
-      "pci": "PCI",
-      "uptime": "Uptime"
+      "aggregation": "Bands",
+      "uptime": "Uptime",
+      "empty": "—"
+    },
+    "aggregation": {
+      "band_with_bw": "{{band}} ({{bandwidth}} MHz)",
+      "band_only": "{{band}}",
+      "pci_label": "PCI"
     },
     "signal": {
       "dual": "{{rsrp}} dBm · {{sinr}} dB SINR",
@@ -78,7 +83,8 @@
     "empty": {
       "title": "Modem status unavailable",
       "subtitle": "Log in for diagnostic details.",
-      "fetch_error": "Couldn't reach the device."
+      "fetch_error": "Couldn't reach the device.",
+      "retry": "Try again"
     },
     "uptime": {
       "days": "{{days}}d {{hours}}h",

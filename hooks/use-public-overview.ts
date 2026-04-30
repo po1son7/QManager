@@ -12,8 +12,10 @@ import type { PublicOverview } from "@/types/public-overview";
 // =============================================================================
 
 const FETCH_ENDPOINT = "/cgi-bin/quecmanager/public/overview.sh";
-const POLL_INTERVAL = 2000;
-const STALE_THRESHOLD_SECONDS = 10;
+// Pre-login cadence: a passerby on the landing page does not need 0.5 Hz
+// refresh. 5 s keeps the card feeling live without hammering the device CGI.
+const POLL_INTERVAL = 5000;
+const STALE_THRESHOLD_SECONDS = 15;
 
 export interface UsePublicOverviewReturn {
   data: PublicOverview | null;
@@ -31,18 +33,27 @@ export function usePublicOverview(): UsePublicOverviewReturn {
 
   const mountedRef = useRef(true);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   const fetchData = useCallback(async () => {
+    // Cancel any in-flight request before starting a new one. Prevents an
+    // older response from clobbering newer state (e.g. when the user clicks
+    // Retry while the previous poll is still in flight).
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
     try {
       const response = await fetch(FETCH_ENDPOINT, {
         cache: "no-store",
         credentials: "omit",
+        signal: controller.signal,
       });
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       const json = (await response.json()) as PublicOverview;
-      if (!mountedRef.current) return;
+      if (!mountedRef.current || controller.signal.aborted) return;
 
       setData(json);
       setError(null);
@@ -58,6 +69,8 @@ export function usePublicOverview(): UsePublicOverviewReturn {
       }
       setIsLoading(false);
     } catch (err) {
+      // AbortError from our own controller is expected — swallow it silently.
+      if (controller.signal.aborted) return;
       if (!mountedRef.current) return;
       const message =
         err instanceof Error ? err.message : "Failed to fetch overview";
@@ -74,13 +87,48 @@ export function usePublicOverview(): UsePublicOverviewReturn {
 
   useEffect(() => {
     mountedRef.current = true;
-    fetchData();
-    intervalRef.current = setInterval(fetchData, POLL_INTERVAL);
-    return () => {
-      mountedRef.current = false;
+
+    const startPolling = () => {
+      if (intervalRef.current) return;
+      intervalRef.current = setInterval(fetchData, POLL_INTERVAL);
+    };
+
+    const stopPolling = () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
+      }
+    };
+
+    // Initial fetch is unconditional (cold-start the card even if the tab is
+    // hidden — first paint should still have data when the user comes back).
+    fetchData();
+    if (typeof document === "undefined" || !document.hidden) {
+      startPolling();
+    }
+
+    // Pause polling when the tab is hidden, refresh + resume when it returns.
+    // Keeps a backgrounded landing page from waking the device CGI every 5 s
+    // and conserves battery on mobile.
+    const handleVisibility = () => {
+      if (document.hidden) {
+        stopPolling();
+      } else {
+        fetchData();
+        startPolling();
+      }
+    };
+
+    if (typeof document !== "undefined") {
+      document.addEventListener("visibilitychange", handleVisibility);
+    }
+
+    return () => {
+      mountedRef.current = false;
+      stopPolling();
+      abortRef.current?.abort();
+      if (typeof document !== "undefined") {
+        document.removeEventListener("visibilitychange", handleVisibility);
       }
     };
   }, [fetchData]);

@@ -32,34 +32,35 @@ export function deriveConnectionLabel(
 }
 
 /**
- * Joins a list of {band, bandwidth_mhz} entries into the display string used
- * on the card, e.g. `B3 (15MHz) + B1 (10MHz)`. Entries with empty `band` are
- * skipped. When `bandwidth_mhz` is missing/0/non-finite, the band label is
- * rendered without parentheses. Empty input → em dash.
+ * One row per active carrier component (PCC + SCCs in input order). Bandwidth
+ * is `null` when missing (0 or non-finite); PCI is `null` when not reported.
+ * Renderer decides how to format each side independently.
  */
-export function formatBands(bands: PublicOverviewBand[]): string {
-  const cleaned = bands.filter((b) => b && b.band && b.band.length > 0);
-  if (cleaned.length === 0) return "—";
-  return cleaned
-    .map((b) =>
-      Number.isFinite(b.bandwidth_mhz) && b.bandwidth_mhz > 0
-        ? `${b.band} (${b.bandwidth_mhz}MHz)`
-        : b.band,
-    )
-    .join(" + ");
+export interface CarrierComponentRow {
+  band: string;
+  bandwidth: number | null;
+  pci: number | null;
 }
 
 /**
- * Joins the PCIs from the carrier_components into a display string, e.g.
- * `42 + 7 + 13`. Order is preserved (PCC first, then SCCs). Entries with
- * `pci == null` are skipped. Empty result → em dash.
+ * Builds the per-component rows for the "Bands" section. Entries with empty
+ * `band` are skipped; remaining fields are normalized to a flat shape so the
+ * renderer can lay each row out as a 2-col grid (band+bandwidth on the left,
+ * PCI on the right) without juggling discriminated variants.
  */
-export function formatPcis(bands: PublicOverviewBand[]): string {
-  const pcis = bands
-    .filter((b) => b && b.pci != null)
-    .map((b) => String(b.pci));
-  if (pcis.length === 0) return "—";
-  return pcis.join(" + ");
+export function formatCarrierComponents(
+  bands: PublicOverviewBand[],
+): CarrierComponentRow[] {
+  return bands
+    .filter((b): b is PublicOverviewBand => Boolean(b && b.band))
+    .map((b) => ({
+      band: b.band,
+      bandwidth:
+        Number.isFinite(b.bandwidth_mhz) && b.bandwidth_mhz > 0
+          ? b.bandwidth_mhz
+          : null,
+      pci: b.pci != null ? b.pci : null,
+    }));
 }
 
 export type UptimeFormat =
