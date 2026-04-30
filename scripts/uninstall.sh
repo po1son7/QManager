@@ -432,6 +432,7 @@ remove_runtime_state() {
           /tmp/qmanager_long_running \
           /tmp/qmanager_low_power_active \
           /tmp/qmanager_recovery_active \
+          /tmp/qmanager_pending_reboot_verizon \
           /tmp/qm_spin_out \
           /tmp/qm_tmo_out.* \
           2>/dev/null || true
