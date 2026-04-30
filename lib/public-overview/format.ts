@@ -3,6 +3,7 @@
 // =============================================================================
 
 import type { ConnectionState } from "@/types/modem-status";
+import type { PublicOverviewBand } from "@/types/public-overview";
 
 /**
  * Reduces LTE + NR connection states into a single label for the connection
@@ -31,13 +32,21 @@ export function deriveConnectionLabel(
 }
 
 /**
- * Joins a list of band labels into the display string used on the card.
- * Empty array → em dash. Empty strings inside are filtered out.
+ * Joins a list of {band, bandwidth_mhz} entries into the display string used
+ * on the card, e.g. `B3 (15MHz) + B1 (10MHz)`. Entries with empty `band` are
+ * skipped. When `bandwidth_mhz` is missing/0/non-finite, the band label is
+ * rendered without parentheses. Empty input → em dash.
  */
-export function formatBands(bands: string[]): string {
-  const cleaned = bands.filter((b) => b && b.length > 0);
+export function formatBands(bands: PublicOverviewBand[]): string {
+  const cleaned = bands.filter((b) => b && b.band && b.band.length > 0);
   if (cleaned.length === 0) return "—";
-  return cleaned.join(" + ");
+  return cleaned
+    .map((b) =>
+      Number.isFinite(b.bandwidth_mhz) && b.bandwidth_mhz > 0
+        ? `${b.band} (${b.bandwidth_mhz}MHz)`
+        : b.band,
+    )
+    .join(" + ");
 }
 
 export type UptimeFormat =

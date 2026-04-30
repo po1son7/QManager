@@ -48,7 +48,7 @@
     "field": {
       "carrier": "运营商",
       "bands": "频段",
-      "model": "设备型号",
+      "pci": "物理小区标识",
       "uptime": "运行时间"
     },
     "signal": {

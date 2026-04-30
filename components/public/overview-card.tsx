@@ -242,8 +242,8 @@ function renderBody({ data, isLoading, isStale, error, t }: BodyProps) {
           value={formatBands(data.network.bands)}
         />
         <Field
-          label={t("overview.field.model")}
-          value={data.device.model || "—"}
+          label={t("overview.field.pci")}
+          value={data.device.pci != null ? String(data.device.pci) : "—"}
         />
         <Field label={t("overview.field.uptime")} value={uptimeText} />
       </dl>

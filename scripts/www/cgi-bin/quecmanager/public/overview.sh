@@ -39,7 +39,7 @@ jq '{
     type: .network.type,
     service_status: .network.service_status,
     carrier: .network.carrier,
-    bands: ([(.network.carrier_components // [])[].band] | unique),
+    bands: [(.network.carrier_components // [])[] | select(.band != null and .band != "") | {band: .band, bandwidth_mhz: (.bandwidth_mhz // 0)}],
     lte_state: .lte.state,
     nr_state: .nr.state
   },
@@ -48,6 +48,6 @@ jq '{
     sinr: (if .lte.sinr != null then .lte.sinr elif .nr.sinr != null then .nr.sinr else null end)
   },
   device: {
-    model: .device.model
+    pci: ([(.network.carrier_components // [])[] | select(.type == "PCC") | .pci] | first // null)
   }
 }' "$STATUS_FILE" 2>/dev/null || jq -n '{"state":"unavailable","reason":"parse_error"}'

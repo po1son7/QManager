@@ -47,20 +47,47 @@ describe("deriveConnectionLabel", () => {
 });
 
 describe("formatBands", () => {
-  it("joins bands with ' + '", () => {
-    expect(formatBands(["B3", "n78"])).toBe("B3 + n78");
-  });
-
-  it("handles a single band", () => {
-    expect(formatBands(["B3"])).toBe("B3");
-  });
-
   it("returns an em dash for an empty array", () => {
     expect(formatBands([])).toBe("—");
   });
 
-  it("filters out empty strings", () => {
-    expect(formatBands(["B3", "", "n78"])).toBe("B3 + n78");
+  it("formats a single entry with bandwidth", () => {
+    expect(formatBands([{ band: "B3", bandwidth_mhz: 15 }])).toBe("B3 (15MHz)");
+  });
+
+  it("formats two entries with bandwidth", () => {
+    expect(
+      formatBands([
+        { band: "B3", bandwidth_mhz: 15 },
+        { band: "B1", bandwidth_mhz: 10 },
+      ]),
+    ).toBe("B3 (15MHz) + B1 (10MHz)");
+  });
+
+  it("omits parens when bandwidth_mhz is 0", () => {
+    expect(formatBands([{ band: "B3", bandwidth_mhz: 0 }])).toBe("B3");
+  });
+
+  it("filters out entries with empty band string", () => {
+    expect(
+      formatBands([
+        { band: "B3", bandwidth_mhz: 15 },
+        { band: "", bandwidth_mhz: 10 },
+      ]),
+    ).toBe("B3 (15MHz)");
+  });
+
+  it("mixed: one with bandwidth, one without", () => {
+    expect(
+      formatBands([
+        { band: "B3", bandwidth_mhz: 15 },
+        { band: "B1", bandwidth_mhz: 0 },
+      ]),
+    ).toBe("B3 (15MHz) + B1");
+  });
+
+  it("treats non-finite bandwidth as no-bandwidth", () => {
+    expect(formatBands([{ band: "B3", bandwidth_mhz: NaN }])).toBe("B3");
   });
 });
 

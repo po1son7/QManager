@@ -48,7 +48,7 @@
     "field": {
       "carrier": "Carrier",
       "bands": "Bands",
-      "model": "Model",
+      "pci": "PCI",
       "uptime": "Uptime"
     },
     "signal": {

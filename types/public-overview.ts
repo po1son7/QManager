@@ -13,11 +13,16 @@ import type {
   ServiceStatus,
 } from "@/types/modem-status";
 
+export interface PublicOverviewBand {
+  band: string;
+  bandwidth_mhz: number;
+}
+
 export interface PublicOverviewNetwork {
   type: NetworkType;
   service_status: ServiceStatus;
   carrier: string;
-  bands: string[];
+  bands: PublicOverviewBand[];
   lte_state: ConnectionState;
   nr_state: ConnectionState;
 }
@@ -28,7 +33,7 @@ export interface PublicOverviewSignal {
 }
 
 export interface PublicOverviewDevice {
-  model: string;
+  pci: number | null;
 }
 
 export interface PublicOverviewOk {
