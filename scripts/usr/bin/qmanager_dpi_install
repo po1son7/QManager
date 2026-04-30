@@ -16,7 +16,19 @@ PID_FILE="/tmp/qmanager_dpi_install.pid"
 INSTALL_DIR="/usr/bin"
 NFQWS_BIN="$INSTALL_DIR/nfqws"
 TMP_DIR="/tmp/qmanager_dpi_download"
-GITHUB_API="https://api.github.com/repos/bol-van/zapret/releases/latest"
+
+# Optional mainland-friendly proxy wrapper (prefix). Set ZAPRET_USE_GHPROXY=0 to disable.
+GHPROXY_PREFIX="${GHPROXY_PREFIX:-https://ghproxy.net/}"
+
+_wrap_http_url() {
+    _in="$1"
+    case "${ZAPRET_USE_GHPROXY:-1}" in
+        0|false|no|disabled|off) echo "$_in" ;;
+        *) echo "${GHPROXY_PREFIX}${_in}" ;;
+    esac
+}
+
+GITHUB_API=$(_wrap_http_url "https://api.github.com/repos/bol-van/zapret/releases/latest")
 
 # Write PID for singleton check
 echo $$ > "$PID_FILE"
@@ -118,7 +130,7 @@ write_result "running" "Downloading zapret $release_tag..." ""
 mkdir -p "$TMP_DIR"
 tarball="$TMP_DIR/zapret.tar.gz"
 
-if ! curl -s -L -o "$tarball" "$tarball_url" 2>/dev/null; then
+if ! curl -s -L -H "User-Agent: QManager" -o "$tarball" "$(_wrap_http_url "$tarball_url")" 2>/dev/null; then
     write_result "error" "Download failed" "Could not download $tarball_url"
     exit 1
 fi

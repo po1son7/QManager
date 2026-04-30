@@ -39,9 +39,7 @@ STAGED_TARBALL="/tmp/qmanager_staged.tar.gz"
 STAGED_VERSION_MARKER="/tmp/qmanager_staged_version"
 INSTALL_LOG="/tmp/qmanager_install.log"
 
-# URL prefix used for SSRF protection on all downloads
-GITHUB_REPO_PREFIX="https://github.com/dr-dolomite/QManager/releases/download/"
-GITHUB_RAW_PREFIX="https://github.com/dr-dolomite/QManager/raw/"
+. /usr/lib/qmanager/mirror.sh
 
 # Curl defaults
 CURL_TIMEOUT=300
@@ -174,15 +172,11 @@ http_download() {
 # Validate that a URL points to our GitHub repo releases. Prevents SSRF
 # (caller could otherwise inject arbitrary URLs via the CGI endpoint).
 validate_url() {
-    local url="$1"
+    if qmirror_validate_release_asset_url "$1"; then
+        return 0
+    fi
 
-    case "$url" in
-        "${GITHUB_REPO_PREFIX}"*/qmanager.tar.gz)        return 0 ;;
-        "${GITHUB_REPO_PREFIX}"*/sha256sum.txt)          return 0 ;;
-        "${GITHUB_RAW_PREFIX}"*/qmanager-build/qmanager.tar.gz) return 0 ;;
-    esac
-
-    log_error "URL failed validation: $url"
+    log_error "URL failed validation: $1"
     return 1
 }
 

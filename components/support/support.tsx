@@ -74,7 +74,7 @@ const SupportComponent = () => {
                   </div>
                   <div className="flex items-center justify-between py-2">
                     <dt className="text-sm font-semibold text-muted-foreground">
-                      {t("support.contact.fields.github_label")}
+                      {t("support.contact.fields.upstream_github_label")}
                     </dt>
                     <dd className="text-sm font-semibold">
                       <a
@@ -85,6 +85,40 @@ const SupportComponent = () => {
                       >
                         dr-dolomite
                         <ExternalLink className="h-3.5 w-3.5" />
+                      </a>
+                    </dd>
+                  </div>
+                  <div className="flex items-center justify-between py-2">
+                    <dt className="text-sm font-semibold text-muted-foreground">
+                      {t("support.contact.fields.fork_github_label")}
+                    </dt>
+                    <dd className="text-sm font-semibold min-w-0">
+                      <a
+                        href="https://github.com/po1son7/QManager"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 py-1 text-primary hover:underline underline-offset-4 truncate"
+                        title="po1son7/QManager"
+                      >
+                        po1son7/QManager
+                        <ExternalLink className="h-3.5 w-3.5 shrink-0" />
+                      </a>
+                    </dd>
+                  </div>
+                  <div className="flex items-center justify-between py-2">
+                    <dt className="text-sm font-semibold text-muted-foreground">
+                      {t("support.contact.fields.gitee_mirror_label")}
+                    </dt>
+                    <dd className="text-sm font-semibold min-w-0">
+                      <a
+                        href="https://gitee.com/aowu2048/QManager"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 py-1 text-primary hover:underline underline-offset-4 truncate"
+                        title="aowu2048/QManager"
+                      >
+                        aowu2048/QManager
+                        <ExternalLink className="h-3.5 w-3.5 shrink-0" />
                       </a>
                     </dd>
                   </div>

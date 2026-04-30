@@ -2,10 +2,10 @@
 
 <div align="center">
   <img src="public/qmanager-logo.svg" alt="QManager Logo" width="120" />
-  <h3>A modern, custom GUI for Quectel modem management</h3>
-  <p>Visualize, configure, and optimize your cellular modem's performance with an intuitive web interface</p>
+  <h3>现代化的 Quectel 蜂窝模组 Web 管理界面</h3>
+  <p>用直观的网页界面可视化、配置并优化蜂窝网络性能。</p>
 
-  ![Version](https://img.shields.io/badge/version-v0.1.8-blue?style=flat-square)
+  ![Version](https://img.shields.io/badge/version-v0.1.20-blue?style=flat-square)
   ![License](https://img.shields.io/badge/license-MIT%20%2B%20Commons%20Clause-green?style=flat-square)
   ![Platform](https://img.shields.io/badge/platform-OpenWRT-orange?style=flat-square)
   ![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square)
@@ -14,326 +14,146 @@
 
 ---
 
-> **Note:** QManager is the successor to [SimpleAdmin](https://github.com/dr-dolomite/simpleadmin-mockup), rebuilt from the ground up with a modern tech stack and improved user experience for managing Quectel modems like the RM520N-GL, RM551E-GL, and similar devices.
+本项目继承自 **[dr-dolomite/QManager](https://github.com/dr-dolomite/QManager)**。本 **`po1son7`（GitHub）/ `aowu2048`（Gitee）** 在功能上与上游对齐，并针对 **中国大陆网络** 调整了安装与更新源。
+
+### 推荐仓库分工（与你当前做法一致）
+
+| 角色 | 仓库 | 用途 |
+|------|------|------|
+| **主仓库** | [po1son7/QManager](https://github.com/po1son7/QManager) | 在此做「大陆版」修改、打 tag、`bun run package` 后发 **GitHub Release** |
+| **镜像 / OTA 默认** | [aowu2048/QManager](https://gitee.com/aowu2048/QManager) | 将 **同一 tag** 下的 `qmanager.tar.gz`、`sha256sum.txt`（及需同步的脚本）同步到 **Gitee Release**；设备默认 OTA **只连 Gitee** |
+| **上游** | [dr-dolomite/QManager](https://github.com/dr-dolomite/QManager) | 功能与致谢来源；不必作为本 fork 的日常 OTA 目标 |
+
+> **致谢**：原版 QManager 是 [SimpleAdmin](https://github.com/dr-dolomite/simpleadmin-mockup) 的精神续作，专为 RM520N-GL、RM551E-GL 等 Quectel 模组深度优化。
 
 ---
 
-## Features
+## 中国大陆快速安装（推荐）
 
-### Signal & Network Monitoring
-- **Live Signal Dashboard** — Real-time RSRP, RSRQ, SINR with per-antenna values (4x4 MIMO) and 30-minute historical charts
-- **Network Events** — Automatic detection of band changes, cell handoffs, carrier aggregation changes, and connectivity events
-- **Latency Monitoring** — Real-time ping with 24-hour history, jitter, packet loss, and aggregated views (hourly/12h/daily)
-- **Bandwidth Monitor** — Live throughput tracking via WebSocket with real-time area charts on the dashboard
-- **Traffic Statistics** — Live throughput (Mbps) and cumulative data usage
+SSH 登录 OpenWRT 后 **任选其一**：
 
-### Cellular Configuration
-- **Band Locking** — Select and lock specific LTE/NR bands for optimal performance
-- **Tower Locking** — Lock to a specific cell tower by PCI, with automatic failover and scheduled changes
-- **Frequency Locking** — Lock to exact EARFCN/ARFCN channels
-- **APN Management** — Create, edit, delete APN profiles with MNO presets (T-Mobile, AT&T, Verizon, etc.)
-- **Custom SIM Profiles** — Save complete configurations (APN + TTL/HL + optional IMEI) and apply with one click
-- **Connection Scenarios** — Save and restore full network configuration snapshots
-- **Network Priority** — Configure preferred network types and selection modes
-- **Cell Scanner** — Active and neighbor cell scanning with signal comparison
-- **Frequency Calculator** — EARFCN/ARFCN to frequency conversion tool
-- **SMS Center** — Send and receive SMS messages directly from the interface
-- **IMEI Settings** — Read, backup, and modify device IMEI
-- **IMEI Toolkit** — Generate and validate IMEI values with TAC presets, Luhn checks, and quick copy/lookup tools
-- **FPLMN Management** — View and manage the Forbidden PLMN list
-- **MBN Configuration** — Select and activate modem broadband configuration files
-
-### Network Settings
-- **Ethernet Link Speed** — Control and monitor link speed, duplex, and auto-negotiation
-- **TTL/HL Settings** — IPv4 TTL and IPv6 Hop Limit configuration (iptables-based)
-- **MTU Configuration** — Dynamic MTU application for rmnet interfaces
-- **IP Passthrough** — Direct IP assignment to downstream devices
-- **Custom DNS** — DNS server override
-- **Video Optimizer** — DPI-based video streaming optimization using nfqws (TCP SNI split + QUIC desync with configurable CDN hostlist)
-- **Traffic Masquerade** — SNI spoofing via fake TLS ClientHello to bypass carrier traffic shaping (mutually exclusive with Video Optimizer)
-
-### Reliability & Monitoring
-
-- **Connection Watchdog** — 4-tier auto-recovery: ifup → CFUN toggle → SIM failover → full reboot (with token bucket rate limiting)
-- **Email Alerts** — Downtime notifications via Gmail SMTP (msmtp), sent on recovery with duration details
-- **SMS Alerts** — Downtime notifications via `sms_tool`, sent during active outages once threshold is exceeded
-- **WAN Interface Guard** — Automatically disables phantom WAN profiles to prevent netifd CPU-wasting retry loops
-- **Low Power Mode** — Scheduled CFUN power-down windows via cron
-- **Tailscale VPN** — One-click installation, authentication, and status monitoring
-- **Software Updates** — In-app OTA update checking, download, verification, and installation
-- **System Logs** — Centralized log viewer with search
-
-### Interface
-- **Dark/Light Mode** — Full theme support with OKLCH perceptual color system
-- **Responsive Design** — Works on desktop monitors and tablets in the field
-- **Cookie-Based Auth** — Secure session management with rate limiting
-- **AT Terminal** — Direct AT command interface for advanced users
-- **Initial Setup Wizard** — Guided onboarding for first-time configuration
-
----
-
-## Quick Install
-
-SSH into your OpenWRT device and run:
+### A. Gitee Raw + 默认 Gitee Release（延迟最低时需你在 Gitee 同步 Release 附件）
 
 ```sh
-set -e
-REPO="dr-dolomite/QManager"
-API="https://api.github.com/repos/${REPO}/releases?per_page=20"
-
-JSON=$(uclient-fetch -qO- "$API" 2>/dev/null || wget -qO- "$API" 2>/dev/null || curl -fsSL "$API")
-TAG=$(printf '%s' "$JSON" \
-  | tr -d '\n' \
-  | sed 's/},{/}\
-{/g' \
-  | sed -n '/"prerelease":[[:space:]]*true/{s/.*"tag_name":[[:space:]]*"\([^"]*\)".*/\1/p;q}')
-
-[ -n "$TAG" ] || { echo "Failed to resolve latest pre-release tag"; exit 1; }
-
-BASE="https://github.com/${REPO}/releases/download/${TAG}"
-cd /tmp
-wget -O qmanager.tar.gz "$BASE/qmanager.tar.gz"
-wget -O sha256sum.txt "$BASE/sha256sum.txt"
-sha256sum -c sha256sum.txt
-tar xzf qmanager.tar.gz
-sh /tmp/qmanager_install/install.sh
+curl -fsSL -o /tmp/qmanager-installer.sh \
+  "https://gitee.com/aowu2048/QManager/raw/main/qmanager-installer.sh" && sh /tmp/qmanager-installer.sh
 ```
 
-One-liner convenience (same verified flow):
+安装脚本默认 **`mirror=gitee`**，从 **Gitee Release** 拉 `qmanager.tar.gz` / `sha256sum.txt`。请保持 **GitHub 与 Gitee 同一 tag、同一附件内容**，再在路由器上升级或安装。
+
+### B. ghproxy + GitHub Raw（适合你只在 GitHub 发 Release）
 
 ```sh
-curl -fsSL -o /tmp/qmanager-installer.sh https://raw.githubusercontent.com/dr-dolomite/QManager/development-home/qmanager-installer.sh && sh /tmp/qmanager-installer.sh
+curl -fsSL -o /tmp/qmanager-installer.sh \
+  "https://ghproxy.net/https://raw.githubusercontent.com/po1son7/QManager/main/qmanager-installer.sh" \
+  && sh /tmp/qmanager-installer.sh --mirror github_proxy
 ```
 
-The one-liner wrapper still downloads the latest pre-release tarball, verifies `sha256sum.txt`, and then executes `install.sh`.
-
-To pin a specific release instead of latest pre-release, set `TAG` manually (for example `TAG="v0.1.13"`) and skip the API lookup block.
-
-### Upgrading
-
-From v0.1.7+, go to **Monitoring → Software Update** and use the built-in update flow — download, verify, and install without SSH.
-
-### Uninstalling
+### C. 仅使用 GitHub 直连（在非大陆或已自备国际出口时使用）
 
 ```sh
-set -e
-REPO="dr-dolomite/QManager"
-API="https://api.github.com/repos/${REPO}/releases?per_page=20"
-
-JSON=$(uclient-fetch -qO- "$API" 2>/dev/null || wget -qO- "$API" 2>/dev/null || curl -fsSL "$API")
-TAG=$(printf '%s' "$JSON" \
-  | tr -d '\n' \
-  | sed 's/},{/}\
-{/g' \
-  | sed -n '/"prerelease":[[:space:]]*true/{s/.*"tag_name":[[:space:]]*"\([^"]*\)".*/\1/p;q}')
-
-[ -n "$TAG" ] || { echo "Failed to resolve latest pre-release tag"; exit 1; }
-
-BASE="https://github.com/${REPO}/releases/download/${TAG}"
-cd /tmp
-wget -O qmanager.tar.gz "$BASE/qmanager.tar.gz"
-tar xzf qmanager.tar.gz
-sh /tmp/qmanager_install/uninstall.sh
+curl -fsSL -o /tmp/qmanager-installer.sh \
+  "https://raw.githubusercontent.com/po1son7/QManager/main/qmanager-installer.sh" \
+  && sh /tmp/qmanager-installer.sh --mirror github --repo po1son7/QManager
 ```
 
-One-liner uninstall:
+### 卸载
 
 ```sh
-curl -fsSL -o /tmp/qmanager-installer.sh https://raw.githubusercontent.com/dr-dolomite/QManager/development-home/qmanager-installer.sh && sh /tmp/qmanager-installer.sh --uninstall
+curl -fsSL -o /tmp/qmanager-installer.sh \
+  "https://gitee.com/aowu2048/QManager/raw/main/qmanager-installer.sh" \
+  && sh /tmp/qmanager-installer.sh --uninstall
 ```
 
-Use `QMANAGER_TAG="v0.1.14" sh /tmp/qmanager-installer.sh` to pin a specific version with the one-liner wrapper.
+### 环境与参数说明（安装脚本）
+
+| 环境变量 / 参数 | 说明 |
+|-----------------|------|
+| `QMANAGER_MIRROR` / `--mirror` | `gitee`（默认）、`github`、`github_proxy` |
+| `QMANAGER_GITEE_REPO` / `--gitee-repo` | Gitee 仓库，默认 `aowu2048/QManager` |
+| `QMANAGER_REPO` / `--repo` | GitHub `owner/repo`，默认 `po1son7/QManager` |
+| `QMANAGER_TAG` / `--tag` | 固定版本标签，如不指定则用 `jq` 解析最新 Release |
+| `QMANAGER_CHANNEL` / `--channel` | `stable` / `prerelease` / `any` |
+
+**依赖**：脚本在需要自动解析版本时要求设备已安装 **`jq`**（与 QManager 本身推荐依赖一致：`opkg install jq`）。
 
 ---
 
-## Prerequisites
+## OTA（设备内在线更新）
 
-- Compatible Quectel modem (RM520N-GL, RM551E-GL, RM500Q, etc.) with AT command support
-- OpenWRT device with the modem connected
-- **Required packages:** `jq`, `sms-tool`
-- **Optional packages:** `msmtp` (email alerts), `ethtool` (link speed control), `ookla-speedtest` (speed testing)
+逻辑在 **`/usr/lib/qmanager/mirror.sh`**。**默认一直跟你的 Gitee**：`mirror_type=gitee`、`mirror_repo=aowu2048/QManager`。首次写入 `quecmanager.update`（例如第一次打开软件更新页）时会自动种下上述默认值，并把 **`mirror_github_repo=po1son7/QManager`** 记好——若你改用 `github` / `github_proxy` 模式，OTA 会去拉 **你 GitHub fork** 的 Release。
 
-> Optional packages can be installed from within the app — no manual `opkg` needed.
+- 需要临时走 GitHub（含大陆 ghproxy）：UCI `mirror_type` 设为 `github` 或 `github_proxy`。  
+- 极少数从上游原版迁过来的设备若仍要写死上游：`mirror_type=github`，`mirror_github_repo=dr-dolomite/QManager`。
 
 ---
 
-## Tech Stack
+## 视频优化 / 流量伪装（nfqws）
 
-| Layer | Technology |
-|-------|-----------|
-| **Frontend** | Next.js 16, React 19, TypeScript 5 |
-| **Styling** | Tailwind CSS v4, OKLCH colors, Euclid Circular B + Manrope |
-| **Components** | shadcn/ui (42+ components), Recharts, React Hook Form + Zod |
-| **Backend** | POSIX shell scripts (OpenWRT/BusyBox), CGI endpoints |
-| **Real-time** | WebSocket (bandwidth monitor via websocat) |
-| **AT Commands** | `qcmd` wrapper for Quectel modem serial communication |
-| **Package Manager** | Bun |
+设备端 **`qmanager_dpi_install`** 默认通过 **`https://ghproxy.net/`** 转发对 **GitHub API** 与 **zapret Release 附件**的请求；若你已能直连 GitHub，可设置环境变量关闭代理：
 
----
-
-## Architecture
-
-```
-Browser ─── authFetch() ─── CGI Scripts ─── qcmd ─── Modem (AT commands)
-                │                  │
-                │          Shell Libraries (11)
-                │
-        reads /tmp/qmanager_status.json
-                │
-         qmanager_poller
-       (tiered polling: 2s/10s/30s)
+```sh
+export ZAPRET_USE_GHPROXY=0
 ```
 
-The frontend is a statically-exported Next.js app served from the device. The backend is POSIX shell scripts running on OpenWRT — CGI endpoints for API requests and long-running daemons for data collection.
-
-**Key Data Flow:**
-
-- **Poller daemon** queries the modem via AT commands every 2–30s (3 tiers) and writes a JSON cache file
-- **CGI endpoints** (58 scripts) read the cache for GET requests, execute AT commands for POST requests
-- **React hooks** (38 custom hooks) poll the CGI layer and provide loading/error/staleness states
-- **WebSocket** provides real-time bandwidth data directly to the dashboard
-
-See [full documentation](docs/README.md) for architecture details, API reference, and development guides.
+（由 init / procd 拉起时可在对应 service 环境中配置。）
 
 ---
 
-## Development
+## 功能概览
 
-### Prerequisites
+- **信号与网络**：实时 RSRP/RSRQ/SINR、历史曲线、网络事件、延迟与带宽、流量统计  
+- **蜂窝配置**：锁频/锁小区/锁塔、APN、SIM 配置档、短信、IMEI、FPLMN、MBN  
+- **本地网络**：以太网、TTL/HL、MTU、NAT、DNS、视频优化（nfqws）、Traffic Masquerade  
+- **可靠性**：四级看门狗、邮件/短信告警、OTA、Tailscale  
+- **界面**：亮色/暗色、响应式、Cookie 会话、AT 控制台、向导  
 
-- [Bun](https://bun.sh/) (recommended) or Node.js 18+
+完整特性列表与技术细节见 **`docs/`** 目录。
 
-### Getting Started
+---
+
+## 本地开发（中国大陆提示）
+
+建议使用 **镜像加速** NPM / Bun（示例）：
 
 ```bash
-# Clone the repository
-git clone https://github.com/dr-dolomite/qmanager.git
-cd qmanager
-
-# Install dependencies
+npm config set registry https://registry.npmmirror.com
+# Bun 请参阅 https://bun.sh/docs/install ，可配置国内镜像站
+git clone https://github.com/po1son7/QManager.git
+cd QManager
 bun install
-
-# Start development server (proxies API to modem at 192.168.224.1)
 bun run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-### Production Build
+浏览器打开 [http://localhost:3000](http://localhost:3000)，开发模式会将 `/cgi-bin/*` 代理到路由器（参见 `next.config.ts`）。
 
 ```bash
-# Static export to out/
 bun run build
-
-# Full package (frontend + backend tarball + checksum)
 bun run package
 ```
 
-The `package` script builds the frontend, bundles it with backend scripts into a tarball, and generates a SHA-256 checksum — ready for distribution via GitHub Releases.
+产物 `qmanager.tar.gz` + `sha256sum.txt` 请上传到 **GitHub Release**（及按需同步 **Gitee Release**）。
 
 ---
 
-## Project Structure
+## 文档索引
 
-```
-QManager/
-├── app/                        # Next.js App Router pages (39 routes)
-│   ├── dashboard/              # Home — live signal monitoring
-│   ├── cellular/               # Cellular info, SMS, profiles, band/tower/freq locking,
-│   │                           #   cell scanner, APN, IMEI, FPLMN, network priority
-│   ├── local-network/          # Ethernet, IP passthrough, DNS, TTL, MTU,
-│   │                           #   video optimizer, traffic masquerade
-│   ├── monitoring/             # Network events, latency, email alerts, watchdog,
-│   │                           #   SMS alerts, Tailscale, logs, software updates
-│   ├── system-settings/        # System config, bandwidth monitor, AT terminal
-│   └── (login, setup, reboot, about-device, support)
-├── components/                 # React components (~185 files)
-│   ├── ui/                     # shadcn/ui primitives (42+ components)
-│   ├── cellular/               # Cellular management UI
-│   ├── dashboard/              # Home dashboard cards
-│   ├── local-network/          # Network settings UI
-│   ├── monitoring/             # Monitoring & alerts UI
-│   └── system-settings/        # System configuration UI
-├── hooks/                      # Custom React hooks (38 files)
-├── types/                      # TypeScript interfaces (17 files)
-├── lib/                        # Utilities (auth-fetch, earfcn, csv)
-├── constants/                  # Static data (MNO presets, event labels)
-├── scripts/                    # Backend shell scripts
-│   ├── etc/init.d/             # Init.d services (11)
-│   ├── usr/bin/                # Daemons & utilities (35)
-│   ├── usr/lib/qmanager/       # Shared libraries (11)
-│   ├── www/cgi-bin/            # CGI endpoints (58 scripts)
-│   ├── install.sh              # Device installation script
-│   └── uninstall.sh            # Clean removal script
-└── docs/                       # Documentation
-```
+| 文档 | 内容 |
+|------|------|
+| [docs/README.md](docs/README.md) | 英文文档索引（上游风格） |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | 部署与大陆镜像说明 |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | 架构 |
+| [docs/API-REFERENCE.md](docs/API-REFERENCE.md) | CGI API |
 
 ---
 
-## Documentation
+## 许可证与支持
 
-| Document | Description |
-|----------|-------------|
-| [Documentation Index](docs/README.md) | Overview and links to all docs |
-| [Architecture](docs/ARCHITECTURE.md) | System architecture, data flow, polling tiers |
-| [Frontend Guide](docs/FRONTEND.md) | Components, hooks, pages, routing |
-| [Backend Guide](docs/BACKEND.md) | Shell scripts, daemons, CGI endpoints |
-| [API Reference](docs/API-REFERENCE.md) | Complete CGI endpoint reference |
-| [Design System](docs/DESIGN-SYSTEM.md) | Colors, typography, UI conventions |
-| [Deployment Guide](docs/DEPLOYMENT.md) | Building and deploying to OpenWRT |
-| [Translating QManager](docs/i18n/CONTRIBUTING.md) | Add a new language pack or improve existing translations |
-
----
-
-## Backend Services
-
-QManager runs 11 init.d services on the device:
-
-| Service | Purpose |
-|---------|---------|
-| `qmanager` | Main poller daemon — tiered AT polling, JSON cache, event detection |
-| `qmanager_watchcat` | Connection watchdog — 4-tier auto-recovery state machine |
-| `qmanager_bandwidth` | Live bandwidth monitor — WebSocket + traffic binary |
-| `qmanager_dpi` | DPI service — nfqws in video optimizer or traffic masquerade mode |
-| `qmanager_wan_guard` | WAN guard — disables phantom CID profiles at boot |
-| `qmanager_tower_failover` | Tower failover — restores lock after cell loss |
-| `qmanager_eth_link` | Ethernet link speed — applies saved speed/duplex settings |
-| `qmanager_ttl` | TTL/HL — applies iptables rules at boot |
-| `qmanager_mtu` | MTU — applies interface MTU settings |
-| `qmanager_imei_check` | IMEI integrity — verifies IMEI backup on boot |
-| `qmanager_low_power_check` | Low power — re-enters CFUN=0 if inside scheduled window |
-
----
-
-## Support the Project
-
-<div align="center">
-  <h3>Support QManager's Development</h3>
-  <p>Your contribution helps maintain the project and fund continued development, testing on new cellular networks, and hardware costs.</p>
-  <br/>
-  <a href="https://github.com/sponsors/dr-dolomite" target="_blank">
-    <img height="40" src="https://img.shields.io/badge/Sponsor-%E2%9D%A4-EA4AAA?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="Sponsor on GitHub" />
-  </a>
-  <br/><br/>
-  <p><strong>GCash via Remitly</strong><br/>Name: Russel Yasol<br/>Number: +639544817486</p>
-</div>
-
----
-
-## License
-
-This project is licensed under the [MIT License with Commons Clause](LICENSE).
-
-**You are free to:** use, modify, fork, and share QManager for personal and non-commercial purposes.
-
-**You may not:** sell QManager, bundle it into a commercial product, or offer it as a paid service — including forked versions.
-
-### Commercial Licensing
-
-If you want to use QManager in a commercial product, OEM device, or reseller offering, commercial licenses are available. Contact [DrDolomite](https://github.com/dr-dolomite) directly to discuss terms.
+本项目采用 **[MIT License with Commons Clause](LICENSE)**：**不得**售卖或作为商业产品及付费服务分发（fork 亦然）。商用需联系原版作者。**赞助请优先支持原版 [dr-dolomite](https://github.com/sponsors/dr-dolomite)**。
 
 ---
 
 <div align="center">
-  <p>Built with care by <a href="https://github.com/dr-dolomite">DrDolomite</a></p>
+  <p>Fork（GitHub）：<a href="https://github.com/po1son7/QManager">po1son7/QManager</a> · 大陆镜像（Gitee）：<a href="https://gitee.com/aowu2048/QManager">aowu2048/QManager</a></p>
+  <p>上游：<a href="https://github.com/dr-dolomite">DrDolomite</a></p>
 </div>

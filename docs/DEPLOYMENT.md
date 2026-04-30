@@ -2,19 +2,38 @@
 
 This document covers building, installing, and deploying QManager to an OpenWRT device.
 
+For **中国大陆下载与镜像切换**（Gitee Release、GitHub、`github_proxy`、`mirror.sh`、`UCI`），请优先阅读仓库根目录 **README.md**（中文）。
+
 ---
 
 ## Quick Install (Recommended)
 
-Install directly from the latest GitHub pre-release on the OpenWRT device:
+### Mainland-oriented fork (`po1son7` / `aowu2048`)
 
-One-liner convenience (same verified flow):
+**Gitee script + default Gitee mirror** (mirror release assets onto Gitee):
 
 ```sh
-curl -fsSL -o /tmp/qmanager-installer.sh https://raw.githubusercontent.com/dr-dolomite/QManager/development-home/qmanager-installer.sh && sh /tmp/qmanager-installer.sh
+curl -fsSL -o /tmp/qmanager-installer.sh \
+  "https://gitee.com/aowu2048/QManager/raw/main/qmanager-installer.sh" && sh /tmp/qmanager-installer.sh
 ```
 
-Expanded direct flow:
+**GitHub release via ghproxy**:
+
+```sh
+curl -fsSL -o /tmp/qmanager-installer.sh \
+  "https://ghproxy.net/https://raw.githubusercontent.com/po1son7/QManager/main/qmanager-installer.sh" \
+  && sh /tmp/qmanager-installer.sh --mirror github_proxy
+```
+
+### Original upstream (`dr-dolomite`)
+
+One-liner (international/GitHub reachable):
+
+```sh
+curl -fsSL -o /tmp/qmanager-installer.sh https://raw.githubusercontent.com/dr-dolomite/QManager/development-home/qmanager-installer.sh && sh /tmp/qmanager-installer.sh --mirror github --repo dr-dolomite/QManager
+```
+
+Legacy expanded flow (upstream GitHub only):
 
 ```sh
 set -e
@@ -55,10 +74,11 @@ See `sh install.sh --help` for all options (`--frontend-only`, `--backend-only`,
 One-liner:
 
 ```sh
-curl -fsSL -o /tmp/qmanager-installer.sh https://raw.githubusercontent.com/dr-dolomite/QManager/development-home/qmanager-installer.sh && sh /tmp/qmanager-installer.sh --uninstall
+curl -fsSL -o /tmp/qmanager-installer.sh \
+  "https://gitee.com/aowu2048/QManager/raw/main/qmanager-installer.sh" && sh /tmp/qmanager-installer.sh --uninstall
 ```
 
-Expanded direct flow:
+Expanded direct flow (upstream — requires GitHub reachable):
 
 ```sh
 set -e

@@ -498,7 +498,9 @@
       "description": "Found a bug, have a feature idea, or need help with your setup? Reach out through any of the channels below.",
       "fields": {
         "email_label": "Email",
-        "github_label": "GitHub"
+        "upstream_github_label": "Upstream author (GitHub)",
+        "fork_github_label": "This fork (GitHub)",
+        "gitee_mirror_label": "Mirror (Gitee, CN)"
       }
     },
     "community": {

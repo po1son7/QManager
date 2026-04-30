@@ -22,9 +22,10 @@ qlog_init "cgi_system_update"
 cgi_headers
 cgi_handle_options
 
+. /usr/lib/qmanager/mirror.sh
+
 # --- Configuration -----------------------------------------------------------
 
-GITHUB_REPO="dr-dolomite/QManager"
 VERSION_FILE="/etc/qmanager/VERSION"
 UPDATES_DIR="/etc/qmanager/updates"
 STATUS_FILE="/tmp/qmanager_update.json"
@@ -76,6 +77,9 @@ ensure_update_config() {
     uci set quecmanager.update.include_prerelease=1
     uci set quecmanager.update.auto_update_enabled=0
     uci set quecmanager.update.auto_update_time=03:00
+    uci set quecmanager.update.mirror_type=gitee
+    uci set quecmanager.update.mirror_repo=aowu2048/QManager
+    uci set quecmanager.update.mirror_github_repo=po1son7/QManager
     uci commit quecmanager
 }
 
@@ -183,8 +187,8 @@ if [ "$REQUEST_METHOD" = "GET" ]; then
     auto_enabled=$(uci_update_get auto_update_enabled "0")
     auto_time=$(uci_update_get auto_update_time "03:00")
 
-    # Query GitHub Releases API with header capture for rate-limit detection
-    api_url="https://api.github.com/repos/$GITHUB_REPO/releases"
+    # Releases API (Gitee / GitHub / GitHub via ghproxy — see mirror.sh)
+    api_url=$(qmirror_api_url)
     tmp_body="/tmp/qm_update_api_body.json"
     tmp_headers="/tmp/qm_update_api_headers.txt"
     rm -f "$tmp_body" "$tmp_headers"
@@ -250,7 +254,7 @@ if [ "$REQUEST_METHOD" = "GET" ]; then
     if [ "$include_prerelease" = "1" ]; then
         release_filter='.[0]'
     else
-        release_filter='[ .[] | select(.prerelease == false) ] | .[0]'
+        release_filter='[ .[] | select((.prerelease // false) == false) ] | .[0]'
     fi
 
     # Extract release info
@@ -291,17 +295,23 @@ if [ "$REQUEST_METHOD" = "GET" ]; then
         --arg cv "$current_version" \
         '[ .[] | {
             tag: .tag_name,
-            has_assets: ((.assets | length) > 0),
-            asset_size: (if (.assets | length) > 0 then
-                (.assets[0].size / 1048576 * 10 | floor / 10 | tostring + " MB")
-            else null end),
+            has_assets: (
+                ((.assets // []) | length > 0)
+                or ((.attach_files // []) | length > 0)
+            ),
+            asset_size: (
+                if (.assets // []) | length > 0 then
+                    (.assets[0].size / 1048576 * 10 | floor / 10 | tostring + " MB")
+                elif (.attach_files // []) | length > 0 then
+                    ((.attach_files[0].size // 0) / 1048576 * 10 | floor / 10 | tostring + " MB")
+                else null end
+            ),
             is_current: (.tag_name == $cv)
         }]')
 
-    # Download URL from GitHub Releases (curl handles redirects)
     download_url=""
     if [ -n "$latest_tag" ]; then
-        download_url="https://github.com/${GITHUB_REPO}/releases/download/${latest_tag}/qmanager.tar.gz"
+        download_url=$(qmirror_tarball_url "$latest_tag")
     fi
     download_size=""
 
@@ -429,8 +439,8 @@ if [ "$REQUEST_METHOD" = "POST" ]; then
             cgi_error "missing_version" "version is required"; exit 0
         fi
 
-        download_url="https://github.com/${GITHUB_REPO}/releases/download/${version}/qmanager.tar.gz"
-        checksum_url="https://github.com/${GITHUB_REPO}/releases/download/${version}/sha256sum.txt"
+        download_url=$(qmirror_tarball_url "$version")
+        checksum_url=$(qmirror_checksum_url "$version")
 
         jq -n '{"success":true,"status":"starting"}'
         ( "$UPDATER" download "$download_url" "$checksum_url" "$version" </dev/null >>/tmp/qmanager_update.log 2>&1 & )
@@ -482,7 +492,7 @@ if [ "$REQUEST_METHOD" = "POST" ]; then
         fi
 
         rollback_version=$(cat "$UPDATES_DIR/previous_version" 2>/dev/null)
-        rollback_url="https://github.com/${GITHUB_REPO}/releases/download/${rollback_version}/qmanager.tar.gz"
+        rollback_url=$(qmirror_tarball_url "$rollback_version")
         jq -n --arg v "$rollback_version" '{"success":true,"status":"starting","version":$v}'
         ( "$UPDATER" rollback "$rollback_url" "$rollback_version" </dev/null >>/tmp/qmanager_update.log 2>&1 & )
         exit 0

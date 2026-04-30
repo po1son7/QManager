@@ -17,9 +17,10 @@
 
 qlog_init "auto_update"
 
+. /usr/lib/qmanager/mirror.sh
+
 # --- Configuration -----------------------------------------------------------
 
-REPO="dr-dolomite/QManager"
 VERSION_FILE="/etc/qmanager/VERSION"
 PID_FILE="/tmp/qmanager_update.pid"
 UPDATER="/usr/bin/qmanager_update"
@@ -45,7 +46,7 @@ include_prerelease=$(uci -q get quecmanager.update.include_prerelease 2>/dev/nul
 
 # --- Fetch GitHub releases ---------------------------------------------------
 
-api_url="https://api.github.com/repos/$REPO/releases"
+api_url=$(qmirror_api_url)
 tmp_body="/tmp/qm_auto_update_body.json"
 rm -f "$tmp_body"
 
@@ -57,7 +58,7 @@ fi
 
 if ! curl -sSL --max-time 15 --connect-timeout 10 -o "$tmp_body" "$api_url" 2>/dev/null \
    || [ ! -s "$tmp_body" ]; then
-    qlog_warn "Failed to fetch releases from GitHub"
+    qlog_warn "Failed to fetch releases manifest (check mirror / connectivity)"
     rm -f "$tmp_body"
     exit 1
 fi
@@ -67,7 +68,7 @@ fi
 if [ "$include_prerelease" = "1" ]; then
     filter='.[0]'
 else
-    filter='[ .[] | select(.prerelease == false) ] | .[0]'
+    filter='[ .[] | select((.prerelease // false) == false) ] | .[0]'
 fi
 
 latest_tag=$(jq -r "$filter | .tag_name // empty" "$tmp_body")
@@ -131,6 +132,6 @@ case $? in
     *) qlog_info "Up to date ($current_version)"; exit 0 ;;
 esac
 
-download_url="https://github.com/${REPO}/releases/download/${latest_tag}/qmanager.tar.gz"
+download_url=$(qmirror_tarball_url "$latest_tag")
 qlog_info "Auto-update: installing $latest_tag (current: $current_version)"
 exec "$UPDATER" install "$download_url" "$latest_tag"

@@ -21,8 +21,25 @@ Locking/unlocking a cell (manual, Signal Failover, or scheduled) briefly bounced
 
 ### Fresh Install
 
+大陆网络推荐从 **Gitee** 或 **ghproxy** 拉取安装脚本（参见本仓库根目录 `README.md`）。等价命令示例：
+
 ```sh
-curl -fsSL -o /tmp/qmanager-installer.sh https://raw.githubusercontent.com/dr-dolomite/QManager/development-home/qmanager-installer.sh && sh /tmp/qmanager-installer.sh
+# Gitee Raw + 默认 Gitee Release（需同步 Release 附件）
+curl -fsSL -o /tmp/qmanager-installer.sh \
+  "https://gitee.com/aowu2048/QManager/raw/main/qmanager-installer.sh" && sh /tmp/qmanager-installer.sh
+```
+
+```sh
+# 仅发布在 GitHub Release 时 — 经 ghproxy
+curl -fsSL -o /tmp/qmanager-installer.sh \
+  "https://ghproxy.net/https://raw.githubusercontent.com/po1son7/QManager/main/qmanager-installer.sh" \
+  && sh /tmp/qmanager-installer.sh --mirror github_proxy
+```
+
+上游原版（国际网络）:
+
+```sh
+curl -fsSL -o /tmp/qmanager-installer.sh https://raw.githubusercontent.com/dr-dolomite/QManager/development-home/qmanager-installer.sh && sh /tmp/qmanager-installer.sh --mirror github --repo dr-dolomite/QManager
 ```
 
 ### Upgrading from v0.1.19

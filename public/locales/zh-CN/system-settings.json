@@ -498,7 +498,9 @@
       "description": "发现错误、有功能建议或需要设置帮助？通过下方任何一个渠道与我们联系。",
       "fields": {
         "email_label": "电子邮件",
-        "github_label": "GitHub"
+        "upstream_github_label": "上游作者 (GitHub)",
+        "fork_github_label": "本 fork (GitHub)",
+        "gitee_mirror_label": "大陆镜像 (Gitee)"
       }
     },
     "community": {

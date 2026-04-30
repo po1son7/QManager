@@ -290,7 +290,7 @@ POST)
         fi
 
         count_before=$(dpi_get_packet_count)
-        curl -4 -so /dev/null --max-time 5 "https://speed.cloudflare.com/__down?bytes=1000" 2>/dev/null
+        curl -4 -so /dev/null --max-time 5 "https://www.baidu.com/" 2>/dev/null
         sleep 1
         count_after=$(dpi_get_packet_count)
 

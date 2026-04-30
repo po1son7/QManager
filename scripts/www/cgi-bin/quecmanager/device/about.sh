@@ -12,8 +12,7 @@
 #   AT+QNWCFG="3gpp_rel"           -> 3GPP release versions (LTE, NR5G)
 #   uci get network.lan.ipaddr      -> OpenWRT br-lan IP (device IP)
 #   uci get network.lan.netmask     -> OpenWRT br-lan netmask (for CIDR subnet)
-#   https://api.ipify.org           -> Public IPv4 (3s timeout, non-blocking)
-#   https://api6.ipify.org          -> Public IPv6 (3s timeout, non-blocking)
+#   Public IPv4/IPv6 via curl (3s timeout): try global then CN-friendly fallbacks
 #   /etc/openwrt_release            -> OpenWRT version
 #   uname -r                       -> Linux kernel version
 #
@@ -48,10 +47,19 @@ fi
 #    These run in parallel while we do everything else.
 # =============================================================================
 if command -v curl >/dev/null 2>&1; then
-    # -L: follow redirects; -k: tolerate missing CA certs (common on OpenWRT)
-    ( curl -sLk --max-time "$PUB_IP_TIMEOUT" https://api.ipify.org > "$pub4_file" 2>/dev/null ) &
+    (
+        ipv4=""
+        ipv4=$(curl -sLk --max-time "$PUB_IP_TIMEOUT" https://api.ipify.org 2>/dev/null) || true
+        [ -n "$ipv4" ] || ipv4=$(curl -sLk --max-time "$PUB_IP_TIMEOUT" https://members.3322.org/dyndns/getip 2>/dev/null) || true
+        printf '%s' "$ipv4" > "$pub4_file"
+    ) &
     pid4=$!
-    ( curl -sLk --max-time "$PUB_IP_TIMEOUT" https://api6.ipify.org > "$pub6_file" 2>/dev/null ) &
+    (
+        ipv6=""
+        ipv6=$(curl -sLk --max-time "$PUB_IP_TIMEOUT" https://api6.ipify.org 2>/dev/null) || true
+        [ -n "$ipv6" ] || ipv6=$(curl -sLk --max-time "$PUB_IP_TIMEOUT" -g https://6.ipw.cn 2>/dev/null) || true
+        printf '%s' "$ipv6" > "$pub6_file"
+    ) &
     pid6=$!
 else
     pid4=""

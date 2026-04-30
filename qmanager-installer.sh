@@ -2,11 +2,9 @@
 # =============================================================================
 # QManager Bootstrap Installer
 # =============================================================================
-# Thin wrapper for one-liner installs. Downloads the selected release tarball
-# from GitHub, verifies sha256, extracts it, and runs install.sh (or
-# uninstall.sh). curl-only — no wget/uclient-fetch fallbacks.
-#
-# Supports both stable and pre-release channels.
+# Downloads a release tarball from a configurable mirror (default: Gitee for
+# mainland reachability), verifies SHA-256, extracts, and runs install.sh or
+# uninstall.sh. HTTP via curl only.
 #
 # Usage:
 #   sh qmanager-installer.sh [OPTIONS]
@@ -15,18 +13,24 @@
 #   --uninstall             Run uninstall.sh instead of install.sh
 #   --tag <tag>             Use an explicit release tag (e.g., v0.1.14)
 #   --channel <ch>          Release channel: stable|prerelease|any (default: any)
-#   --repo <owner/repo>     Override GitHub repo (default: dr-dolomite/QManager)
+#   --mirror <m>            gitee | github | github_proxy (default: gitee)
+#   --repo <owner/repo>     GitHub owner/repo (used when mirror is github*)
+#   --gitee-repo <o/r>      Gitee owner/repo (used when mirror is gitee)
 #   -h, --help              Show this help
 #
 # Environment overrides:
 #   QMANAGER_TAG            Same as --tag
 #   QMANAGER_CHANNEL        Same as --channel
-#   QMANAGER_REPO           Same as --repo
+#   QMANAGER_MIRROR         Same as --mirror
+#   QMANAGER_REPO           GitHub owner/repo (default: po1son7/QManager)
+#   QMANAGER_GITEE_REPO     Gitee owner/repo (default: aowu2048/QManager)
 # =============================================================================
 
 set -e
 
-REPO="${QMANAGER_REPO:-dr-dolomite/QManager}"
+MIRROR="${QMANAGER_MIRROR:-gitee}"
+GITEE_REPO="${QMANAGER_GITEE_REPO:-aowu2048/QManager}"
+REPO="${QMANAGER_REPO:-po1son7/QManager}"
 TAG="${QMANAGER_TAG:-}"
 CHANNEL="${QMANAGER_CHANNEL:-any}"
 ACTION="install"
@@ -42,29 +46,29 @@ Options:
   --uninstall           Run uninstall.sh instead of install.sh
   --tag <tag>           Use an explicit release tag (e.g., v0.1.14)
   --channel <ch>        Release channel: stable | prerelease | any (default: any)
-                        - stable:     only releases marked prerelease=false
-                        - prerelease: only releases marked prerelease=true
-                        - any:        newest release regardless of flag
-  --repo <owner/repo>   Override repository (default: dr-dolomite/QManager)
+  --mirror <m>          gitee | github | github_proxy (default: gitee)
+  --repo <owner/repo>   GitHub owner/repo for github / github_proxy (default: po1son7/QManager)
+  --gitee-repo <o/r>    Gitee owner/repo when using gitee mirror
   -h, --help            Show this help
 
 Environment overrides:
   QMANAGER_TAG          Same as --tag
   QMANAGER_CHANNEL      Same as --channel
-  QMANAGER_REPO         Same as --repo
+  QMANAGER_MIRROR       Same as --mirror
+  QMANAGER_REPO         GitHub owner/repo
+  QMANAGER_GITEE_REPO   Gitee owner/repo
 
-Examples:
-  # Install newest release (any channel)
-  curl -sL https://raw.githubusercontent.com/dr-dolomite/QManager/main/qmanager-installer.sh | sh
+Examples (mainland — Gitee raw + gitee mirror):
+  curl -fsSL -o /tmp/qmanager-installer.sh \\
+    "https://gitee.com/aowu2048/QManager/raw/main/qmanager-installer.sh" && sh /tmp/qmanager-installer.sh
 
-  # Install newest stable only
-  curl -sL .../qmanager-installer.sh | sh -s -- --channel stable
+Examples (GitHub via ghproxy — if Gitee is outdated):
+  curl -fsSL -o /tmp/qmanager-installer.sh \\
+    "https://ghproxy.net/https://raw.githubusercontent.com/po1son7/QManager/main/qmanager-installer.sh" \\
+    && sh /tmp/qmanager-installer.sh --mirror github_proxy
 
-  # Install a specific tag
-  curl -sL .../qmanager-installer.sh | sh -s -- --tag v0.1.14
-
-  # Uninstall
-  curl -sL .../qmanager-installer.sh | sh -s -- --uninstall
+  sh /tmp/qmanager-installer.sh --mirror github --channel stable
+  sh /tmp/qmanager-installer.sh --uninstall
 EOF
 }
 
@@ -85,10 +89,20 @@ while [ "$#" -gt 0 ]; do
             [ "$#" -gt 0 ] || { echo "Missing value for --channel" >&2; exit 1; }
             CHANNEL="$1"
             ;;
+        --mirror)
+            shift
+            [ "$#" -gt 0 ] || { echo "Missing value for --mirror" >&2; exit 1; }
+            MIRROR="$1"
+            ;;
         --repo)
             shift
             [ "$#" -gt 0 ] || { echo "Missing value for --repo" >&2; exit 1; }
             REPO="$1"
+            ;;
+        --gitee-repo)
+            shift
+            [ "$#" -gt 0 ] || { echo "Missing value for --gitee-repo" >&2; exit 1; }
+            GITEE_REPO="$1"
             ;;
         -h|--help)
             usage
@@ -102,6 +116,14 @@ while [ "$#" -gt 0 ]; do
     esac
     shift
 done
+
+case "$MIRROR" in
+    gitee|github|github_proxy) ;;
+    *)
+        echo "Invalid --mirror: $MIRROR (expected: gitee, github, github_proxy)" >&2
+        exit 1
+        ;;
+esac
 
 # --- Dependency checks -------------------------------------------------------
 
@@ -121,62 +143,6 @@ if ! command -v tar >/dev/null 2>&1; then
     exit 1
 fi
 
-if ! command -v awk >/dev/null 2>&1; then
-    echo "awk is required but not available" >&2
-    exit 1
-fi
-
-# --- HTTP helpers (curl-only) ------------------------------------------------
-
-fetch_text() {
-    curl -fsSL --max-time 30 --connect-timeout 10 "$1" 2>/dev/null
-}
-
-download_file() {
-    local url="$1" out="$2"
-    curl -fsSL --max-time 600 --connect-timeout 15 -o "$out" "$url"
-}
-
-# Parse release tags from GitHub API JSON without jq.
-# This parser is intentionally line-oriented so it remains POSIX/BuysBox-safe
-# and avoids fragile object splitting by literal "},{".
-extract_tag_from_releases_json() {
-    local channel="$1"
-
-    awk -v channel="$channel" '
-        /^[[:space:]]*"tag_name":[[:space:]]*"/ {
-            line = $0
-            sub(/^[[:space:]]*"tag_name":[[:space:]]*"/, "", line)
-            sub(/".*/, "", line)
-            tag = line
-
-            if (channel == "any" && tag != "") {
-                print tag
-                exit
-            }
-            next
-        }
-
-        /^[[:space:]]*"prerelease":[[:space:]]*true/ {
-            if (channel == "prerelease" && tag != "") {
-                print tag
-                exit
-            }
-            next
-        }
-
-        /^[[:space:]]*"prerelease":[[:space:]]*false/ {
-            if (channel == "stable" && tag != "") {
-                print tag
-                exit
-            }
-            next
-        }
-    '
-}
-
-# --- Channel selection -------------------------------------------------------
-
 case "$CHANNEL" in
     stable|prerelease|any) ;;
     *)
@@ -185,21 +151,88 @@ case "$CHANNEL" in
         ;;
 esac
 
+# --- HTTP helpers (curl-only) ------------------------------------------------
+
+fetch_text() {
+    curl -fsSL --max-time 30 --connect-timeout 10 "$1" 2>/dev/null
+}
+
+download_file() {
+    _url="$1"
+    _out="$2"
+    curl -fsSL --max-time 600 --connect-timeout 15 -o "$_out" "$_url"
+}
+
+releases_api_url() {
+    case "$MIRROR" in
+        gitee)
+            echo "https://gitee.com/api/v5/repos/${GITEE_REPO}/releases?per_page=50&direction=desc"
+            ;;
+        github_proxy)
+            echo "https://ghproxy.net/https://api.github.com/repos/${REPO}/releases?per_page=50"
+            ;;
+        *)
+            echo "https://api.github.com/repos/${REPO}/releases?per_page=50"
+            ;;
+    esac
+}
+
+download_base_url() {
+    _t="$1"
+    case "$MIRROR" in
+        gitee)
+            echo "https://gitee.com/${GITEE_REPO}/releases/download/${_t}"
+            ;;
+        github_proxy)
+            echo "https://ghproxy.net/https://github.com/${REPO}/releases/download/${_t}"
+            ;;
+        *)
+            echo "https://github.com/${REPO}/releases/download/${_t}"
+            ;;
+    esac
+}
+
+resolve_tag_from_json() {
+    _json="$1"
+    _channel="$2"
+    printf '%s' "$_json" | jq -r --arg ch "$_channel" '
+      if $ch == "any" then
+        .[0].tag_name // empty
+      elif $ch == "prerelease" then
+        ([ .[] | select(.prerelease == true) ] | .[0].tag_name // empty)
+      else
+        ([ .[] | select((.prerelease // false) == false) ] | .[0].tag_name // empty)
+      end
+    '
+}
+
 # --- Tag resolution ----------------------------------------------------------
 
 if [ -z "$TAG" ]; then
-    echo "Resolving latest $CHANNEL release from $REPO..."
+    if ! command -v jq >/dev/null 2>&1; then
+        echo "jq is required to resolve the latest release tag." >&2
+        echo "Install: opkg update && opkg install jq" >&2
+        exit 1
+    fi
 
-    API="https://api.github.com/repos/${REPO}/releases?per_page=50"
+    case "$MIRROR" in
+        gitee)
+            echo "Resolving latest $CHANNEL release from Gitee $GITEE_REPO..."
+            ;;
+        *)
+            echo "Resolving latest $CHANNEL release from GitHub $REPO..."
+            ;;
+    esac
+
+    API=$(releases_api_url)
     JSON="$(fetch_text "$API" || true)"
 
     if [ -z "$JSON" ]; then
         echo "Failed to fetch release metadata from $API" >&2
-        echo "Check internet connectivity and GitHub API availability." >&2
         exit 1
     fi
 
-    TAG="$(printf '%s\n' "$JSON" | extract_tag_from_releases_json "$CHANNEL")"
+    TAG=$(resolve_tag_from_json "$JSON" "$CHANNEL")
 fi
 
 if [ -z "$TAG" ]; then
@@ -212,9 +245,7 @@ fi
 
 echo "Using release: $TAG"
 
-# --- Download and verify -----------------------------------------------------
-
-BASE="https://github.com/${REPO}/releases/download/${TAG}"
+BASE=$(download_base_url "$TAG")
 WORK_DIR="/tmp/qmanager-bootstrap"
 
 rm -rf "$WORK_DIR"
@@ -242,8 +273,6 @@ fi
 echo "Verifying SHA-256..."
 sha256sum -c sha256sum.txt
 
-# --- Extract -----------------------------------------------------------------
-
 echo "Extracting..."
 if tar xzf qmanager.tar.gz 2>/dev/null; then
     :
@@ -258,8 +287,6 @@ fi
     echo "Extraction produced no qmanager_install directory — archive layout invalid" >&2
     exit 1
 }
-
-# --- Hand off to install.sh / uninstall.sh -----------------------------------
 
 if [ "$ACTION" = "uninstall" ]; then
     exec sh "$WORK_DIR/qmanager_install/uninstall.sh"
