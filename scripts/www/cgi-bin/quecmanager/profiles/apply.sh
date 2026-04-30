@@ -62,48 +62,61 @@ if [ ! -f "$PROFILE_DIR/${PROFILE_ID}.json" ]; then
     exit 0
 fi
 
-# --- Check: already applying? ------------------------------------------------
-if ! profile_check_lock; then
+# --- Atomically acquire the lock so concurrent CGI calls can't both pass -----
+# Lock layering: CGI acquires here to narrow the CGI-vs-CGI race window.
+# The worker (qmanager_profile_apply) calls profile_acquire_lock independently
+# and is the authoritative single-worker enforcer — it will exit(1) if another
+# worker is already running (e.g. if two CGI requests race past this point in
+# the residual TOCTOU window between profile_check_lock and the echo $$ write).
+# We must rm -f $PROFILE_APPLY_PID_FILE on every error path below so the user
+# can retry. After the worker takes over the PID file we must NOT touch it.
+if ! profile_acquire_lock; then
     qlog_warn "Apply already running (PID: $_profile_lock_pid)"
     cgi_error "apply_in_progress" "A profile is already being applied"
+    exit 0
+fi
+# CGI's PID ($$) is now in $PROFILE_APPLY_PID_FILE.
+
+# --- Check: USB mode compatible with Verizon profiles? -----------------------
+_apply_mno=$(jq -r '.mno // empty' "$PROFILE_DIR/${PROFILE_ID}.json" 2>/dev/null)
+if [ "$_apply_mno" = "Verizon" ] && ! usb_mode_supports_mpdn; then
+    rm -f "$PROFILE_APPLY_PID_FILE"
+    cgi_error "usb_mode_incompatible_for_verizon" "Verizon profiles require USB mode ECM or RNDIS"
     exit 0
 fi
 
 # --- Check: apply binary exists? ---------------------------------------------
 if [ ! -x "$APPLY_BIN" ]; then
+    rm -f "$PROFILE_APPLY_PID_FILE"
     qlog_error "Apply binary not found: $APPLY_BIN"
     cgi_error "not_installed" "Profile apply script not found"
-    exit 0
-fi
-
-# --- Check: USB mode compatible with Verizon profiles? -----------------------
-_apply_mno=$(jq -r '.mno // empty' "$PROFILE_DIR/${PROFILE_ID}.json" 2>/dev/null)
-if [ "$_apply_mno" = "Verizon" ] && ! usb_mode_supports_mpdn; then
-    cgi_error "usb_mode_incompatible_for_verizon" "Verizon profiles require USB mode ECM or RNDIS"
     exit 0
 fi
 
 # --- Clear previous state file -----------------------------------------------
 rm -f "$STATE_FILE"
 
-# --- Launch apply in a detached session --------------------------------------
+# --- Spawn worker (it will overwrite the PID file with its own PID) ----------
+# The worker calls profile_acquire_lock on startup: it sees our stale PID (CGI
+# has exited by then, so kill -0 fails), cleans it, and writes its own PID.
 qlog_info "Spawning profile apply for: $PROFILE_ID"
 
 # Detach via subshell (pure POSIX, no setsid needed)
 ( "$APPLY_BIN" "$PROFILE_ID" </dev/null >/dev/null 2>&1 & )
 
-# Give the script time to start and write its PID file
+# Give the worker time to start and overwrite PID file with its own PID
 sleep 0.5
 
 # --- Verify it started -------------------------------------------------------
 if [ -f "$PROFILE_APPLY_PID_FILE" ]; then
     NEW_PID=$(cat "$PROFILE_APPLY_PID_FILE" 2>/dev/null)
-    if [ -n "$NEW_PID" ] && kill -0 "$NEW_PID" 2>/dev/null; then
+    if [ -n "$NEW_PID" ] && [ "$NEW_PID" != "$$" ] && kill -0 "$NEW_PID" 2>/dev/null; then
         qlog_info "Profile apply started (PID: $NEW_PID)"
         jq -n --argjson pid "$NEW_PID" '{"success":true,"status":"applying","pid":$pid}'
     else
-        qlog_error "Apply process exited immediately"
-        # Check if state file has error info
+        # Worker didn't take over — release the lock so the user can retry
+        rm -f "$PROFILE_APPLY_PID_FILE"
+        qlog_error "Apply process exited immediately or didn't take over the lock"
         if [ -f "$STATE_FILE" ]; then
             cat "$STATE_FILE"
         else
