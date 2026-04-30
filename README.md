@@ -16,7 +16,7 @@
 
 本项目继承自 **[dr-dolomite/QManager](https://github.com/dr-dolomite/QManager)**。本 **`po1son7`（GitHub）/ `aowu2048`（Gitee）** 在功能上与上游对齐，并针对 **中国大陆网络** 调整了安装与更新源。
 
-### 推荐仓库分工（与你当前做法一致）
+### 推荐仓库分工（本 fork 的典型流程）
 
 | 角色 | 仓库 | 用途 |
 |------|------|------|
@@ -32,16 +32,16 @@
 
 SSH 登录 OpenWRT 后 **任选其一**：
 
-### A. Gitee Raw + 默认 Gitee Release（延迟最低时需你在 Gitee 同步 Release 附件）
+### A. Gitee Raw + 默认 Gitee Release（延迟最低时需先在 Gitee 侧同步 Release 附件）
 
 ```sh
 curl -fsSL -o /tmp/qmanager-installer.sh \
   "https://gitee.com/aowu2048/QManager/raw/main/qmanager-installer.sh" && sh /tmp/qmanager-installer.sh
 ```
 
-安装脚本默认 **`mirror=gitee`**，从 **Gitee Release** 拉 `qmanager.tar.gz` / `sha256sum.txt`。请保持 **GitHub 与 Gitee 同一 tag、同一附件内容**，再在路由器上升级或安装。
+安装脚本默认 **`mirror=gitee`**，从 **Gitee Release** 拉 `qmanager.tar.gz` / `sha256sum.txt`。发布流程中须保持 **GitHub 与 Gitee 同一 tag、同一附件内容**，再在路由器上升级或安装。
 
-### B. ghproxy + GitHub Raw（适合你只在 GitHub 发 Release）
+### B. ghproxy + GitHub Raw（适用于 Release 仅发布在 GitHub 的情形）
 
 ```sh
 curl -fsSL -o /tmp/qmanager-installer.sh \
@@ -81,16 +81,16 @@ curl -fsSL -o /tmp/qmanager-installer.sh \
 
 ## OTA（设备内在线更新）
 
-逻辑在 **`/usr/lib/qmanager/mirror.sh`**。**默认一直跟你的 Gitee**：`mirror_type=gitee`、`mirror_repo=aowu2048/QManager`。首次写入 `quecmanager.update`（例如第一次打开软件更新页）时会自动种下上述默认值，并把 **`mirror_github_repo=po1son7/QManager`** 记好——若你改用 `github` / `github_proxy` 模式，OTA 会去拉 **你 GitHub fork** 的 Release。
+逻辑在 **`/usr/lib/qmanager/mirror.sh`**。**默认 OTA 源为 Gitee**（`mirror_type=gitee`、`mirror_repo=aowu2048/QManager`）。首次写入 `quecmanager.update`（例如第一次打开软件更新页）时会自动写入上述默认值，并一并记录 **`mirror_github_repo=po1son7/QManager`**；若在 UCI 中将 `mirror_type` 改为 **`github`** 或 **`github_proxy`**，OTA 则改从对应的 **GitHub fork**（默认 `po1son7/QManager`）拉取 Release。
 
-- 需要临时走 GitHub（含大陆 ghproxy）：UCI `mirror_type` 设为 `github` 或 `github_proxy`。  
-- 极少数从上游原版迁过来的设备若仍要写死上游：`mirror_type=github`，`mirror_github_repo=dr-dolomite/QManager`。
+- 需要临时经 GitHub（含大陆 ghproxy）：将 UCI `mirror_type` 设为 `github` 或 `github_proxy`。  
+- 自上游原版迁入、且仍须固定跟踪上游仓库的设备：可将 `mirror_type` 设为 `github`，`mirror_github_repo` 设为 `dr-dolomite/QManager`。
 
 ---
 
 ## 视频优化 / 流量伪装（nfqws）
 
-设备端 **`qmanager_dpi_install`** 默认通过 **`https://ghproxy.net/`** 转发对 **GitHub API** 与 **zapret Release 附件**的请求；若你已能直连 GitHub，可设置环境变量关闭代理：
+设备端 **`qmanager_dpi_install`** 默认通过 **`https://ghproxy.net/`** 转发对 **GitHub API** 与 **zapret Release 附件**的请求；在可直连 GitHub 的网络环境中，可将环境变量设为关闭代理：
 
 ```sh
 export ZAPRET_USE_GHPROXY=0
@@ -114,11 +114,11 @@ export ZAPRET_USE_GHPROXY=0
 
 ## 本地开发（中国大陆提示）
 
-建议使用 **镜像加速** NPM / Bun（示例）：
+开发环境可使用 **镜像加速** NPM / Bun（示例）：
 
 ```bash
 npm config set registry https://registry.npmmirror.com
-# Bun 请参阅 https://bun.sh/docs/install ，可配置国内镜像站
+# Bun 安装与镜像：见 https://bun.sh/docs/install
 git clone https://github.com/po1son7/QManager.git
 cd QManager
 bun install
@@ -132,12 +132,12 @@ bun run build
 bun run package
 ```
 
-产物 `qmanager.tar.gz` + `sha256sum.txt` 请上传到 **GitHub Release**（及按需同步 **Gitee Release**）。
+产物 `qmanager.tar.gz` + `sha256sum.txt` 需上传至 **GitHub Release**，并按需同步至 **Gitee Release**。
 
 ### 维护者脚本（不进仓库）
 
 与个人流程相关的 PowerShell 放在 **仓库目录外**，例如：`E:\Myproject\QM-release-scripts\`。  
-请先在该目录查看 **`README.txt`**，并配置环境变量 **`QM_REPO_ROOT`** 指向你的 `QManager` 克隆路径。
+在该目录查阅 **`README.txt`**，并将环境变量 **`QM_REPO_ROOT`** 设为本地 `QManager` 克隆的根目录路径。
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File E:\Myproject\QM-release-scripts\full-upstream-release-gitee.ps1
@@ -161,7 +161,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File E:\Myproject\QM-release-scri
 
 ## 许可证与支持
 
-本项目采用 **[MIT License with Commons Clause](LICENSE)**：**不得**售卖或作为商业产品及付费服务分发（fork 亦然）。商用需联系原版作者。**赞助请优先支持原版 [dr-dolomite](https://github.com/sponsors/dr-dolomite)**。
+本项目采用 **[MIT License with Commons Clause](LICENSE)**：**不得**售卖或作为商业产品及付费服务分发（fork 亦然）。商用需联系原版作者。**赞助事宜建议优先联系原版作者：[dr-dolomite](https://github.com/sponsors/dr-dolomite)**。
 
 ---
 
