@@ -16,6 +16,7 @@ import type {
 export interface PublicOverviewBand {
   band: string;
   bandwidth_mhz: number;
+  pci: number | null;
 }
 
 export interface PublicOverviewNetwork {
@@ -32,10 +33,6 @@ export interface PublicOverviewSignal {
   sinr: number | null;
 }
 
-export interface PublicOverviewDevice {
-  pci: number | null;
-}
-
 export interface PublicOverviewOk {
   state: "ok";
   timestamp: number;
@@ -43,7 +40,6 @@ export interface PublicOverviewOk {
   uptime_seconds: number;
   network: PublicOverviewNetwork;
   signal: PublicOverviewSignal;
-  device: PublicOverviewDevice;
 }
 
 export interface PublicOverviewSetupRequired {

@@ -39,15 +39,12 @@ jq '{
     type: .network.type,
     service_status: .network.service_status,
     carrier: .network.carrier,
-    bands: [(.network.carrier_components // [])[] | select(.band != null and .band != "") | {band: .band, bandwidth_mhz: (.bandwidth_mhz // 0)}],
+    bands: [(.network.carrier_components // [])[] | select(.band != null and .band != "") | {band: .band, bandwidth_mhz: (.bandwidth_mhz // 0), pci: .pci}],
     lte_state: .lte.state,
     nr_state: .nr.state
   },
   signal: {
     rsrp: (if .lte.rsrp != null then .lte.rsrp elif .nr.rsrp != null then .nr.rsrp else null end),
     sinr: (if .lte.sinr != null then .lte.sinr elif .nr.sinr != null then .nr.sinr else null end)
-  },
-  device: {
-    pci: ([(.network.carrier_components // [])[] | select(.type == "PCC") | .pci] | first // null)
   }
 }' "$STATUS_FILE" 2>/dev/null || jq -n '{"state":"unavailable","reason":"parse_error"}'

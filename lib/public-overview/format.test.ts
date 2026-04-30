@@ -2,6 +2,7 @@ import { describe, it, expect } from "bun:test";
 import {
   deriveConnectionLabel,
   formatBands,
+  formatPcis,
   formatUptime,
 } from "./format";
 
@@ -52,27 +53,27 @@ describe("formatBands", () => {
   });
 
   it("formats a single entry with bandwidth", () => {
-    expect(formatBands([{ band: "B3", bandwidth_mhz: 15 }])).toBe("B3 (15MHz)");
+    expect(formatBands([{ band: "B3", bandwidth_mhz: 15, pci: 42 }])).toBe("B3 (15MHz)");
   });
 
   it("formats two entries with bandwidth", () => {
     expect(
       formatBands([
-        { band: "B3", bandwidth_mhz: 15 },
-        { band: "B1", bandwidth_mhz: 10 },
+        { band: "B3", bandwidth_mhz: 15, pci: 42 },
+        { band: "B1", bandwidth_mhz: 10, pci: 7 },
       ]),
     ).toBe("B3 (15MHz) + B1 (10MHz)");
   });
 
   it("omits parens when bandwidth_mhz is 0", () => {
-    expect(formatBands([{ band: "B3", bandwidth_mhz: 0 }])).toBe("B3");
+    expect(formatBands([{ band: "B3", bandwidth_mhz: 0, pci: 42 }])).toBe("B3");
   });
 
   it("filters out entries with empty band string", () => {
     expect(
       formatBands([
-        { band: "B3", bandwidth_mhz: 15 },
-        { band: "", bandwidth_mhz: 10 },
+        { band: "B3", bandwidth_mhz: 15, pci: 42 },
+        { band: "", bandwidth_mhz: 10, pci: 7 },
       ]),
     ).toBe("B3 (15MHz)");
   });
@@ -80,14 +81,55 @@ describe("formatBands", () => {
   it("mixed: one with bandwidth, one without", () => {
     expect(
       formatBands([
-        { band: "B3", bandwidth_mhz: 15 },
-        { band: "B1", bandwidth_mhz: 0 },
+        { band: "B3", bandwidth_mhz: 15, pci: 42 },
+        { band: "B1", bandwidth_mhz: 0, pci: 7 },
       ]),
     ).toBe("B3 (15MHz) + B1");
   });
 
   it("treats non-finite bandwidth as no-bandwidth", () => {
-    expect(formatBands([{ band: "B3", bandwidth_mhz: NaN }])).toBe("B3");
+    expect(formatBands([{ band: "B3", bandwidth_mhz: NaN, pci: 42 }])).toBe("B3");
+  });
+});
+
+describe("formatPcis", () => {
+  it("returns an em dash for an empty array", () => {
+    expect(formatPcis([])).toBe("—");
+  });
+
+  it("formats a single entry", () => {
+    expect(formatPcis([{ band: "B3", bandwidth_mhz: 15, pci: 42 }])).toBe("42");
+  });
+
+  it("formats two entries joined by ' + '", () => {
+    expect(
+      formatPcis([
+        { band: "B3", bandwidth_mhz: 15, pci: 42 },
+        { band: "B1", bandwidth_mhz: 10, pci: 7 },
+      ]),
+    ).toBe("42 + 7");
+  });
+
+  it("filters out entries with pci null", () => {
+    expect(
+      formatPcis([
+        { band: "B3", bandwidth_mhz: 15, pci: 42 },
+        { band: "B1", bandwidth_mhz: 10, pci: null },
+      ]),
+    ).toBe("42");
+  });
+
+  it("returns em dash when all pcis are null", () => {
+    expect(
+      formatPcis([
+        { band: "B3", bandwidth_mhz: 15, pci: null },
+        { band: "B1", bandwidth_mhz: 10, pci: null },
+      ]),
+    ).toBe("—");
+  });
+
+  it("preserves pci 0 (not treated as null)", () => {
+    expect(formatPcis([{ band: "B3", bandwidth_mhz: 15, pci: 0 }])).toBe("0");
   });
 });
 

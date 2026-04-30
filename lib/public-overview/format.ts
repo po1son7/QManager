@@ -49,6 +49,19 @@ export function formatBands(bands: PublicOverviewBand[]): string {
     .join(" + ");
 }
 
+/**
+ * Joins the PCIs from the carrier_components into a display string, e.g.
+ * `42 + 7 + 13`. Order is preserved (PCC first, then SCCs). Entries with
+ * `pci == null` are skipped. Empty result → em dash.
+ */
+export function formatPcis(bands: PublicOverviewBand[]): string {
+  const pcis = bands
+    .filter((b) => b && b.pci != null)
+    .map((b) => String(b.pci));
+  if (pcis.length === 0) return "—";
+  return pcis.join(" + ");
+}
+
 export type UptimeFormat =
   | { key: "days"; days: number; hours: number }
   | { key: "hours"; hours: number; minutes: number }

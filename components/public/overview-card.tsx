@@ -28,6 +28,7 @@ import { usePublicOverview } from "@/hooks/use-public-overview";
 import {
   deriveConnectionLabel,
   formatBands,
+  formatPcis,
   formatUptime,
 } from "@/lib/public-overview/format";
 import { getSignalQuality, RSRP_THRESHOLDS } from "@/types/modem-status";
@@ -243,7 +244,7 @@ function renderBody({ data, isLoading, isStale, error, t }: BodyProps) {
         />
         <Field
           label={t("overview.field.pci")}
-          value={data.device.pci != null ? String(data.device.pci) : "—"}
+          value={formatPcis(data.network.bands)}
         />
         <Field label={t("overview.field.uptime")} value={uptimeText} />
       </dl>
