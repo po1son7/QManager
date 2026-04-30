@@ -496,3 +496,122 @@ profile_acquire_lock() {
     }
     return 0
 }
+
+# =============================================================================
+# MPDN Rule Management (Verizon workaround)
+# =============================================================================
+# Verizon requires data to flow through PDP context 3 (not the default 1).
+# These helpers read/write QMAP MPDN rules and verify USB net mode compatibility.
+#
+# AT response formats:
+#   AT+QMAP="WWAN"   → +QMAP: "WWAN",<connected>,<pdp>,"IPV4","..."
+#   AT+QCFG="usbnet" → +QCFG: "usbnet",<mode>
+#
+# USB net mode compatibility: 1=ECM, 3=RNDIS (supported); 0=RMNet, 2=MBIM (not supported)
+# =============================================================================
+
+# mpdn_get_active_pdp
+# Reads the active PDP context number reported by AT+QMAP="WWAN".
+# Echoes the integer (e.g. "1" or "3") to stdout, or empty string if not
+# connected / response cannot be parsed.
+# Returns 0 always — callers check the echoed value.
+mpdn_get_active_pdp() {
+    local response pdp
+    response=$(qcmd 'AT+QMAP="WWAN"' 2>/dev/null)
+    # Extract the third comma-separated field from the +QMAP: "WWAN",... line.
+    # Line format: +QMAP: "WWAN",<connected>,<pdp>,"IPV4","..."
+    # Use awk: match the line, split on comma, strip leading/trailing whitespace.
+    pdp=$(printf '%s' "$response" | awk '
+        /\+QMAP:.*"WWAN"/ {
+            # Remove the "+QMAP: " prefix, then split by comma
+            sub(/^\+QMAP:[[:space:]]*/, "")
+            n = split($0, a, ",")
+            if (n >= 3) {
+                gsub(/[[:space:]]/, "", a[3])
+                print a[3]
+            }
+            exit
+        }
+    ')
+    printf '%s' "$pdp"
+    return 0
+}
+
+# usb_mode_supports_mpdn
+# Returns 0 (success) if the current USB net mode supports MPDN (ECM=1 or RNDIS=3).
+# Returns 1 for unsupported modes (RMNet=0, MBIM=2) or on parse failure.
+usb_mode_supports_mpdn() {
+    local response mode
+    response=$(qcmd 'AT+QCFG="usbnet"' 2>/dev/null)
+    # Extract the integer after +QCFG: "usbnet",
+    mode=$(printf '%s' "$response" | awk '
+        /\+QCFG:.*"usbnet"/ {
+            sub(/^\+QCFG:[[:space:]]*"usbnet",[[:space:]]*/, "")
+            gsub(/[[:space:]]/, "", $0)
+            # Take only leading digits
+            match($0, /^[0-9]+/)
+            if (RLENGTH > 0) print substr($0, 1, RLENGTH)
+            exit
+        }
+    ')
+    case "$mode" in
+        1|3) return 0 ;;
+        *)   return 1 ;;
+    esac
+}
+
+# mpdn_apply_verizon
+# Configures MPDN rule 0 to route through PDP context 3 (Verizon requirement).
+# Idempotent: skips if already on PDP 3.
+# Returns 0 on success, 1 if verification fails after applying.
+mpdn_apply_verizon() {
+    local current_pdp
+    current_pdp=$(mpdn_get_active_pdp)
+
+    if [ "$current_pdp" = "3" ]; then
+        qlog_info "MPDN already on PDP context 3, skipping" 2>/dev/null
+        return 0
+    fi
+
+    qlog_info "Applying Verizon MPDN rule: PDP context 3" 2>/dev/null
+    qcmd 'AT+QMAP="mpdn_rule",0,3,0,0,1' >/dev/null 2>&1
+
+    sleep 1
+
+    local verified_pdp
+    verified_pdp=$(mpdn_get_active_pdp)
+    if [ "$verified_pdp" = "3" ]; then
+        qlog_info "MPDN rule applied: active PDP context is 3" 2>/dev/null
+        return 0
+    fi
+
+    qlog_error "MPDN apply verification failed: expected PDP 3, got '${verified_pdp:-<empty>}'" 2>/dev/null
+    return 1
+}
+
+# mpdn_revert_to_default
+# Reverts MPDN rule 0 back to PDP context 1 (modem default).
+# IMPORTANT: release and re-set are issued back-to-back with NO sleep between
+# them. The modem must never be left in a bare-released state — doing so
+# requires a firmware re-flash to recover.
+# Returns 0 on success, 1 if verification fails (but the release+re-set pair
+# is always sent regardless of the verification outcome).
+mpdn_revert_to_default() {
+    qlog_info "Reverting MPDN rule to PDP context 1 (default)" 2>/dev/null
+
+    # Release then immediately re-pin — NO sleep between (firmware quirk).
+    qcmd 'AT+QMAP="mpdn_rule",0' >/dev/null 2>&1
+    qcmd 'AT+QMAP="mpdn_rule",0,1,0,0,1' >/dev/null 2>&1
+
+    sleep 1
+
+    local verified_pdp
+    verified_pdp=$(mpdn_get_active_pdp)
+    if [ "$verified_pdp" = "1" ]; then
+        qlog_info "MPDN rule reverted: active PDP context is 1" 2>/dev/null
+        return 0
+    fi
+
+    qlog_error "MPDN revert verification failed: expected PDP 1, got '${verified_pdp:-<empty>}'" 2>/dev/null
+    return 1
+}
