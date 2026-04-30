@@ -134,6 +134,20 @@ bun run package
 
 产物 `qmanager.tar.gz` + `sha256sum.txt` 请上传到 **GitHub Release**（及按需同步 **Gitee Release**）。
 
+### 维护者一条龙（上游合并 + 发包 + Gitee Release）
+
+脚本从 **`package.json` 的 `version`** 自动读取 tag，无需手填；**不会改路由器上的镜像 / 安装脚本**（仍由仓库内既有 `mirror.sh`、`qmanager-installer.sh` 等决定）。
+
+```powershell
+# 先发版前请先改好 package.json 的 version 并 commit（或上游已带上目标版本）。
+# 可选：本机 bun 下载走镜像，且只有你未设置 npm/bun mirror 时才生效：
+#   set QM_USE_CN_DEV_MIRROR=1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\full-upstream-release-gitee.ps1
+```
+
+仅同步已有 GitHub Release 到 Gitee（不合并上游）：  
+`powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\sync-github-releases-to-gitee.ps1`
+
 ---
 
 ## 文档索引
